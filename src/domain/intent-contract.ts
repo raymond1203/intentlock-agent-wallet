@@ -19,9 +19,16 @@ export const IntentContractSchema = z
     allowedTargets: z.array(AddressSchema).min(1),
     assetBudgets: z.array(AssetBudgetSchema).min(1),
     maxGasWei: UnsignedIntegerStringSchema,
-    expiresAt: z.string().datetime({ offset: true }),
+    expiresAt: z.iso.datetime({ offset: true }),
     nonce: z.string().min(1),
   })
   .strict();
 
 export type IntentContract = z.infer<typeof IntentContractSchema>;
+
+export function createIntentContractJsonSchema(): Record<string, unknown> {
+  return z.toJSONSchema(IntentContractSchema, {
+    target: 'draft-2020-12',
+    unrepresentable: 'throw',
+  });
+}

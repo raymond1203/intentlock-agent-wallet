@@ -1,7 +1,18 @@
-import { createPublicClient, http, type PublicClient } from 'viem';
+import { createPublicClient, http, type Chain, type PublicClient, type Transport } from 'viem';
 
-export function createSimulationClient(rpcUrl: string): PublicClient {
+export interface SimulationClientConfig {
+  chain: Chain;
+  rpcUrl: string;
+}
+
+export type SimulationClient = PublicClient<Transport, Chain>;
+
+export function createSimulationClient({
+  chain,
+  rpcUrl,
+}: SimulationClientConfig): SimulationClient {
   return createPublicClient({
+    chain,
     transport: http(rpcUrl),
   });
 }

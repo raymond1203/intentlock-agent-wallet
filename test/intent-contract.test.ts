@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { IntentContractSchema } from '../src/domain/intent-contract.js';
+import {
+  createIntentContractJsonSchema,
+  IntentContractSchema,
+} from '../src/domain/intent-contract.js';
 
 describe('IntentContractSchema', () => {
   it('accepts a bounded intent contract', () => {
@@ -29,5 +32,26 @@ describe('IntentContractSchema', () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it('exports a closed JSON Schema contract', () => {
+    const jsonSchema = createIntentContractJsonSchema();
+
+    expect(jsonSchema).toMatchObject({
+      $schema: 'https://json-schema.org/draft/2020-12/schema',
+      type: 'object',
+      additionalProperties: false,
+    });
+    expect(jsonSchema.required).toEqual(
+      expect.arrayContaining([
+        'version',
+        'chainId',
+        'allowedTargets',
+        'assetBudgets',
+        'maxGasWei',
+        'expiresAt',
+        'nonce',
+      ]),
+    );
   });
 });
