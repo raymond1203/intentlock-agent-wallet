@@ -26,7 +26,8 @@
 ## Definition of done
 
 - 요구된 파일 또는 결과물이 저장소에 존재합니다.
-- 관련 테스트와 `npm run check`가 통과합니다.
+- 관련 테스트와 `pnpm run check`가 통과합니다.
+- Solidity 변경은 `pnpm run contracts:format:check`, `pnpm run contracts:build`, `pnpm run contracts:test`가 통과합니다.
 - 실험은 입력, 버전, seed, 출력 경로가 기록됩니다.
 - 새로운 연구 판단은 `docs/decisions/`에 기록됩니다.
 - Reviewer가 코드와 연구 주장을 모두 확인합니다.

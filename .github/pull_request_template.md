@@ -16,7 +16,8 @@ Closes #
 
 <!-- 실행한 명령과 결과를 적습니다. -->
 
-- [ ] `npm run check`
+- [ ] `pnpm run check`
+- [ ] Solidity 변경 시 Foundry 검사
 - [ ] 관련 golden scenario 또는 실험 재현
 
 ## Research impact

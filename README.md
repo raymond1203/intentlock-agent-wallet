@@ -10,21 +10,26 @@
 
 Prerequisites:
 
-- Node.js 24
-- npm 11
-- 선택 사항: Foundry/Anvil (EVM 포크 실험용)
+- Node.js 24.18.0
+- pnpm 11.22.0
+- Foundry/Anvil 1.7.1
 
 ```bash
 cp .env.example .env
-npm ci
-npm run check
+pnpm install --frozen-lockfile
+pnpm run check
+pnpm run contracts:build
 ```
 
 Windows PowerShell에서는 `Copy-Item .env.example .env`를 사용하면 됩니다.
 
+pnpm은 `packageManager` 필드와 `pnpm-lock.yaml`로 버전을 고정합니다. npm으로 lockfile을 만들지 마세요.
+
 ## Repository map
 
-- `src/`: Intent Contract, effect decoder, runtime monitor
+- `src/domain/`: Intent Contract와 Guard 결정 타입
+- `src/evm/`: 명시적 chain을 사용하는 읽기·시뮬레이션 전용 Viem 계층
+- 향후 signer/MetaMask adapter는 시뮬레이션 계층과 분리
 - `test/`: 단위 테스트와 golden scenario 테스트
 - `benchmark/`: 시나리오, 스키마, fixture, 고정 평가 split
 - `experiments/`: 실험 설정과 결과 생성 절차
