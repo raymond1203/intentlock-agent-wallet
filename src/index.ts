@@ -1,6 +1,7 @@
 export type { GuardDecision } from './domain/guard-decision.js';
 export {
   AssetBudgetSchema,
+  createIntentContractJsonSchema,
   IntentContractSchema,
   type IntentContract,
 } from './domain/intent-contract.js';

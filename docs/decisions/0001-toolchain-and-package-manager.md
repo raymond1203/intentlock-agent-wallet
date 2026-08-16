@@ -15,6 +15,8 @@ IntentLock은 TypeScript 기반 정책·효과 모델과 Foundry 기반 EVM 포�
 - TypeScript 6.0.3을 유지합니다. 현재 `typescript-eslint` 8.67.0의 peer 범위가 TypeScript 7을 허용하지 않으므로 메이저 자동 업데이트를 차단합니다.
 - Viem Public Client는 chain을 명시하고 읽기·시뮬레이션에만 사용합니다. 개인 키와 Wallet Client를 사용하는 signer adapter는 별도 모듈로 둡니다.
 - Zod는 외부 입력과 Intent Contract의 runtime validation, Vitest는 순수 TypeScript 단위 테스트, Foundry는 Solidity와 fork integration test에 사용합니다.
+- Zod 4의 `toJSONSchema`를 사용해 Intent Contract를 JSON Schema Draft 2020-12로 내보냅니다. JSON Schema로 표현할 수 없는 transform, BigInt, custom type은 계약 스키마에 사용하지 않습니다.
+- `typescript-eslint`의 type-aware strict rules와 Vitest의 고정 seed·coverage threshold를 CI에서 시행합니다.
 - 현재 JavaScript package가 하나이므로 pnpm workspace는 도입하지 않습니다. 독립 배포·의존성 경계가 필요한 두 번째 package가 생길 때 별도 결정합니다.
 - Agent framework는 현재 도입하지 않습니다. Guardrail core가 특정 planner나 모델 SDK에 종속되지 않게 하고, adapter 단계에서 필요한 SDK만 추가합니다.
 

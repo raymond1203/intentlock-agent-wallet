@@ -16,11 +16,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "contracts:build": "forge build",
     "contracts:test": "forge test -vvv",
     "contracts:format:check": "forge fmt --check",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test"
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage"
   },
   "dependencies": {
     "viem": "2.55.16",

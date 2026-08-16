@@ -10,7 +10,7 @@ describe('createSimulationClient', () => {
       rpcUrl: 'http://127.0.0.1:8545',
     });
 
-    expect(client.chain?.id).toBe(mainnet.id);
+    expect(client.chain.id).toBe(mainnet.id);
     expect(client.type).toBe('publicClient');
   });
 });
