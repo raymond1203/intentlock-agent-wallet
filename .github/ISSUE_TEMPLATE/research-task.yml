@@ -1,0 +1,87 @@
+name: Research or implementation task
+description: 검증 가능한 연구·구현 결과물을 정의합니다.
+title: '[Task] '
+labels:
+  - 'type: research'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        한 Issue는 최대 2일 안에 검토할 수 있는 하나의 결과물로 제한합니다.
+  - type: input
+    id: outcome
+    attributes:
+      label: Outcome
+      description: 완료 시 존재해야 하는 결과물을 한 문장으로 적어주세요.
+      placeholder: Intent Contract v0 스키마와 정상/위반 예제 10개가 존재한다.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: 어떤 연구 질문, 주장 또는 의존 작업에 필요한지 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: 이번 Issue에서 수행할 범위를 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: 의도적인 제외 범위를 적어주세요.
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      description: 파일, 데이터, 표, 코드 또는 문서 경로를 적어주세요.
+      placeholder: |
+        - src/domain/intent-contract.ts
+        - benchmark/schemas/intent-contract.schema.json
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: 객관적으로 확인할 수 있는 완료 조건을 체크리스트로 적어주세요.
+      placeholder: |
+        - [ ] 정상 예제 5개가 검증을 통과한다.
+        - [ ] 위반 예제 5개가 거부된다.
+        - [ ] Reviewer가 결과를 재현했다.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: 선행 Issue, 외부 데이터, 프로토콜 또는 결정 사항을 적어주세요.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and references
+      description: 논문, 공식 문서, 테스트 로그 또는 검증 방법을 적어주세요.
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimate
+      options:
+        - S — 반나절
+        - M — 1일
+        - L — 최대 2일
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Ready checklist
+      options:
+        - label: 결과물이 검증 가능하게 정의되어 있습니다.
+          required: true
+        - label: 비밀 키나 개인 식별 정보를 포함하지 않습니다.
+          required: true

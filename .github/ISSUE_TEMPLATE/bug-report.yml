@@ -1,0 +1,37 @@
+name: Bug report
+description: 구현 또는 실험 파이프라인의 재현 가능한 문제를 보고합니다.
+title: '[Bug] '
+labels:
+  - 'type: bug'
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: 최소 입력, 실행 명령, block number, seed를 포함하세요.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Research or safety impact
+      description: 지표, oracle 또는 보안 주장에 미치는 영향을 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs and evidence
+      description: 비밀 값과 개인 정보를 제거한 로그를 첨부하세요.

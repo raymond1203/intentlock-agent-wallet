@@ -1,0 +1,49 @@
+name: Experiment
+description: 재현 가능한 실험과 평가 실행을 정의합니다.
+title: '[Experiment] '
+labels:
+  - 'type: experiment'
+body:
+  - type: input
+    id: hypothesis
+    attributes:
+      label: Hypothesis or research question
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Experimental setup
+      description: 데이터 split, 모델, chain ID, fork block, seed와 비교군을 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Metrics and decision rule
+      description: 주·보조 지표와 가설 판단 기준을 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Expected outputs
+      description: config, raw result, summary, figure의 저장 경로를 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Confounders and failure handling
+      description: 오염, 재시도, API 오류, 누락 데이터 처리 방식을 적어주세요.
+  - type: checkboxes
+    id: reproducibility
+    attributes:
+      label: Reproducibility checklist
+      options:
+        - label: 모델·프롬프트·의존성 버전이 고정되어 있습니다.
+          required: true
+        - label: chain ID와 fork block이 고정되어 있습니다.
+          required: true
+        - label: 원시 결과를 덮어쓰지 않습니다.
+          required: true
