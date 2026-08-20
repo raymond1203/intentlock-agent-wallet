@@ -1,0 +1,13 @@
+{
+  "id": "ethereum-25773000",
+  "chainId": 1,
+  "name": "ethereum-mainnet",
+  "role": "source",
+  "forkBlockNumber": 25773000,
+  "forkBlockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+  "forkBlockTimestamp": 1786948031,
+  "port": 8545,
+  "rpcEnvVar": "FORK_RPC_URL_1",
+  "manifestChainKey": "1",
+  "decisionRecord": "docs/decisions/0005-mvp-workflows-and-forks.md"
+}

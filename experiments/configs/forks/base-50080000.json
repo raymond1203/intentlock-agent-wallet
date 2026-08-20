@@ -1,0 +1,13 @@
+{
+  "id": "base-50080000",
+  "chainId": 8453,
+  "name": "base-mainnet",
+  "role": "destination",
+  "forkBlockNumber": 50080000,
+  "forkBlockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+  "forkBlockTimestamp": 1786949347,
+  "port": 8546,
+  "rpcEnvVar": "FORK_RPC_URL_8453",
+  "manifestChainKey": "8453",
+  "decisionRecord": "docs/decisions/0005-mvp-workflows-and-forks.md"
+}
