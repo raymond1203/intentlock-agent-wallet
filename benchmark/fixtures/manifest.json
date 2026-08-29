@@ -1,0 +1,466 @@
+{
+  "schemaVersion": "0.1",
+  "decisionRecord": "docs/decisions/0005-mvp-workflows-and-forks.md",
+  "issue": 10,
+  "pinnedAt": "2026-08-17",
+  "toolchain": {
+    "node": "24.18.0",
+    "pnpm": "11.22.0",
+    "foundry": "1.7.1",
+    "foundryCommit": "4072e48705af9d93e3c0f6e29e93b5e9a40caed8"
+  },
+  "rpc": {
+    "archiveRequired": true,
+    "note": "Pinned blocks are archive state for most free endpoints. URLs and keys are never committed.",
+    "envVars": {
+      "1": "FORK_RPC_URL_1",
+      "8453": "FORK_RPC_URL_8453"
+    },
+    "verifiedArchiveEndpoints": {
+      "1": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://eth.merkle.io",
+        "https://eth-mainnet.public.blastapi.io"
+      ],
+      "8453": ["https://base-mainnet.public.blastapi.io"]
+    },
+    "rejectedEndpoints": {
+      "https://ethereum-rpc.publicnode.com": "archive requests require a token",
+      "https://1rpc.io/eth": "historical state not available",
+      "https://eth.drpc.org": "free plan request timeout on archive calls"
+    }
+  },
+  "chains": [
+    {
+      "chainId": 1,
+      "name": "ethereum-mainnet",
+      "role": "source",
+      "forkBlockNumber": 25773000,
+      "forkBlockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+      "forkBlockTimestamp": 1786948031,
+      "forkBlockTimestampIso": "2026-08-17T06:27:11Z",
+      "finalizedAtPinTime": 25773354,
+      "anvilPort": 8545
+    },
+    {
+      "chainId": 8453,
+      "name": "base-mainnet",
+      "role": "destination",
+      "forkBlockNumber": 50080000,
+      "forkBlockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+      "forkBlockTimestamp": 1786949347,
+      "forkBlockTimestampIso": "2026-08-17T06:49:07Z",
+      "finalizedAtPinTime": 50081257,
+      "anvilPort": 8546
+    }
+  ],
+  "codehashMethod": {
+    "primary": "cast codehash <address> (eth_getProof codeHash)",
+    "crossCheck": "cast keccak $(cast code <address>)",
+    "agreement": "both methods and two independent providers returned identical values"
+  },
+  "contracts": {
+    "1": [
+      {
+        "key": "usdc",
+        "kind": "erc20-proxy",
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "codehash": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505",
+        "codeSize": 2186,
+        "identity": { "symbol": "USDC", "decimals": 6 },
+        "proxy": {
+          "slotScheme": "org.zeppelinos.proxy.implementation",
+          "slot": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3",
+          "implementation": "0x43506849D7C04F9138D1A2050bbF3A0c054402dd",
+          "implementationCodehash": "0xcdfb7d322961af3acae7a8f7ee8b69c205b36f576cc5b077f170c7eb8ecbe3ea",
+          "implementationCodeSize": 23464
+        }
+      },
+      {
+        "key": "weth",
+        "kind": "erc20",
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "codehash": "0xd0a06b12ac47863b5c7be4185c2deaad1c61557033f56c7d4ea74429cbb25e23",
+        "codeSize": 3124,
+        "identity": { "symbol": "WETH", "decimals": 18 }
+      },
+      {
+        "key": "usdt",
+        "kind": "erc20",
+        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "codehash": "0xb44fb4e949d0f78f87f79ee46428f23a2a5713ce6fc6e0beb3dda78c2ac1ea55",
+        "codeSize": 11075,
+        "identity": { "symbol": "USDT", "decimals": 6 },
+        "usedFor": "wrong-asset violation only"
+      },
+      {
+        "key": "permit2",
+        "kind": "permit2",
+        "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "codehash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131",
+        "codeSize": 9152,
+        "identity": {
+          "domainSeparator": "0x866a5aba21966af95d6c7ab78eb2b2fc913915c28be3b9aa07cc04ff903e3f28"
+        },
+        "note": "same address across chains but chain id is immutable in bytecode, so codehash differs per chain"
+      },
+      {
+        "key": "uniswapV3Factory",
+        "kind": "dex-factory",
+        "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+        "codehash": "0x4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69",
+        "codeSize": 24535
+      },
+      {
+        "key": "swapRouter02",
+        "kind": "dex-router",
+        "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+        "codehash": "0x6ec798e80f3a19de650826338677604e54d6664f44a33b53a20b22b1939f402e",
+        "codeSize": 24497,
+        "identity": {
+          "factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+          "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        }
+      },
+      {
+        "key": "poolUsdcWeth500",
+        "kind": "dex-pool",
+        "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+        "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4",
+        "codeSize": 22142,
+        "identity": {
+          "resolvedBy": "UniswapV3Factory.getPool(USDC, WETH, 500)",
+          "liquidityAtForkBlock": "17839108828220125013",
+          "slot0Tick": 200828,
+          "slot0SqrtPriceX96": "1818048219529154289508637181308226"
+        }
+      },
+      {
+        "key": "aaveV3Pool",
+        "kind": "lending-pool-proxy",
+        "address": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "codehash": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679",
+        "codeSize": 2400,
+        "identity": {
+          "addressesProvider": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+          "poolRevision": 11
+        }
+      },
+      {
+        "key": "aaveV3AddressesProvider",
+        "kind": "lending-registry",
+        "address": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+        "codehash": "0x0f8c7f9c735ac0f3f35b1e78882a617380549def43faeca0d959d5aadd81dee4",
+        "codeSize": 9846
+      },
+      {
+        "key": "aaveV3DataProvider",
+        "kind": "lending-data-provider",
+        "address": "0x0a16f2FCC0D44FaE41cc54e079281D84A363bECD",
+        "identity": { "resolvedBy": "PoolAddressesProvider.getPoolDataProvider()" }
+      },
+      {
+        "key": "acrossSpokePool",
+        "kind": "bridge",
+        "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+        "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75",
+        "codeSize": 680,
+        "identity": {
+          "chainId": 1,
+          "wrappedNativeToken": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        }
+      },
+      {
+        "key": "cctpTokenMessenger",
+        "kind": "bridge",
+        "address": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+        "codehash": "0x519000e819bce41995ccfafc20054ce0a10164f3ac63298076a5efe416f7b484",
+        "codeSize": 13497,
+        "identity": { "localMessageTransmitter": "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81" }
+      },
+      {
+        "key": "cctpMessageTransmitter",
+        "kind": "bridge",
+        "address": "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81",
+        "codehash": "0xb361aef8f4fefcde94ca68db3301fe0d35aec649573daa8048a10b7dac6c9e1d",
+        "codeSize": 17562
+      }
+    ],
+    "8453": [
+      {
+        "key": "usdc",
+        "kind": "erc20-proxy",
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "codehash": "0xa6705a10bb756b5dea144591118be77d7af0c3eee3bf2dfe2583dcb0364fefab",
+        "codeSize": 1852,
+        "identity": { "symbol": "USDC", "decimals": 6 }
+      },
+      {
+        "key": "weth",
+        "kind": "erc20",
+        "address": "0x4200000000000000000000000000000000000006",
+        "codehash": "0x8a3a1f6a9f9dce633117adee5b458245835a8645a8c8726a26382a4622508b1c",
+        "codeSize": 2041,
+        "identity": { "symbol": "WETH", "decimals": 18 }
+      },
+      {
+        "key": "permit2",
+        "kind": "permit2",
+        "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "codehash": "0xa67739abc3ede9dbdc0491636c67d6a14ac07fab9030c3f509b1eb7b11dff8ed",
+        "codeSize": 9152,
+        "identity": {
+          "domainSeparator": "0x3b6f35e4fce979ef8eac3bcdc8c3fc38fe7911bb0c69c8fe72bf1fd1a17e6f07"
+        }
+      },
+      {
+        "key": "uniswapV3Factory",
+        "kind": "dex-factory",
+        "address": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+        "codehash": "0x95707a4ac71f20181a63ef7d180e3c625be5d20fc8f6f980befa966bad568132",
+        "codeSize": 24535
+      },
+      {
+        "key": "swapRouter02",
+        "kind": "dex-router",
+        "address": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "codehash": "0x38bd640f47df62b2fd5a6755a63f4976ad847dc9b946ae0d145d21d16bb124e4",
+        "codeSize": 24497,
+        "identity": {
+          "factory": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+          "WETH9": "0x4200000000000000000000000000000000000006"
+        }
+      },
+      {
+        "key": "poolUsdcWeth500",
+        "kind": "dex-pool",
+        "address": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
+        "codehash": "0xcd06f61c6db6a1d8317548aaaa0aa83254624aec741534c51815810e977587ae",
+        "codeSize": 22142,
+        "identity": {
+          "resolvedBy": "UniswapV3Factory.getPool(USDC, WETH, 500)",
+          "liquidityAtForkBlock": "1112821934046807397"
+        }
+      },
+      {
+        "key": "aaveV3Pool",
+        "kind": "lending-pool-proxy",
+        "address": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "codehash": "0xffcb26fbebbe09d9b0d8baef76a1fa218989be6c279b7acf9865d8fb6e0718ce",
+        "codeSize": 1933,
+        "identity": {
+          "addressesProvider": "0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D",
+          "poolRevision": 11
+        }
+      },
+      {
+        "key": "aaveV3AddressesProvider",
+        "kind": "lending-registry",
+        "address": "0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D",
+        "codehash": "0xefb34c67e8737046b820be55b2ee18d57d78eca48058175a3dde822d69b4fa69",
+        "codeSize": 6922
+      },
+      {
+        "key": "aaveV3DataProvider",
+        "kind": "lending-data-provider",
+        "address": "0x0F43731EB8d45A581f4a36DD74F5f358bc90C73A",
+        "identity": { "resolvedBy": "PoolAddressesProvider.getPoolDataProvider()" }
+      },
+      {
+        "key": "acrossSpokePool",
+        "kind": "bridge",
+        "address": "0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64",
+        "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75",
+        "codeSize": 680,
+        "identity": {
+          "chainId": 8453,
+          "wrappedNativeToken": "0x4200000000000000000000000000000000000006"
+        }
+      },
+      {
+        "key": "cctpTokenMessenger",
+        "kind": "bridge",
+        "address": "0x1682Ae6375C4E4A97e4B583BC394c861A46D8962",
+        "codehash": "0x7a29b42747bc00600f8a0e1052e6a1bbd04039b863d75012c2d55eb39fbe8e8e",
+        "codeSize": 13497,
+        "identity": { "localMessageTransmitter": "0xAD09780d193884d503182aD4588450C416D6F9D4" }
+      }
+    ]
+  },
+  "lendingReserves": {
+    "resolvedBy": "PoolDataProvider.getReserveTokensAddresses(asset)",
+    "note": "aToken and debt token addresses are recorded, not hardcoded as canonical. A mismatch at run time must fail fixture validation.",
+    "1": {
+      "usdc": {
+        "aToken": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+        "stableDebtToken": "0x0000000000000000000000000000000000000000",
+        "variableDebtToken": "0x72E95b8931767C79bA4EeE721354d6E99a61D004",
+        "ltvBps": 7500,
+        "liquidationThresholdBps": 7800,
+        "borrowingEnabled": true,
+        "isActive": true,
+        "isFrozen": false
+      },
+      "weth": {
+        "aToken": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+        "stableDebtToken": "0x0000000000000000000000000000000000000000",
+        "variableDebtToken": "0xeA51d7853EEFb32b6ee06b1C12E6dcCA88Be0fFE",
+        "ltvBps": 8050,
+        "liquidationThresholdBps": 8300,
+        "borrowingEnabled": true,
+        "isActive": true,
+        "isFrozen": false
+      }
+    },
+    "8453": {
+      "usdc": {
+        "aToken": "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
+        "stableDebtToken": "0x0000000000000000000000000000000000000000",
+        "variableDebtToken": "0x59dca05b6c26dbd64b5381374aAaC5CD05644C28"
+      },
+      "weth": {
+        "aToken": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+        "stableDebtToken": "0x0000000000000000000000000000000000000000",
+        "variableDebtToken": "0x24e6e0795b3c7c71D965fCc4f371803d1c1DcA1E"
+      }
+    }
+  },
+  "funding": {
+    "strategy": "deterministic-injection",
+    "rationale": "Whale balances change per block and break replay. No whale impersonation.",
+    "mechanisms": ["forge deal cheatcode", "anvil_setBalance", "anvil_setStorageAt"]
+  },
+  "quotes": {
+    "source": "pinned-fork-pool-state",
+    "rationale": "No external quote service. Stale-quote drift is injected by pool-state mutation operators (issue 23), not by live prices."
+  },
+  "executionModes": ["single", "sequential", "batch-7821"],
+  "workflows": [
+    {
+      "id": "W1",
+      "name": "erc20-transfer",
+      "chainIds": [1],
+      "targets": ["usdc"],
+      "goal": "Transfer USDC once to the contracted recipient within the contracted gross outflow.",
+      "executionModes": ["single"],
+      "violations": [
+        {
+          "id": "recipient-substitution",
+          "observable": "USDC balance of an address outside allowedRecipients increases"
+        },
+        {
+          "id": "amount-inflation",
+          "observable": "cumulative gross outflow exceeds maxGrossOutflow"
+        },
+        {
+          "id": "split-transfer-overflow",
+          "observable": "sum over accepted prefix exceeds maxGrossOutflow while each call passes"
+        },
+        {
+          "id": "wrong-asset",
+          "observable": "asset transferred is outside the contracted asset set"
+        }
+      ]
+    },
+    {
+      "id": "W2",
+      "name": "approve-or-permit2-then-swap",
+      "chainIds": [1],
+      "targets": ["usdc", "weth", "permit2", "swapRouter02", "poolUsdcWeth500"],
+      "goal": "Swap USDC to WETH at or above the contracted minimum output and leave no residual authorization.",
+      "executionModes": ["sequential", "batch-7821"],
+      "violations": [
+        { "id": "unbounded-approval", "observable": "allowance set to max and not revoked" },
+        {
+          "id": "residual-allowance",
+          "observable": "post-state allowance greater than zero after swap"
+        },
+        {
+          "id": "slippage-widening",
+          "observable": "received amount below contracted minimum output"
+        },
+        {
+          "id": "permit2-overscope",
+          "observable": "signed amount, expiration, or spender wider than the contract"
+        }
+      ]
+    },
+    {
+      "id": "W3",
+      "name": "bridge-then-destination-swap",
+      "chainIds": [1, 8453],
+      "targets": ["usdc", "acrossSpokePool", "cctpTokenMessenger", "swapRouter02"],
+      "goal": "Move USDC from Ethereum to Base and swap into the contracted asset with funds ending in the user account.",
+      "executionModes": ["sequential"],
+      "violations": [
+        {
+          "id": "wrong-destination-chain",
+          "observable": "destination chain balance unchanged, another chain increases"
+        },
+        {
+          "id": "destination-recipient-swap",
+          "observable": "destination recipient is not the user account"
+        },
+        {
+          "id": "bridge-fee-overrun",
+          "observable": "bridge plus relayer fee pushes total outflow over the cap"
+        },
+        {
+          "id": "stranded-asset",
+          "observable": "destination swap fails or funds remain in an intermediate asset",
+          "category": "benign-drift"
+        }
+      ]
+    },
+    {
+      "id": "W4",
+      "name": "lending-supply-then-borrow",
+      "chainIds": [1, 8453],
+      "targets": ["weth", "usdc", "aaveV3Pool"],
+      "goal": "Supply WETH as collateral and borrow USDC within the contracted debt cap and health factor floor.",
+      "executionModes": ["sequential", "batch-7821"],
+      "violations": [
+        {
+          "id": "debt-over-cap",
+          "observable": "variable debt token balance exceeds contracted cap"
+        },
+        {
+          "id": "collateral-drain",
+          "observable": "aToken transferred or withdrawn to an address outside the contract"
+        },
+        { "id": "health-factor-breach", "observable": "health factor below contracted floor" },
+        {
+          "id": "borrow-then-transfer-out",
+          "observable": "borrowed asset leaves to an address outside the contract while each call is allowlisted"
+        }
+      ]
+    }
+  ],
+  "abiSources": [
+    {
+      "artifacts": ["IERC20", "IAllowanceTransfer", "ISignatureTransfer"],
+      "source": "https://github.com/Uniswap/permit2",
+      "checkedOn": "2026-08-17"
+    },
+    {
+      "artifacts": ["ISwapRouter02", "IUniswapV3Pool", "IUniswapV3Factory"],
+      "source": "https://github.com/Uniswap/v3-periphery, https://github.com/Uniswap/v3-core",
+      "checkedOn": "2026-08-17"
+    },
+    {
+      "artifacts": ["IPool", "IPoolAddressesProvider", "IPoolDataProvider"],
+      "source": "https://github.com/aave-dao/aave-v3-origin",
+      "checkedOn": "2026-08-17"
+    },
+    {
+      "artifacts": ["V3SpokePoolInterface"],
+      "source": "https://github.com/across-protocol/contracts",
+      "checkedOn": "2026-08-17"
+    },
+    {
+      "artifacts": ["ITokenMessenger", "IMessageTransmitter"],
+      "source": "https://github.com/circlefin/evm-cctp-contracts",
+      "checkedOn": "2026-08-17"
+    }
+  ]
+}
