@@ -21,7 +21,9 @@
     "contracts:build": "forge build",
     "contracts:test": "forge test -vvv",
     "contracts:format:check": "forge fmt --check",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage"
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage",
+    "fork:verify": "node scripts/fork-verify.ts",
+    "test:integration": "vitest run test/integration"
   },
   "dependencies": {
     "viem": "2.55.16",
