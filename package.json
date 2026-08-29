@@ -26,7 +26,7 @@
     "test:integration": "vitest run test/integration"
   },
   "dependencies": {
-    "viem": "2.55.16",
+    "viem": "2.55.19",
     "zod": "4.4.3"
   },
   "devDependencies": {
