@@ -126,6 +126,8 @@ flowchart LR
 
 ## 8. 계약과 monitor 결정
 
+원장은 chain별 budget을 독립적으로 소비하지 않는다. `intent ID + contract version`을 전역 key로 사용해 원본 체인의 bridge effect, 목적지 체인의 수취·swap effect, 양쪽의 pending reservation을 하나의 누적 계약으로 이어서 계산한다. 목적지 체인의 후속 transaction은 동일 원장을 조회하는 두 번째 pre-sign gate를 통과하며, destination chain·recipient·asset·fee가 확인된 범위를 벗어나면 DENY 또는 ESCALATE한다.
+
 ### ALLOW
 
 - 모든 critical field가 현재 contract와 일치한다.
@@ -152,7 +154,7 @@ ESCALATE 질문은 변경되는 필드와 추가 위험을 구체적으로 보�
 
 ## 9. 조건부 보장
 
-> 사용자 확인 Intent Contract가 의도를 충분히 표현하고, 지원된 decoder·simulator·event labeling이 sound하며, signer gate와 cumulative ledger를 우회할 수 없다는 조건에서, IntentLock이 ALLOW한 모든 trace prefix는 계약에 명시된 safety invariant를 위반하지 않는다.
+> 사용자 확인 Intent Contract가 의도를 충분히 표현하고, 지원된 decoder·simulator·event labeling이 sound하며, linearizable reservation을 포함한 cumulative ledger와 모든 source/destination signer gate를 우회할 수 없다는 조건에서, IntentLock이 ALLOW한 모든 trace prefix는 계약에 명시된 safety invariant를 위반하지 않는다.
 
 이 보장은 다음을 뜻하지 않는다.
 
@@ -180,6 +182,7 @@ ESCALATE 질문은 변경되는 필드와 추가 위험을 구체적으로 보�
 - invariant별 positive/negative property test
 - nested batch·proxy·Permit2 fixture의 recursive decode test
 - retry·concurrency의 atomic reservation test
+- source/destination chain이 같은 intent ledger와 두 번째 signing gate를 공유하는 cross-chain continuation test
 - predicted vs actual post-state differential test
 - unsupported effect의 fail-closed/escalation test
 - 공격과 비적대적 drift를 구분한 label audit

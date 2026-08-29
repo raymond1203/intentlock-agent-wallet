@@ -23,7 +23,7 @@ MetaMask 트랙은 LLM 보안·형식 검증·AI 기반 스마트 계약 보안�
 
 ### 한 문장 주장
 
-> 개별적으로 정책을 준수하는 멀티 툴 호출도 조합되면 사용자 의도에 어긋난 온체인 결과를 만들 수 있으며, 시뮬레이션·실행에서 관찰한 누적 상태 전이에 대해 버전이 고정된 경제 의도 계약을 시행하면 호출·계획·흐름 단위 방어보다 정상 과업 효용을 크게 훼손하지 않으면서 unsafe execution을 줄일 수 있다.
+> 개별적으로 정책을 준수하는 멀티 툴 호출도 조합되면 사용자 의도에 어긋난 온체인 결과를 만들 수 있으며, 시뮬레이션·실행에서 관찰한 누적 상태 전이에 대해 버전이 고정된 경제 의도 계약을 시행하면 호출·계획·흐름 단위 방어와 제품의 rolling budget 정책보다 정상 과업 효용을 크게 훼손하지 않으면서 unsafe execution을 줄일 수 있다.
 
 ### 핵심 가설
 
@@ -39,12 +39,12 @@ MetaMask 트랙은 LLM 보안·형식 검증·AI 기반 스마트 계약 보안�
 
 ### 연구 질문과 측정치
 
-| RQ  | 질문                                                                                      | 주 지표                                                      | 보조 지표·분석                                                                         |
-| --- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| RQ1 | 개별 허용 호출의 조합이 누적 경제 의도를 위반하는 빈도와 유형은 무엇인가?                 | 조합 위반 발생률                                             | 공격 유형별 ASR, 최초 위반 step, unauthorized value, excess allowance exposure         |
-| RQ2 | 누적 상태 계약은 호출·계획·흐름 단위 방어보다 어떤 security–utility trade-off를 보이는가? | Unsafe Execution Rate와 Benign Task Completion의 Pareto 비교 | false deny, pre-sign detection, confirmation burden, latency, token cost               |
-| RQ3 | semantic·symbolic·stateful 구성요소 중 효과에 기여하는 것은 무엇인가?                     | 구성 제거별 Unsafe Execution Rate 변화                       | stateless/stateful, shallow/recursive decoder, pre/post-state verifier ablation        |
-| RQ4 | 모델·프로토콜·체인·적응형 공격이 바뀔 때 보안과 명세 작성 품질이 유지되는가?              | unseen split의 Unsafe Execution Rate                         | critical-field recall, escalation precision, 사용자 수정 횟수, chain/protocol별 완료율 |
+| RQ  | 질문                                                                                                                  | 주 지표                                                      | 보조 지표·분석                                                                         |
+| --- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| RQ1 | 개별 허용 호출의 조합이 누적 경제 의도를 위반하는 빈도와 유형은 무엇인가?                                             | 조합 위반 발생률                                             | 공격 유형별 ASR, 최초 위반 step, unauthorized value, excess allowance exposure         |
+| RQ2 | 누적 상태 계약은 호출·계획·흐름 단위 방어 및 제품 rolling budget 정책보다 어떤 security–utility trade-off를 보이는가? | Unsafe Execution Rate와 Benign Task Completion의 Pareto 비교 | false deny, pre-sign detection, confirmation burden, latency, token cost               |
+| RQ3 | semantic·symbolic·stateful 구성요소 중 효과에 기여하는 것은 무엇인가?                                                 | 구성 제거별 Unsafe Execution Rate 변화                       | stateless/stateful, shallow/recursive decoder, pre/post-state verifier ablation        |
+| RQ4 | 모델·프로토콜·체인·적응형 공격이 바뀔 때 보안과 명세 작성 품질이 유지되는가?                                          | unseen split의 Unsafe Execution Rate                         | critical-field recall, escalation precision, 사용자 수정 횟수, chain/protocol별 완료율 |
 
 ### 주 지표의 운영 정의
 

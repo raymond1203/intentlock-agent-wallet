@@ -99,7 +99,7 @@
 - Edoardo Debenedetti et al.
 - _Defeating Prompt Injections by Design._ arXiv v2, 2025.
 - URL: https://arxiv.org/abs/2503.18813
-- Use: trusted control/data flow, capability and conditional provable security boundary
+- Use: trusted control/data flow, capability and conditional provable security boundary; AgentDojo task completion 77% with provable security versus 84% for the undefended system
 
 ### DEF-06 — AgentArmor
 
@@ -130,8 +130,15 @@
 
 - Atharv Singh Patlan, Peiyao Sheng, S. Ashwin Hebbar, Prateek Mittal, Pramod Viswanath.
 - _Real AI Agents with Fake Memories: Fatal Context Manipulation Attacks on Web3 Agents._ arXiv v3, 2025.
-- URLs: https://arxiv.org/abs/2503.16248 · https://eprint.iacr.org/2025/526
+- URL: https://arxiv.org/abs/2503.16248
 - Use: Web3 context manipulation, unauthorized transfer, memory persistence and CrAIBench
+
+### WEB3-02 — AI Agents in Cryptoland
+
+- Atharv Singh Patlan, Peiyao Sheng, S. Ashwin Hebbar, Prateek Mittal, Pramod Viswanath.
+- _AI Agents in Cryptoland: Practical Attacks and No Silver Bullet._ Cryptology ePrint Archive 2025/526, preprint, 2025.
+- URL: https://eprint.iacr.org/2025/526
+- Relation: WEB3-01과 동일 저자진의 밀접하게 관련된 preprint이므로 독립 연구 두 편으로 중복 집계하지 않는다.
 
 ## Citation audit checklist
 

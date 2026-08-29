@@ -19,17 +19,23 @@
 - 단위는 tool call 이름이나 agent의 자연어 plan이 아니라 `ActionIR`로 label된 예상·실제 온체인 효과다.
 - monitor는 단일 호출과 함께 accepted trace prefix, confirmed effects, pending reservations를 검사한다.
 - 안전 속성은 잔액, allowance, 수취인, chain, min received, gas, debt, ownership, 실행 횟수의 계약 invariant다.
+- 원장은 chain별로 분리하지 않고 `intent ID + contract version` 단위로 원본·목적지 체인의 confirmed effect와 reservation을 이어서 계산한다. Bridge 이후 목적지 체인 실행도 같은 원장을 조회하는 두 번째 pre-sign gate를 통과해야 한다.
 
 ### 조건부 prefix-safety
 
-다음 전제를 둔다.
+다음 명세·관찰 전제를 둔다.
 
 1. 확정된 contract `C`가 보호하려는 사용자 safety intent를 충분히 표현한다.
 2. 지원된 후보 실행 `a`에 대해 decoder와 simulator가 effect label `E(a)`를 sound하게 생성한다.
-3. ledger transition과 reservation이 선형화 가능하며 signer는 monitor의 capability 없이는 실행하지 않는다.
-4. monitor가 contract predicate를 정확히 구현한다.
+3. monitor가 contract predicate를 정확히 구현한다.
 
-그러면 초기 상태가 `C`를 만족하고 monitor가 trace의 각 transition을 ALLOW한 경우, 모든 authorized trace prefix의 누적 효과는 `C`의 safety invariant를 만족한다.
+다음은 가정으로 제외하지 않고 구현과 테스트로 입증해야 하는 enforcement 의무다.
+
+1. ledger transition과 reservation은 하나의 선형화 지점을 가지며, 동일 remaining budget을 경쟁하는 요청 중 계약을 초과하는 요청은 ALLOW capability를 받지 못한다.
+2. 모든 signer 경로는 intent hash, action digest, chain, expiry, nonce, idempotency key에 묶인 monitor capability를 요구하며, 목적지 체인의 두 번째 signing도 같은 intent 원장에 예약된 범위에서만 실행한다.
+3. 실패·timeout·retry 뒤 reservation의 commit/rollback과 receipt reconciliation은 중복 지출이나 budget 재사용을 허용하지 않는다.
+
+그러면 초기 상태가 `C`를 만족하고 위 전제와 검증된 enforcement 의무 아래 monitor가 trace의 각 transition을 ALLOW한 경우, 모든 authorized trace prefix의 누적 효과는 `C`의 safety invariant를 만족한다.
 
 논문에서는 이를 **조건부 prefix-safety**로 부른다. 자연어 사용자 의도 전체의 보장으로 확장하지 않는다.
 
@@ -56,7 +62,7 @@ Receipt/post-state verification은 예상과 실제의 불일치를 탐지하고
 - decoder coverage와 contract compiler 품질을 monitor 정확도와 분리해 평가한다.
 - 실험 실패를 `policy violation`, `unsupported effect`, `specification error`, `post-state mismatch`로 구분한다.
 - 모든 보안 주장에는 전제와 out-of-scope를 함께 둔다.
-- 구현은 signer capability와 atomic reservation을 제외하고는 end-to-end 보장을 주장할 수 없다.
+- 구현은 signer capability, linearizable atomic reservation, cross-chain 원장 연속성을 테스트로 입증하기 전에는 end-to-end 보장을 주장할 수 없다.
 
 ## Evidence
 
