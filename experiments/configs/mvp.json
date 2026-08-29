@@ -1,0 +1,89 @@
+{
+  "configVersion": "0.1",
+  "name": "mvp",
+  "decisionRecord": "docs/decisions/0005-mvp-workflows-and-forks.md",
+  "fixtureManifest": "benchmark/fixtures/manifest.json",
+  "issue": 10,
+  "seed": 2026,
+  "toolchain": {
+    "node": "24.18.0",
+    "pnpm": "11.22.0",
+    "foundry": "1.7.1"
+  },
+  "forks": [
+    {
+      "chainId": 1,
+      "forkBlockNumber": 25773000,
+      "forkBlockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+      "rpcEnvVar": "FORK_RPC_URL_1",
+      "localRpc": "http://127.0.0.1:8545"
+    },
+    {
+      "chainId": 8453,
+      "forkBlockNumber": 50080000,
+      "forkBlockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+      "rpcEnvVar": "FORK_RPC_URL_8453",
+      "localRpc": "http://127.0.0.1:8546"
+    }
+  ],
+  "workflows": ["W1", "W2", "W3", "W4"],
+  "executionModes": ["single", "sequential", "batch-7821"],
+  "oracle": {
+    "primary": "exact-post-state-diff",
+    "source": "forked chain state and receipts",
+    "llmJudge": false,
+    "note": "Signed authorizations such as Permit2 count as effects even without an asset transfer."
+  },
+  "metrics": {
+    "primary": "unsafe_execution_rate",
+    "secondary": [
+      "benign_task_completion",
+      "false_deny_rate",
+      "pre_sign_detection_rate",
+      "confirmation_burden",
+      "unauthorized_value",
+      "excess_allowance_exposure",
+      "first_violating_step",
+      "latency_ms",
+      "token_cost"
+    ],
+    "reportedSeparately": ["adversarial_attack_success_rate", "benign_drift_failure_rate"],
+    "excludedFromNumerator": ["pre_sign_block", "escalation"],
+    "definitionSource": "docs/decisions/0003-thesis-and-research-questions.md"
+  },
+  "baselines": [
+    { "id": "none", "label": "No defense", "tier": "required" },
+    {
+      "id": "guard-mode-emulator",
+      "label": "MetaMask public Guard Mode rules",
+      "tier": "required"
+    },
+    { "id": "task-shield-adapter", "label": "LLM call-to-goal alignment", "tier": "required" },
+    { "id": "drift-adapter", "label": "LLM plan and checklist alignment", "tier": "required" },
+    {
+      "id": "per-call-policy",
+      "label": "Progent-like deterministic per-call policy",
+      "tier": "required"
+    },
+    { "id": "intentlock-full", "label": "Cumulative effect contract", "tier": "required" }
+  ],
+  "deferred": {
+    "models": {
+      "frozenBy": 27,
+      "note": "Agent model, prompt, temperature, and retry budget are frozen in M3-01, not here."
+    },
+    "splits": {
+      "frozenBy": 20,
+      "note": "Benchmark schema, labeling guide, and train/unseen split policy are frozen in M2-01."
+    },
+    "mutationOperators": {
+      "frozenBy": 23,
+      "note": "Attack and benign drift mutation operators, including pool-state mutation for stale quotes."
+    }
+  },
+  "output": {
+    "resultsDir": "experiments/results",
+    "runIdFormat": "{utcDate}-{configName}-{gitShortSha}",
+    "overwrite": false
+  }
+}
