@@ -18,6 +18,8 @@ import { z } from 'zod';
 const HexSchema = z.string().regex(/^0x[0-9a-fA-F]*$/, 'expected hex');
 const Bytes32Schema = z.string().regex(/^0x[0-9a-fA-F]{64}$/, 'expected 32-byte hex');
 const AddressSchema = z.string().regex(/^0x[0-9a-fA-F]{40}$/, 'expected an EVM address');
+const DEFAULT_RPC_TIMEOUT_MS = 10_000;
+const UINT256_MAX = (1n << 256n) - 1n;
 
 export const ForkConfigSchema = z
   .object({
@@ -72,13 +74,31 @@ const JsonRpcResponseSchema = z.union([
 
 let requestId = 0;
 
-async function rpc(url: string, method: string, params: unknown[]): Promise<unknown> {
+export function redactSensitiveText(text: string, sensitiveValues: readonly string[]): string {
+  return sensitiveValues
+    .filter((value) => value.length > 0)
+    .reduce((redacted, value) => redacted.replaceAll(value, '[REDACTED_RPC_URL]'), text);
+}
+
+async function rpc(
+  url: string,
+  method: string,
+  params: unknown[],
+  timeoutMs = DEFAULT_RPC_TIMEOUT_MS,
+): Promise<unknown> {
   requestId += 1;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: requestId, method, params }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: requestId, method, params }),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new ForkHarnessError(`${method} request failed: ${reason}`);
+  }
   if (!response.ok) {
     throw new ForkHarnessError(`${method} failed with HTTP ${String(response.status)}`);
   }
@@ -136,8 +156,6 @@ async function wait(ms: number): Promise<void> {
 export interface StartOptions {
   /** Milliseconds to wait for the fork to answer before giving up. */
   readyTimeoutMs?: number;
-  /** Skip the manifest codehash comparison. Only for debugging. */
-  skipManifestCheck?: boolean;
 }
 
 export class AnvilFork {
@@ -145,14 +163,21 @@ export class AnvilFork {
   readonly config: ForkConfig;
   private readonly child: AnvilProcess;
   private readonly stderr: string[] = [];
+  private readonly sensitiveValues: readonly string[];
+  private spawnError: Error | undefined;
+  private exitCleanup: (() => void) | undefined;
   private stopped = false;
 
-  private constructor(config: ForkConfig, child: AnvilProcess) {
+  private constructor(config: ForkConfig, child: AnvilProcess, sensitiveValues: readonly string[]) {
     this.config = config;
     this.child = child;
+    this.sensitiveValues = sensitiveValues;
     this.url = `http://127.0.0.1:${String(config.port)}`;
     this.child.stderr.on('data', (chunk: Buffer) => {
       this.stderr.push(chunk.toString());
+    });
+    this.child.once('error', (error) => {
+      this.spawnError = error;
     });
   }
 
@@ -181,15 +206,16 @@ export class AnvilFork {
       { stdio: ['ignore', 'pipe', 'pipe'] },
     );
 
-    const fork = new AnvilFork(config, child);
+    const fork = new AnvilFork(config, child, [upstream]);
     const cleanup = (): void => {
       void fork.stop();
     };
+    fork.exitCleanup = cleanup;
     process.once('exit', cleanup);
 
     try {
       await fork.waitUntilReady(options.readyTimeoutMs ?? 60_000);
-      await fork.healthcheck({ skipManifestCheck: options.skipManifestCheck ?? false });
+      await fork.healthcheck();
     } catch (error) {
       await fork.stop();
       throw error;
@@ -200,13 +226,19 @@ export class AnvilFork {
   private async waitUntilReady(timeoutMs: number): Promise<void> {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
+      if (this.spawnError !== undefined) {
+        throw new ForkHarnessError(
+          `failed to start anvil: ${redactSensitiveText(this.spawnError.message, this.sensitiveValues)}`,
+        );
+      }
       if (!this.isRunning()) {
         throw new ForkHarnessError(
-          `anvil exited early with code ${String(this.child.exitCode)}: ${this.stderr.join('').slice(-400)}`,
+          `anvil exited early with code ${String(this.child.exitCode)}: ${this.capturedStderr().slice(-400)}`,
         );
       }
       try {
-        await rpc(this.url, 'eth_chainId', []);
+        const remainingMs = Math.max(1, deadline - Date.now());
+        await rpc(this.url, 'eth_chainId', [], Math.min(2_000, remainingMs));
         return;
       } catch {
         await wait(500);
@@ -219,7 +251,7 @@ export class AnvilFork {
    * Fails closed when the fork does not match the frozen configuration:
    * wrong chain, wrong block, wrong block hash, or drifted contract code.
    */
-  async healthcheck(options: { skipManifestCheck?: boolean } = {}): Promise<Fingerprint> {
+  async healthcheck(): Promise<Fingerprint> {
     const chainId = Number(HexSchema.parse(await rpc(this.url, 'eth_chainId', [])));
     if (chainId !== this.config.chainId) {
       throw new ForkHarnessError(
@@ -249,17 +281,15 @@ export class AnvilFork {
     }
 
     const contracts: { key: string; address: string; codehash: Hex }[] = [];
-    if (options.skipManifestCheck !== true) {
-      for (const entry of loadManifestContracts(this.config.manifestChainKey)) {
-        const code = HexSchema.parse(await rpc(this.url, 'eth_getCode', [entry.address, 'latest']));
-        const observed = keccak256(code as Hex);
-        if (observed.toLowerCase() !== entry.codehash.toLowerCase()) {
-          throw new ForkHarnessError(
-            `codehash mismatch for ${entry.key} (${entry.address}): expected ${entry.codehash}, got ${observed}`,
-          );
-        }
-        contracts.push({ key: entry.key, address: entry.address, codehash: observed });
+    for (const entry of loadManifestContracts(this.config.manifestChainKey)) {
+      const code = HexSchema.parse(await rpc(this.url, 'eth_getCode', [entry.address, 'latest']));
+      const observed = keccak256(code as Hex);
+      if (observed.toLowerCase() !== entry.codehash.toLowerCase()) {
+        throw new ForkHarnessError(
+          `codehash mismatch for ${entry.key} (${entry.address}): expected ${entry.codehash}, got ${observed}`,
+        );
       }
+      contracts.push({ key: entry.key, address: entry.address, codehash: observed });
     }
 
     const digest = keccak256(
@@ -317,26 +347,57 @@ export class AnvilFork {
    * balance changes between blocks.
    */
   async dealErc20(token: string, holder: string, amount: bigint, maxSlot = 64): Promise<number> {
-    const before = await this.erc20BalanceOf(token, holder);
+    const parsedToken = AddressSchema.parse(token);
+    const parsedHolder = AddressSchema.parse(holder);
+    if (amount < 0n || amount > UINT256_MAX) {
+      throw new ForkHarnessError('ERC-20 fixture amount must fit uint256');
+    }
+    if (!Number.isSafeInteger(maxSlot) || maxSlot <= 0) {
+      throw new ForkHarnessError('maxSlot must be a positive safe integer');
+    }
+
+    const before = await this.erc20BalanceOf(parsedToken, parsedHolder);
+    const probeAmount = before === 0n ? 1n : 0n;
     for (let slot = 0; slot < maxSlot; slot += 1) {
       const key = keccak256(
         encodeAbiParameters(
           [{ type: 'address' }, { type: 'uint256' }],
-          [holder as Hex, BigInt(slot)],
+          [parsedHolder as Hex, BigInt(slot)],
         ),
       );
       const previous = HexSchema.parse(
-        await rpc(this.url, 'eth_getStorageAt', [token, key, 'latest']),
+        await rpc(this.url, 'eth_getStorageAt', [parsedToken, key, 'latest']),
       );
-      await rpc(this.url, 'anvil_setStorageAt', [
-        token,
-        key,
-        pad(numberToHex(amount), { size: 32 }),
-      ]);
-      if ((await this.erc20BalanceOf(token, holder)) === amount) {
+      let keepWrite = false;
+      try {
+        await rpc(this.url, 'anvil_setStorageAt', [
+          parsedToken,
+          key,
+          pad(numberToHex(probeAmount), { size: 32 }),
+        ]);
+        if ((await this.erc20BalanceOf(parsedToken, parsedHolder)) !== probeAmount) {
+          continue;
+        }
+
+        await rpc(this.url, 'anvil_setStorageAt', [
+          parsedToken,
+          key,
+          pad(numberToHex(amount), { size: 32 }),
+        ]);
+        if ((await this.erc20BalanceOf(parsedToken, parsedHolder)) !== amount) {
+          throw new ForkHarnessError(`balance slot ${String(slot)} failed final verification`);
+        }
+        keepWrite = true;
         return slot;
+      } finally {
+        if (!keepWrite) {
+          await rpc(this.url, 'anvil_setStorageAt', [
+            parsedToken,
+            key,
+            pad(previous as Hex, { size: 32 }),
+          ]);
+        }
       }
-      await rpc(this.url, 'anvil_setStorageAt', [token, key, pad(previous as Hex, { size: 32 })]);
     }
     throw new ForkHarnessError(
       `could not locate the balance slot for ${token} within ${String(maxSlot)} slots (balance stayed ${String(before)})`,
@@ -344,14 +405,22 @@ export class AnvilFork {
   }
 
   private isRunning(): boolean {
-    return this.child.exitCode === null;
+    return (
+      this.spawnError === undefined &&
+      this.child.exitCode === null &&
+      this.child.signalCode === null
+    );
   }
 
   capturedStderr(): string {
-    return this.stderr.join('');
+    return redactSensitiveText(this.stderr.join(''), this.sensitiveValues);
   }
 
   async stop(): Promise<void> {
+    if (this.exitCleanup !== undefined) {
+      process.off('exit', this.exitCleanup);
+      this.exitCleanup = undefined;
+    }
     if (this.stopped) return;
     this.stopped = true;
     if (this.isRunning()) {

@@ -56,6 +56,15 @@ describe.skipIf(!hasUpstream)('AnvilFork against the pinned Ethereum fork', () =
     await fork.revert(snapshot);
   }, 60_000);
 
+  it('locates the real balance slot even when the requested balance is unchanged', async () => {
+    const snapshot = await fork.snapshot();
+    const amount = await fork.erc20BalanceOf(USDC, HOLDER);
+    const slot = await fork.dealErc20(USDC, HOLDER, amount);
+    expect(slot).toBeGreaterThan(0);
+    expect(await fork.erc20BalanceOf(USDC, HOLDER)).toBe(amount);
+    await fork.revert(snapshot);
+  }, 60_000);
+
   it('advances time on request', async () => {
     const snapshot = await fork.snapshot();
     await fork.increaseTime(3600);

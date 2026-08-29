@@ -27,7 +27,7 @@ cp .env.example .env
 # FORK_RPC_URL_8453=https://...
 ```
 
-RPC URL은 인자로 넘기지 않고 환경 변수로만 읽는다. 하네스는 URL을 로그에 남기지 않는다.
+RPC URL은 설정 파일이나 Git에 넣지 않고 환경 변수로만 읽는다. Anvil CLI 제약상 child process의 `--fork-url` 인자로 전달되므로 같은 OS 권한의 process listing에서는 보일 수 있다. 하네스가 반환하는 stderr와 예외에서는 정확한 URL 값을 `[REDACTED_RPC_URL]`로 치환한다.
 
 ## 재현 확인
 
@@ -72,7 +72,7 @@ await fork.stop(); // 프로세스 종료 + 포트 반환까지 기다린다
 
 ### 자금 주입이 whale을 쓰지 않는 이유
 
-whale 주소의 잔액은 블록마다 바뀌므로 포크 블록을 옮기면 fixture가 조용히 깨진다. `dealErc20`은 balance mapping의 슬롯을 탐색해 값을 직접 쓰고, 원래 값을 복구한 뒤 다음 슬롯을 시도한다. 슬롯을 못 찾으면 fail-closed로 던진다. USDC처럼 proxy 뒤에 있는 토큰도 저장소는 proxy에 있으므로 그대로 동작한다.
+whale 주소의 잔액은 블록마다 바뀌므로 포크 블록을 옮기면 fixture가 조용히 깨진다. `dealErc20`은 현재 잔액과 다른 sentinel을 먼저 써서 실제 balance mapping 슬롯인지 확인한 뒤 목표 값을 기록한다. 실패·예외가 난 후보 슬롯은 `finally`에서 원래 값으로 복구하고, 슬롯을 못 찾으면 fail-closed로 던진다. 요청한 금액이 현재 잔액과 같아도 sentinel 검증을 거치므로 다른 mapping을 balance 슬롯으로 오인하지 않는다. USDC처럼 proxy 뒤에 있는 토큰도 저장소는 proxy에 있으므로 그대로 동작한다.
 
 ## 정리
 
