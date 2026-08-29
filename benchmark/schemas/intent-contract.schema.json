@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "const": "0.1" },
+    "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+    "nonce": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "safety": {
+      "type": "object",
+      "properties": {
+        "chainScopes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "allowedTargets": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                    "selectors": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" }
+                    }
+                  },
+                  "required": ["target", "selectors"],
+                  "additionalProperties": false
+                }
+              },
+              "allowedRecipients": {
+                "minItems": 1,
+                "type": "array",
+                "items": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+              }
+            },
+            "required": ["chainId", "allowedTargets", "allowedRecipients"],
+            "additionalProperties": false
+          }
+        },
+        "assetBudgets": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "maxGrossOutflow": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "maxAllowanceExposure": {
+                "default": "0",
+                "type": "string",
+                "pattern": "^(0|[1-9]\\d*)$"
+              }
+            },
+            "required": ["chainId", "asset", "maxGrossOutflow", "maxAllowanceExposure"],
+            "additionalProperties": false
+          }
+        },
+        "maxGasWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+        "maxSlippageBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        }
+      },
+      "required": ["chainScopes", "assetBudgets", "maxGasWei", "maxSlippageBps", "expiresAt"],
+      "additionalProperties": false
+    },
+    "finalStateGoals": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_ASSET_BALANCE" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "minAmount"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MAX_DEBT" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "maxAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "maxAmount"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "OWNER_IS" },
+              "collection": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+            },
+            "required": ["chainId", "kind", "collection", "tokenId", "owner"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "NO_RESIDUAL_ALLOWANCE" },
+              "asset": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "spender": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+            },
+            "required": ["chainId", "kind", "asset", "owner", "spender"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": ["version", "account", "nonce", "idempotencyKey", "safety", "finalStateGoals"],
+  "additionalProperties": false
+}

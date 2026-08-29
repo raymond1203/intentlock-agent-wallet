@@ -1,0 +1,410 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "const": "0.1" },
+    "intentHash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+    "root": { "$ref": "#/$defs/__schema0" }
+  },
+  "required": ["version", "intentHash", "root"],
+  "additionalProperties": false,
+  "$defs": {
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+        "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+        "valueWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+        "calldataHash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+        "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+        "decodeStatus": { "type": "string", "enum": ["COMPLETE", "PARTIAL", "UNKNOWN"] },
+        "effects": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "TRANSFER" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "from": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "to": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "asset",
+                  "from",
+                  "to",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "APPROVAL" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "spender": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "expiration": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "signatureDeadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "nonce": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "asset",
+                  "owner",
+                  "spender",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "SWAP" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "assetIn": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "assetOut": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "amountIn": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "quotedAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "minAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "deadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "assetIn",
+                  "assetOut",
+                  "amountIn",
+                  "minAmountOut",
+                  "recipient"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "BRIDGE" },
+                  "sourceChainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "destinationChainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "maxFee": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "sourceChainId",
+                  "destinationChainId",
+                  "asset",
+                  "amount",
+                  "maxFee",
+                  "recipient"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "DEBT" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "delta": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "protocol",
+                  "account",
+                  "asset",
+                  "delta"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "OWNERSHIP" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "collection": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "from": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "to": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "collection",
+                  "tokenId",
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "GAS" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "payer": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "maxFeeWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["id", "phase", "provenance", "kind", "chainId", "payer", "maxFeeWei"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "UNKNOWN" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "reason": { "type": "string", "minLength": 1 },
+                  "rawSelector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" }
+                },
+                "required": ["id", "phase", "provenance", "kind", "chainId", "reason"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/__schema0" } }
+      },
+      "required": [
+        "chainId",
+        "target",
+        "selector",
+        "valueWei",
+        "calldataHash",
+        "decodeStatus",
+        "effects",
+        "children"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

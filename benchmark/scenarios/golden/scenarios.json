@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "0.1",
+  "fork": {
+    "chainId": 1,
+    "blockNumber": 25773000,
+    "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166"
+  },
+  "addresses": {
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "recipient": "0x2222222222222222222222222222222222222222",
+    "attacker": "0x3333333333333333333333333333333333333333",
+    "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "swapRouter02": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
+  },
+  "codehashes": {
+    "usdc": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505",
+    "swapRouter02": "0x6ec798e80f3a19de650826338677604e54d6664f44a33b53a20b22b1939f402e"
+  },
+  "scenarios": [
+    {
+      "id": "G01-bounded-transfer",
+      "class": "NORMAL",
+      "target": "usdc",
+      "data": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+      "expectedDecision": "ALLOW"
+    },
+    {
+      "id": "G02-transfer-at-limit",
+      "class": "NORMAL",
+      "target": "usdc",
+      "data": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000001e8480",
+      "expectedDecision": "ALLOW"
+    },
+    {
+      "id": "G03-bounded-approval",
+      "class": "NORMAL",
+      "target": "usdc",
+      "data": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f4240",
+      "expectedDecision": "ALLOW"
+    },
+    {
+      "id": "G04-revoke-approval",
+      "class": "NORMAL",
+      "target": "usdc",
+      "data": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc450000000000000000000000000000000000000000000000000000000000000000",
+      "expectedDecision": "ALLOW"
+    },
+    {
+      "id": "G05-bounded-swap",
+      "class": "NORMAL",
+      "target": "swapRouter02",
+      "quotedAmountOut": "1000",
+      "data": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+      "expectedDecision": "ALLOW"
+    },
+    {
+      "id": "G06-recipient-substitution",
+      "class": "ATTACK",
+      "target": "usdc",
+      "data": "0xa9059cbb000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000000000000000f4240",
+      "expectedDecision": "DENY",
+      "expectedCode": "RECIPIENT_NOT_ALLOWED"
+    },
+    {
+      "id": "G07-amount-inflation",
+      "class": "ATTACK",
+      "target": "usdc",
+      "data": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002dc6c0",
+      "expectedDecision": "DENY",
+      "expectedCode": "GROSS_OUTFLOW_EXCEEDED"
+    },
+    {
+      "id": "G08-unlimited-approval",
+      "class": "ATTACK",
+      "target": "usdc",
+      "data": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "expectedDecision": "DENY",
+      "expectedCode": "ALLOWANCE_EXPOSURE_EXCEEDED"
+    },
+    {
+      "id": "G09-unknown-selector",
+      "class": "DRIFT",
+      "target": "usdc",
+      "data": "0xdeadbeef",
+      "expectedDecision": "ESCALATE",
+      "expectedCode": "PARTIAL_DECODE"
+    },
+    {
+      "id": "G10-codehash-drift",
+      "class": "DRIFT",
+      "target": "usdc",
+      "codehashDrift": true,
+      "data": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+      "expectedDecision": "ESCALATE",
+      "expectedCode": "PARTIAL_DECODE"
+    }
+  ]
+}

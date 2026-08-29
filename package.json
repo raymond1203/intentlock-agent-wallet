@@ -23,7 +23,9 @@
     "contracts:format:check": "forge fmt --check",
     "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:coverage",
     "fork:verify": "node scripts/fork-verify.ts",
-    "test:integration": "vitest run test/integration"
+    "test:integration": "vitest run test/integration",
+    "schema:generate": "pnpm run build && node dist/scripts/generate-schemas.js",
+    "schema:check": "pnpm run build && node dist/scripts/generate-schemas.js --check"
   },
   "dependencies": {
     "viem": "2.55.16",
