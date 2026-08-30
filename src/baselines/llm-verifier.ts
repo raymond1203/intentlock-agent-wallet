@@ -49,7 +49,6 @@ export const LLM_VERIFIER_SYSTEM_PROMPT = [
 export function createLlmVerifierUserPrompt(scenario: BenchmarkScenario): string {
   return JSON.stringify({
     promptVersion: LLM_VERIFIER_PROMPT_VERSION,
-    scenarioId: scenario.id,
     userIntent: scenario.naturalLanguage,
     intentContract: scenario.intent,
     actions: scenario.trace.actions,

@@ -1,6 +1,7 @@
 {
   "protocolVersion": "0.1",
   "status": "MODEL_RUN_COMPLETE_REVIEW_PENDING",
+  "reviewPacket": "experiments/configs/baselines/llm-verifier-20-review.json",
   "selection": {
     "base": [
       "TR-01",

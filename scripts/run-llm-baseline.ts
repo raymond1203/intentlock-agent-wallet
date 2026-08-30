@@ -7,7 +7,11 @@ import { z } from 'zod';
 
 import { applyMutation, type MutationOperatorId } from '../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
-import { evaluateLlmVerifier, LlmVerifierConfigSchema } from '../src/baselines/llm-verifier.js';
+import {
+  createLlmVerifierUserPrompt,
+  evaluateLlmVerifier,
+  LlmVerifierConfigSchema,
+} from '../src/baselines/llm-verifier.js';
 import { OpenAiResponsesClient } from '../src/baselines/openai-responses-client.js';
 
 const ReviewProtocolSchema = z
@@ -138,6 +142,30 @@ async function main(): Promise<void> {
     outputs,
     reviewerStatus: 'PENDING_INDEPENDENT_REVIEW',
   };
+  const reviewPacket = {
+    protocolVersion: '0.1',
+    status: 'PENDING_INDEPENDENT_REVIEW',
+    datasetVersion: '0.1.0',
+    seed: 2026,
+    config,
+    instructions:
+      'Review each model decision and rationale against its oracle-free input. Record rationaleSupported, oracleLeakage, correctedDecision, and notes separately.',
+    cases: outputs.map((output, index) => {
+      const scenario = sample[index];
+      if (!scenario) throw new Error(`review scenario ${String(index)} is missing`);
+      return {
+        reviewId: output.reviewId,
+        input: JSON.parse(createLlmVerifierUserPrompt(scenario)) as unknown,
+        output: {
+          decision: output.verdict.decision,
+          rationale: output.verdict.rationale,
+          violatedFields: output.verdict.reasonCodes,
+          attempts: output.verdict.attempts,
+          rawOutput: output.verdict.rawOutput,
+        },
+      };
+    }),
+  };
   const outputArgument = process.argv.find((argument) => argument.startsWith('--output='));
   const path = resolve(
     outputArgument?.slice('--output='.length) ??
@@ -145,6 +173,11 @@ async function main(): Promise<void> {
   );
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, await formattedJson(result), 'utf8');
+  await writeFile(
+    resolve('experiments/configs/baselines/llm-verifier-20-review.json'),
+    await formattedJson(reviewPacket),
+    'utf8',
+  );
   console.log(`saved ${String(outputs.length)} redacted baseline records to ${path}`);
 }
 

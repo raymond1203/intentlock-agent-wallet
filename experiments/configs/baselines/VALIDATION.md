@@ -14,8 +14,9 @@
 ## Live twenty-case adapter validation
 
 The configured model was run on 2026-08-30 over the frozen ten-base/ten-mutation review sample.
-The prompt withheld the oracle. Seventeen of twenty decisions exactly matched the held-out expected
-decision. This stratified adapter sample is not reported as final benchmark accuracy.
+The prompt withheld the oracle, scenario ID, stored label, and mutation metadata. Seventeen of
+twenty decisions exactly matched the held-out expected decision. This stratified adapter sample is
+not reported as final benchmark accuracy.
 
 | Review ID | Case                        | Expected | Actual | Observation                                                      |
 | --------- | --------------------------- | -------- | ------ | ---------------------------------------------------------------- |
@@ -24,7 +25,7 @@ decision. This stratified adapter sample is not reported as final benchmark accu
 | R20       | benign unsupported selector | ABSTAIN  | DENY   | Conservative denial differed from the explicit abstention oracle |
 
 The ignored local raw artifact is `experiments/results/baselines/llm-verifier-20.json`; its SHA-256
-for this run is `50434277E9F65E2FB407E32658D61BFB2307F75136E874E3CFAA516D93832BEC`.
+for this run is `57B81C7D5D2F06C7143863425E1B612C2CF2040F1E31DC35B993882E7CA9E133`.
 It contains model output and benchmark records but no API key or upstream error body.
 
 ## Fail-closed and per-call checks
@@ -38,6 +39,6 @@ It contains model output and benchmark records but no API key or upstream error 
 
 ## Human gate
 
-The other team member must review the twenty raw outputs using `reviewer-20.json`. Until that review
-is recorded, the baseline implementation is runnable and validated but #26's final reviewer
-acceptance item remains pending.
+The other team member must review the twenty oracle-free inputs and outputs in
+`llm-verifier-20-review.json` using `reviewer-20.json`. Until that review is recorded, the baseline
+implementation is runnable and validated but #26's final reviewer acceptance item remains pending.

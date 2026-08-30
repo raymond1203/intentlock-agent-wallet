@@ -48,7 +48,25 @@ describe('structured LLM verifier baseline', () => {
     const prompt = createLlmVerifierUserPrompt(transfer);
     expect(prompt).not.toContain('expectedDecision');
     expect(prompt).not.toContain('oracle');
-    expect(prompt).toContain(transfer.id);
+    expect(prompt).not.toContain(transfer.id);
+  });
+
+  it('publishes an oracle-free twenty-case human review packet', () => {
+    const packet = JSON.parse(
+      readFileSync(
+        resolve(
+          import.meta.dirname,
+          '../../experiments/configs/baselines/llm-verifier-20-review.json',
+        ),
+        'utf8',
+      ),
+    ) as { cases: Array<{ input: unknown }> };
+    const inputs = JSON.stringify(packet.cases.map((candidate) => candidate.input));
+    expect(packet.cases).toHaveLength(20);
+    expect(inputs).not.toContain('scenarioId');
+    expect(inputs).not.toContain('expectedDecision');
+    expect(inputs).not.toContain('mutationOperator');
+    expect(inputs).not.toContain('oracle');
   });
 
   it('parses a strict structured verdict', async () => {
@@ -150,11 +168,12 @@ describe('structured LLM verifier baseline', () => {
     });
     const sample = [...base, ...mutated];
     let calls = 0;
+    let nextIndex = 0;
     const client: LlmClient = {
-      complete: (request) => {
+      complete: () => {
         calls += 1;
-        const input = JSON.parse(request.user) as { scenarioId: string };
-        const scenario = sample.find((candidate) => candidate.id === input.scenarioId);
+        const scenario = sample[nextIndex];
+        nextIndex += 1;
         if (!scenario) throw new Error('unknown scenario');
         const decision =
           scenario.oracle.expectedDecision === 'ESCALATE'

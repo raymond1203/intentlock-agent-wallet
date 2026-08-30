@@ -2,7 +2,7 @@
 
 IntentLock is compared with two deliberately narrower baselines over the same benchmark scenario,
 Intent Contract, decoded ActionIR effects, and held-out oracle. The oracle is used for scoring only;
-it is never included in an LLM prompt or policy input.
+the LLM prompt also omits scenario IDs, stored labels, and mutation metadata.
 
 ## LLM intent verifier
 
