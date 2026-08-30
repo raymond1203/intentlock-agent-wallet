@@ -3,7 +3,7 @@
 ## Workflow
 
 1. Issue에 Outcome, Scope, Deliverables, Acceptance criteria를 먼저 작성합니다.
-2. 한 사람은 구현 또는 조사 Owner, 다른 사람은 Reviewer가 됩니다.
+2. 고정 Owner/Assignee는 두지 않습니다. 가능한 사람이 구현하고, 병합 전 다른 팀원이 결과를 독립 검토합니다.
 3. `main`에 직접 작업하지 않고 Issue 번호를 포함한 브랜치를 만듭니다.
 4. 작은 PR로 제출하고 상대 팀원의 검토를 받습니다.
 5. 결과를 재현할 명령, 설정, 고정 버전을 PR에 기록합니다.

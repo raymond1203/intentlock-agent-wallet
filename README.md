@@ -29,7 +29,7 @@ pnpm은 `packageManager` 필드와 `pnpm-lock.yaml`로 버전을 고정합니다
 
 - `src/domain/`: Intent Contract와 Guard 결정 타입
 - `src/evm/`: 명시적 chain을 사용하는 읽기·시뮬레이션 전용 Viem 계층
-- 향후 signer/MetaMask adapter는 시뮬레이션 계층과 분리
+- `src/adapters/metamask/`: monitor와 MetaMask signer 사이의 fail-closed 경계
 - `test/`: 단위 테스트와 golden scenario 테스트
 - `benchmark/`: 시나리오, 스키마, fixture, 고정 평가 split
 - `experiments/`: 실험 설정과 결과 생성 절차
@@ -39,7 +39,7 @@ pnpm은 `packageManager` 필드와 `pnpm-lock.yaml`로 버전을 고정합니다
 
 ## Working agreement
 
-작업은 Issue로 정의하고 PR로 검토합니다. 한 Issue에는 한 명의 Owner와 한 명의 Reviewer를 지정하며, 완료 조건과 재현 근거가 있어야 합니다. 자세한 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+작업은 Issue로 정의하고 PR로 검토합니다. 고정 담당자 표시는 두지 않되, 연구 주장과 재현 근거는 병합 전에 다른 팀원이 독립 검토합니다. 자세한 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 
 ## Status
 

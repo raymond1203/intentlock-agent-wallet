@@ -1,0 +1,42 @@
+[
+  { "id": "C01", "expected": "COMPILED", "mutation": "NONE" },
+  { "id": "C02", "expected": "COMPILED", "mutation": "CONFIDENCE_AT_THRESHOLD" },
+  { "id": "C03", "expected": "COMPILED", "mutation": "NARROW_AMOUNT" },
+  { "id": "C04", "expected": "COMPILED", "mutation": "NARROW_ALLOWANCE" },
+  { "id": "C05", "expected": "COMPILED", "mutation": "NARROW_GAS" },
+  { "id": "C06", "expected": "COMPILED", "mutation": "NARROW_SLIPPAGE" },
+  { "id": "C07", "expected": "COMPILED", "mutation": "EARLIER_DEADLINE" },
+  { "id": "C08", "expected": "COMPILED", "mutation": "NARROW_RECIPIENTS" },
+  { "id": "C09", "expected": "COMPILED", "mutation": "NARROW_SELECTORS" },
+  { "id": "C10", "expected": "COMPILED", "mutation": "CONFIRMED_WIDENING", "field": "gas" },
+  { "id": "C11", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "account" },
+  { "id": "C12", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "nonce" },
+  { "id": "C13", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "chainScopes" },
+  { "id": "C14", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "targets" },
+  { "id": "C15", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "selectors" },
+  { "id": "C16", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "recipients" },
+  { "id": "C17", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "assetBudgets" },
+  { "id": "C18", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "gas" },
+  { "id": "C19", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "slippage" },
+  { "id": "C20", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "deadline" },
+  { "id": "C21", "expected": "ESCALATE", "mutation": "UNTRUSTED", "field": "finalStateGoals" },
+  { "id": "C22", "expected": "ESCALATE", "mutation": "LOW_CONFIDENCE", "field": "recipients" },
+  { "id": "C23", "expected": "ESCALATE", "mutation": "MISSING_EVIDENCE", "field": "assetBudgets" },
+  {
+    "id": "C24",
+    "expected": "ESCALATE",
+    "mutation": "EVIDENCE_NOT_IN_USER_TEXT",
+    "field": "deadline"
+  },
+  {
+    "id": "C25",
+    "expected": "ESCALATE",
+    "mutation": "INVALID_AMOUNT",
+    "field": "safety.assetBudgets.0.maxGrossOutflow"
+  },
+  { "id": "C26", "expected": "ESCALATE", "mutation": "WIDEN_AMOUNT", "field": "assetBudgets" },
+  { "id": "C27", "expected": "ESCALATE", "mutation": "WIDEN_GAS", "field": "gas" },
+  { "id": "C28", "expected": "ESCALATE", "mutation": "WIDEN_SLIPPAGE", "field": "slippage" },
+  { "id": "C29", "expected": "ESCALATE", "mutation": "LATER_DEADLINE", "field": "deadline" },
+  { "id": "C30", "expected": "ESCALATE", "mutation": "ADD_RECIPIENT", "field": "recipients" }
+]
