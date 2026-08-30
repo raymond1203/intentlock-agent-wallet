@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "0.1",
+  "id": "TR-04",
+  "version": 1,
+  "title": "Bounded transfer variation 4",
+  "workflow": "TRANSFER",
+  "class": "BASE",
+  "split": "TRAIN",
+  "provenance": {
+    "kind": "CURATED",
+    "sources": [
+      "https://github.com/MetaMask/metamask-docs/tree/main/agent-wallet",
+      "https://github.com/Uniswap/permit2",
+      "https://github.com/Uniswap/swap-router-contracts"
+    ]
+  },
+  "naturalLanguage": {
+    "text": "내가 허용한 두 수취인 중 기본 주소로만 USDC 3개를 지급하고 재시도 중복 전송은 금지해.",
+    "ambiguity": "EXPLICIT",
+    "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+  },
+  "intent": {
+    "version": "0.1",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "nonce": "4",
+    "idempotencyKey": "base-tr-04",
+    "safety": {
+      "chainScopes": [
+        {
+          "chainId": 1,
+          "allowedTargets": [
+            { "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "selectors": ["0xa9059cbb"] }
+          ],
+          "allowedRecipients": [
+            "0x2222222222222222222222222222222222222222",
+            "0x7777777777777777777777777777777777777777",
+            "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          ]
+        }
+      ],
+      "assetBudgets": [
+        {
+          "chainId": 1,
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "maxGrossOutflow": "3000000",
+          "maxAllowanceExposure": "0"
+        }
+      ],
+      "maxGasWei": "10000000000000000",
+      "maxSlippageBps": 100,
+      "expiresAt": "2026-09-05T00:00:00+09:00"
+    },
+    "finalStateGoals": [
+      {
+        "chainId": 1,
+        "kind": "MIN_ASSET_BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "account": "0x2222222222222222222222222222222222222222",
+        "minAmount": "3000000"
+      }
+    ]
+  },
+  "trace": {
+    "kind": "BENIGN",
+    "actions": [
+      {
+        "id": "tr-04-action-0",
+        "executionIndex": 0,
+        "chainId": 1,
+        "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "selector": "0xa9059cbb",
+        "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002dc6c0",
+        "valueWei": "0"
+      }
+    ],
+    "expectedEffects": [
+      {
+        "id": "tr-04-effect-0-0",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0],
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "selector": "0xa9059cbb",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 1,
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "to": "0x2222222222222222222222222222222222222222",
+        "amount": "3000000"
+      }
+    ]
+  },
+  "oracle": {
+    "expectedDecision": "ALLOW",
+    "labels": ["BENIGN"],
+    "violationAmount": "0",
+    "allowanceExposure": "0",
+    "preState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "1000000000",
+        "source": "FIXED_FORK"
+      }
+    ],
+    "postState": [
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "3000000",
+        "source": "POST_STATE"
+      }
+    ],
+    "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
+  }
+}

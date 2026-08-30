@@ -5,6 +5,7 @@ import { format, resolveConfig } from 'prettier';
 
 import { createActionIrJsonSchema } from '../src/domain/action-ir.js';
 import { createIntentContractJsonSchema } from '../src/domain/intent-contract.js';
+import { createBenchmarkScenarioJsonSchema } from '../src/benchmark/scenario.js';
 
 const outputs = [
   {
@@ -12,6 +13,10 @@ const outputs = [
     schema: createIntentContractJsonSchema(),
   },
   { path: 'benchmark/schemas/action-ir.schema.json', schema: createActionIrJsonSchema() },
+  {
+    path: 'benchmark/schemas/scenario.schema.json',
+    schema: createBenchmarkScenarioJsonSchema(),
+  },
 ] as const;
 
 const check = process.argv.includes('--check');

@@ -71,3 +71,24 @@ export {
   type DecoderContractKind,
 } from './effects/batch-decoder.js';
 export * from './adapters/metamask/index.js';
+export {
+  BenchmarkDatasetSchema,
+  BenchmarkScenarioSchema,
+  createBenchmarkScenarioJsonSchema,
+  SplitManifestSchema,
+  ViolationLabelSchema,
+  type BenchmarkDataset,
+  type BenchmarkScenario,
+  type ScenarioSplit,
+  type ViolationLabel,
+} from './benchmark/scenario.js';
+export { findDuplicateScenarios, type DuplicateFinding } from './benchmark/dedup.js';
+export {
+  applyMutation,
+  MUTATION_OPERATOR_IDS,
+  type MutationOperatorId,
+} from './benchmark/mutations/index.js';
+export { evaluateLlmVerifier } from './baselines/llm-verifier.js';
+export { OpenAiResponsesClient } from './baselines/openai-responses-client.js';
+export { evaluatePerCallPolicy } from './baselines/per-call-policy.js';
+export type { BaselineDecision, BaselineVerdict } from './baselines/types.js';

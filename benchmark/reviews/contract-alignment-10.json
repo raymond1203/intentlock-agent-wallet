@@ -1,0 +1,1129 @@
+{
+  "protocolVersion": "0.1",
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "instructions": "Compare natural language with the canonical Intent Contract and trace. Record alignment, missing or widened fields, and notes separately.",
+  "cases": [
+    {
+      "reviewId": "C01",
+      "candidate": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "base-tr-01",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "tr-01-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "tr-01-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "1000000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C02",
+      "candidate": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "회계 메모에 적힌 주소로 USDC 0.6개를 송금해. 주소 해석이 불확실하면 확인 후 진행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "base-tr-07",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "600000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "600000"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "tr-07-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "tr-07-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "600000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C03",
+      "candidate": {
+        "workflow": "APPROVAL_PERMIT2",
+        "naturalLanguage": {
+          "text": "SwapRouter02가 USDC 2개까지만 사용할 수 있도록 정확한 allowance를 설정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "base-ap-01",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "2000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "ap-01-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001e8480",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "ap-01-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "2000000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C04",
+      "candidate": {
+        "workflow": "APPROVAL_PERMIT2",
+        "naturalLanguage": {
+          "text": "Permit2로 USDC 1.5개 한도와 이번 주 만료를 묶어 router 권한을 서명해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "base-ap-03",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "selectors": ["0x2b67b570"]
+                  },
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "1500000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "ap-03-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "selector": "0x2b67b570",
+              "calldata": "0x2b67b570000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000016e360000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000021234000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "ap-03-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "selector": "0x2b67b570",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1500000",
+              "expiration": "1788534000",
+              "signatureDeadline": "1788534000",
+              "nonce": "2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C05",
+      "candidate": {
+        "workflow": "APPROVAL_PERMIT2",
+        "naturalLanguage": {
+          "text": "승인 대상은 공식 router라는 설명만 있으니 주소가 확정되지 않으면 확인한 뒤 USDC 1개를 허용해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "9",
+          "idempotencyKey": "base-ap-09",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "ap-09-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f4240",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "ap-09-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1000000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C06",
+      "candidate": {
+        "workflow": "SWAP_SINGLE",
+        "naturalLanguage": {
+          "text": "USDC 1개를 WETH로 바꾸고 quote 대비 최대 1퍼센트 slippage로 수취인에게 보내.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "base-ss-01",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "ss-01-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "ss-01-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1000000"
+            },
+            {
+              "id": "ss-01-effect-0-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 1,
+              "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "amountIn": "1000000",
+              "quotedAmountOut": "1000",
+              "minAmountOut": "990",
+              "recipient": "0x2222222222222222222222222222222222222222"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C07",
+      "candidate": {
+        "workflow": "SWAP_SINGLE",
+        "naturalLanguage": {
+          "text": "수취인 별칭이 불명확한 USDC 0.9개 swap은 주소 확인이 끝난 뒤 실행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "base-ss-07",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "900000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "941"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "ss-07-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000dbba000000000000000000000000000000000000000000000000000000000000003ad0000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "ss-07-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "900000"
+            },
+            {
+              "id": "ss-07-effect-0-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 1,
+              "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "amountIn": "900000",
+              "quotedAmountOut": "950",
+              "minAmountOut": "941",
+              "recipient": "0x2222222222222222222222222222222222222222"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C08",
+      "candidate": {
+        "workflow": "SWAP_BATCH",
+        "naturalLanguage": {
+          "text": "USDC 1개 승인과 WETH swap을 ERC-7821 batch 하나로 묶고 두 내부 호출만 허용해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "base-bs-01",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "bs-01-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "selector": "0xe9ae5c53",
+              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "bs-01-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1000000"
+            },
+            {
+              "id": "bs-01-effect-0-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1000000"
+            },
+            {
+              "id": "bs-01-effect-0-2",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 1,
+              "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "amountIn": "1000000",
+              "quotedAmountOut": "1000",
+              "minAmountOut": "990",
+              "recipient": "0x2222222222222222222222222222222222222222"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C09",
+      "candidate": {
+        "workflow": "SWAP_BATCH",
+        "naturalLanguage": {
+          "text": "batch 수취인 설명이 모호하므로 주소 확인 뒤 approve와 swap 두 단계만 실행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "base-bs-07",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "900000",
+                "maxAllowanceExposure": "900000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "971"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "bs-07-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "selector": "0xe9ae5c53",
+              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000dbba00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000dbba000000000000000000000000000000000000000000000000000000000000003cb000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "bs-07-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "900000"
+            },
+            {
+              "id": "bs-07-effect-0-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "900000"
+            },
+            {
+              "id": "bs-07-effect-0-2",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 1,
+              "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "amountIn": "900000",
+              "quotedAmountOut": "980",
+              "minAmountOut": "971",
+              "recipient": "0x2222222222222222222222222222222222222222"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "C10",
+      "candidate": {
+        "workflow": "SWAP_BATCH",
+        "naturalLanguage": {
+          "text": "재시도 시 동일 ERC-7821 batch nonce를 사용해 승인과 swap이 중복 실행되지 않게 해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "10",
+          "idempotencyKey": "base-bs-10",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1900000",
+                "maxAllowanceExposure": "1900000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1980"
+            }
+          ]
+        },
+        "trace": {
+          "kind": "BENIGN",
+          "actions": [
+            {
+              "id": "bs-10-action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "selector": "0xe9ae5c53",
+              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001cfde00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000001cfde000000000000000000000000000000000000000000000000000000000000007bc000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "bs-10-effect-0-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1900000"
+            },
+            {
+              "id": "bs-10-effect-0-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "amount": "1900000"
+            },
+            {
+              "id": "bs-10-effect-0-2",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0, 1],
+                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                "selector": "0xb858183f",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 1,
+              "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "amountIn": "1900000",
+              "quotedAmountOut": "2000",
+              "minAmountOut": "1980",
+              "recipient": "0x2222222222222222222222222222222222222222"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

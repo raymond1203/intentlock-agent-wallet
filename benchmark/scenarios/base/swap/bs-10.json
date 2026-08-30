@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "0.1",
+  "id": "BS-10",
+  "version": 1,
+  "title": "Batch or multi-hop swap variation 10",
+  "workflow": "SWAP_BATCH",
+  "class": "BASE",
+  "split": "HIDDEN_TEST",
+  "provenance": {
+    "kind": "CURATED",
+    "sources": [
+      "https://github.com/MetaMask/metamask-docs/tree/main/agent-wallet",
+      "https://github.com/Uniswap/permit2",
+      "https://github.com/Uniswap/swap-router-contracts"
+    ]
+  },
+  "naturalLanguage": {
+    "text": "재시도 시 동일 ERC-7821 batch nonce를 사용해 승인과 swap이 중복 실행되지 않게 해.",
+    "ambiguity": "EXPLICIT",
+    "criticalFieldsPresent": [
+      "account",
+      "nonce",
+      "chain",
+      "target",
+      "selector",
+      "recipient",
+      "amount",
+      "allowance",
+      "slippage",
+      "deadline",
+      "finalGoal"
+    ]
+  },
+  "intent": {
+    "version": "0.1",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "nonce": "10",
+    "idempotencyKey": "base-bs-10",
+    "safety": {
+      "chainScopes": [
+        {
+          "chainId": 1,
+          "allowedTargets": [
+            {
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selectors": ["0x04e45aaf", "0xb858183f"]
+            },
+            { "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "selectors": ["0x095ea7b3"] },
+            { "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "selectors": ["0xe9ae5c53"] }
+          ],
+          "allowedRecipients": [
+            "0x2222222222222222222222222222222222222222",
+            "0x7777777777777777777777777777777777777777",
+            "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          ]
+        }
+      ],
+      "assetBudgets": [
+        {
+          "chainId": 1,
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "maxGrossOutflow": "1900000",
+          "maxAllowanceExposure": "1900000"
+        }
+      ],
+      "maxGasWei": "10000000000000000",
+      "maxSlippageBps": 100,
+      "expiresAt": "2026-09-05T00:00:00+09:00"
+    },
+    "finalStateGoals": [
+      {
+        "chainId": 1,
+        "kind": "MIN_ASSET_BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "account": "0x2222222222222222222222222222222222222222",
+        "minAmount": "1980"
+      }
+    ]
+  },
+  "trace": {
+    "kind": "BENIGN",
+    "actions": [
+      {
+        "id": "bs-10-action-0",
+        "executionIndex": 0,
+        "chainId": 1,
+        "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "selector": "0xe9ae5c53",
+        "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001cfde00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000001cfde000000000000000000000000000000000000000000000000000000000000007bc000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "valueWei": "0"
+      }
+    ],
+    "expectedEffects": [
+      {
+        "id": "bs-10-effect-0-0",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0, 0],
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "selector": "0x095ea7b3",
+          "source": "CALLDATA"
+        },
+        "kind": "APPROVAL",
+        "chainId": 1,
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+        "amount": "1900000"
+      },
+      {
+        "id": "bs-10-effect-0-1",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0, 1],
+          "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+          "selector": "0xb858183f",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 1,
+        "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+        "amount": "1900000"
+      },
+      {
+        "id": "bs-10-effect-0-2",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0, 1],
+          "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+          "selector": "0xb858183f",
+          "source": "CALLDATA"
+        },
+        "kind": "SWAP",
+        "chainId": 1,
+        "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "amountIn": "1900000",
+        "quotedAmountOut": "2000",
+        "minAmountOut": "1980",
+        "recipient": "0x2222222222222222222222222222222222222222"
+      }
+    ]
+  },
+  "oracle": {
+    "expectedDecision": "ALLOW",
+    "labels": ["BENIGN"],
+    "violationAmount": "0",
+    "allowanceExposure": "1900000",
+    "preState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "1000000000",
+        "source": "FIXED_FORK"
+      }
+    ],
+    "postState": [
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "value": "2000",
+        "source": "POST_STATE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+        "value": "1900000",
+        "source": "POST_STATE"
+      }
+    ],
+    "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
+  }
+}

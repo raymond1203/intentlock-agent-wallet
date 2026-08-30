@@ -1,0 +1,33 @@
+{
+  "protocolVersion": "0.1",
+  "status": "MODEL_RUN_COMPLETE_REVIEW_PENDING",
+  "selection": {
+    "base": [
+      "TR-01",
+      "TR-02",
+      "TR-03",
+      "AP-01",
+      "AP-03",
+      "SS-01",
+      "SS-02",
+      "SS-03",
+      "BS-01",
+      "BS-02"
+    ],
+    "mutations": [
+      "recipient-substitution",
+      "token-substitution",
+      "chain-substitution",
+      "amount-inflation",
+      "slippage-widening",
+      "deadline-extension",
+      "unlimited-approval",
+      "hidden-batch",
+      "policy-laundering",
+      "benign-hallucination"
+    ]
+  },
+  "reviewFields": ["decision", "rationaleSupported", "oracleLeakage", "notes"],
+  "reviewer": null,
+  "reviewedAt": null
+}

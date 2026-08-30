@@ -1,0 +1,7 @@
+{
+  "policyVersion": "intentlock-per-call-v1",
+  "decisionUnit": "top-level-call",
+  "checks": ["chain", "target", "selector", "nativeValue", "decodedEconomicEffects"],
+  "carryAcceptedEffectsAcrossCalls": false,
+  "unknownEffectPolicy": "ABSTAIN"
+}

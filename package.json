@@ -25,7 +25,10 @@
     "fork:verify": "node scripts/fork-verify.ts",
     "test:integration": "vitest run test/integration",
     "schema:generate": "pnpm run build && node dist/scripts/generate-schemas.js",
-    "schema:check": "pnpm run build && node dist/scripts/generate-schemas.js --check"
+    "schema:check": "pnpm run build && node dist/scripts/generate-schemas.js --check",
+    "benchmark:generate": "pnpm run build && node dist/scripts/generate-benchmark.js",
+    "benchmark:check": "pnpm run build && node dist/scripts/generate-benchmark.js --check",
+    "baseline:llm:run": "pnpm run build && node dist/scripts/run-llm-baseline.js"
   },
   "dependencies": {
     "viem": "2.55.16",
