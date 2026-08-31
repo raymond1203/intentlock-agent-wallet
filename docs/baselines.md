@@ -30,6 +30,18 @@ history. As a result, it can catch a locally excessive transfer but miss retry, 
 policy-laundering traces whose individual calls are within bounds while their cumulative total is
 not. This weakness is part of the experimental comparison, not an implementation defect.
 
+## Prompt blinding
+
+`createLlmVerifierUserPrompt` redacts every scenario identifier before the prompt is built. The
+intent's idempotency key becomes `redacted-intent` and action and effect ids become positional
+tokens. Without this, the prompt states the answer: base cases carry ids such as `tr-01-effect-0-0`
+while mutated cases carry `tr-01-recipient-substitution-2026-effect-0`, which names the operator the
+verifier is supposed to infer.
+
+`test/benchmark/review-packet-blinding.test.ts` fails if an identifier or operator name reappears in
+a prompt or in a human review packet. Any prompt change of this kind bumps
+`LLM_VERIFIER_PROMPT_VERSION` and voids earlier runs.
+
 ## Twenty-output validation gate
 
 `reviewer-20.json` freezes a stratified set of ten base and ten mutated cases. Automated tests use a

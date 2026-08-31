@@ -1,10 +1,24 @@
 # M2 Baseline Validation Report
 
+> **VOID — the `intentlock-llm-baseline-v1` run below must not be reported.**
+>
+> Independent review on PR #46 found that the v1 prompt carried scenario
+> identifiers into the model input. `intentContract.idempotencyKey` named the source scenario
+> (`base-tr-01`) and, for every mutated case, the effect ids named the attack operator
+> (`ap-01-unlimited-approval-2026-effect-0`, `bs-01-hidden-batch-2026-effect-3`). All ten mutated
+> cases carried the operator name and none of the ten base cases did, so the two classes were
+> separable from the identifier strings alone.
+>
+> The seventeen-of-twenty figure therefore measures string matching, not verification, and is void.
+> The prompt is now `intentlock-llm-baseline-v2` with identifiers redacted
+> (`redactScenarioIdentity`), and the twenty cases must be re-run before any number is reported.
+> `llm-verifier-20-review.json` is retained as a record of the voided run only.
+
 ## Fixed configuration
 
 - Dataset: `0.1.0`, seed `2026`
 - Model: `gpt-5.4-mini-2026-03-17`
-- Prompt: `intentlock-llm-baseline-v1`
+- Prompt: `intentlock-llm-baseline-v2` (the record below was produced under the void `v1`)
 - Temperature: `0`
 - Retry: one retry after malformed output, timeout, or transport failure
 - Timeout: 30 seconds per attempt

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { BenchmarkScenario } from '../benchmark/scenario.js';
 import type { BaselineDecision, BaselineVerdict } from './types.js';
 
-export const LLM_VERIFIER_PROMPT_VERSION = 'intentlock-llm-baseline-v1' as const;
+export const LLM_VERIFIER_PROMPT_VERSION = 'intentlock-llm-baseline-v2' as const;
 
 export const LlmVerifierConfigSchema = z
   .object({
@@ -46,13 +46,39 @@ export const LLM_VERIFIER_SYSTEM_PROMPT = [
   'Return only JSON matching the supplied schema.',
 ].join(' ');
 
+/**
+ * Identity redaction for baseline inputs.
+ *
+ * Scenario identifiers leak the answer: an idempotency key such as
+ * `base-tr-01` names the source scenario, and an effect id such as
+ * `ap-01-unlimited-approval-2026-effect-0` names the attack operator. Any
+ * measurement taken with those strings in the prompt reports string matching,
+ * not verification, so every identifier is replaced with a positional token.
+ */
+export function redactScenarioIdentity(scenario: BenchmarkScenario): {
+  userIntent: BenchmarkScenario['naturalLanguage'];
+  intentContract: BenchmarkScenario['intent'];
+  actions: BenchmarkScenario['trace']['actions'];
+  decodedEconomicEffects: BenchmarkScenario['trace']['expectedEffects'];
+} {
+  return {
+    userIntent: scenario.naturalLanguage,
+    intentContract: { ...scenario.intent, idempotencyKey: 'redacted-intent' },
+    actions: scenario.trace.actions.map((action, index) => ({
+      ...action,
+      id: `action-${String(index)}`,
+    })),
+    decodedEconomicEffects: scenario.trace.expectedEffects.map((effect, index) => ({
+      ...effect,
+      id: `effect-${String(index)}`,
+    })),
+  };
+}
+
 export function createLlmVerifierUserPrompt(scenario: BenchmarkScenario): string {
   return JSON.stringify({
     promptVersion: LLM_VERIFIER_PROMPT_VERSION,
-    userIntent: scenario.naturalLanguage,
-    intentContract: scenario.intent,
-    actions: scenario.trace.actions,
-    decodedEconomicEffects: scenario.trace.expectedEffects,
+    ...redactScenarioIdentity(scenario),
   });
 }
 

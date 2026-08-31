@@ -748,12 +748,35 @@ const golden = BenchmarkDatasetSchema.parse({
   ],
 });
 
+/**
+ * Removes every identifier that would hand the reviewer the answer.
+ *
+ * `intent.idempotencyKey` names the source scenario (`base-tr-01`) and the
+ * action/effect ids name the mutation operator
+ * (`ap-01-unlimited-approval-2026-effect-0`). A packet that keeps them is not
+ * blind, so both are replaced with positional tokens.
+ */
 function blindScenario(value: BenchmarkScenario) {
+  if (value.split === 'HIDDEN_TEST') {
+    throw new Error(
+      `${value.id} is HIDDEN_TEST and must not appear in a development review packet`,
+    );
+  }
   return {
     workflow: value.workflow,
     naturalLanguage: value.naturalLanguage,
-    intent: value.intent,
-    trace: value.trace,
+    intent: { ...value.intent, idempotencyKey: 'redacted-intent' },
+    trace: {
+      ...value.trace,
+      actions: value.trace.actions.map((action, index) => ({
+        ...action,
+        id: `action-${String(index)}`,
+      })),
+      expectedEffects: value.trace.expectedEffects.map((effect, index) => ({
+        ...effect,
+        id: `effect-${String(index)}`,
+      })),
+    },
   };
 }
 
@@ -762,12 +785,12 @@ const contractReviewIds = [
   'TR-07',
   'AP-01',
   'AP-03',
-  'AP-09',
+  'AP-05',
   'SS-01',
   'SS-07',
   'BS-01',
   'BS-07',
-  'BS-10',
+  'BS-08',
 ];
 const extraReviewMutations = [
   applyMutation(scenario('TR-02'), 'recipient-substitution', 2027),
