@@ -16,7 +16,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -60,7 +60,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -71,7 +71,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -100,7 +100,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -144,7 +144,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-recipient-substitution-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -155,7 +155,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-recipient-substitution-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -187,7 +187,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -231,7 +231,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -242,7 +242,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -271,7 +271,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -315,7 +315,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-token-substitution-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -326,7 +326,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-token-substitution-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -358,7 +358,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -402,7 +402,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -413,7 +413,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -442,7 +442,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -486,7 +486,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-chain-substitution-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 8453,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -497,7 +497,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-chain-substitution-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -529,7 +529,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -573,7 +573,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -584,7 +584,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -613,7 +613,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -657,7 +657,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-amount-inflation-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -668,7 +668,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-amount-inflation-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -709,7 +709,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ss-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -753,7 +753,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ss-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -764,7 +764,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -780,7 +780,7 @@
               "amount": "1000000"
             },
             {
-              "id": "ss-01-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -820,7 +820,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ss-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -864,7 +864,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ss-01-slippage-widening-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -875,7 +875,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-01-slippage-widening-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -891,7 +891,7 @@
               "amount": "1000000"
             },
             {
-              "id": "ss-01-slippage-widening-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -925,7 +925,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -969,7 +969,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -980,7 +980,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1009,7 +1009,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1053,7 +1053,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-gas-inflation-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -1064,7 +1064,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-gas-inflation-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1080,7 +1080,7 @@
               "amount": "1000000"
             },
             {
-              "id": "tr-01-gas-inflation-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1117,7 +1117,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "3",
-          "idempotencyKey": "base-ap-03",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1165,7 +1165,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-03-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
@@ -1176,7 +1176,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-03-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1215,7 +1215,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "3",
-          "idempotencyKey": "base-ap-03",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1263,7 +1263,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ap-03-deadline-extension-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
@@ -1274,7 +1274,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-03-deadline-extension-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1316,7 +1316,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ap-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1364,7 +1364,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -1375,7 +1375,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1411,7 +1411,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ap-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1459,7 +1459,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ap-01-unlimited-approval-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -1470,7 +1470,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-01-unlimited-approval-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1514,7 +1514,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-bs-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1566,7 +1566,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "bs-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -1577,7 +1577,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -1593,7 +1593,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1609,7 +1609,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-effect-0-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1652,7 +1652,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-bs-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1704,7 +1704,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "bs-01-hidden-batch-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -1715,7 +1715,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-01-hidden-batch-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -1731,7 +1731,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-hidden-batch-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1747,7 +1747,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-hidden-batch-2026-effect-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1765,7 +1765,7 @@
               "recipient": "0x2222222222222222222222222222222222222222"
             },
             {
-              "id": "bs-01-hidden-batch-2026-effect-3",
+              "id": "effect-3",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 2],
@@ -1806,7 +1806,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ss-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1850,7 +1850,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ss-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -1861,7 +1861,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1877,7 +1877,7 @@
               "amount": "1000000"
             },
             {
-              "id": "ss-01-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1917,7 +1917,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ss-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1961,7 +1961,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ss-01-stale-quote-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -1972,7 +1972,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-01-stale-quote-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -1988,7 +1988,7 @@
               "amount": "1000000"
             },
             {
-              "id": "ss-01-stale-quote-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2022,7 +2022,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2066,7 +2066,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2077,7 +2077,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2106,7 +2106,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2150,7 +2150,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-retry-double-spend-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2159,7 +2159,7 @@
               "valueWei": "0"
             },
             {
-              "id": "tr-01-retry-double-spend-2026-action-1",
+              "id": "action-1",
               "executionIndex": 1,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2170,7 +2170,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-retry-double-spend-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2186,7 +2186,7 @@
               "amount": "1000000"
             },
             {
-              "id": "tr-01-retry-double-spend-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [1],
@@ -2218,7 +2218,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2262,7 +2262,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2273,7 +2273,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2302,7 +2302,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2346,7 +2346,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-concurrency-race-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2355,7 +2355,7 @@
               "valueWei": "0"
             },
             {
-              "id": "tr-01-concurrency-race-2026-action-1",
+              "id": "action-1",
               "executionIndex": 1,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2366,7 +2366,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-concurrency-race-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2382,7 +2382,7 @@
               "amount": "1000000"
             },
             {
-              "id": "tr-01-concurrency-race-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [1],
@@ -2414,7 +2414,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2458,7 +2458,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2469,7 +2469,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2498,7 +2498,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2542,7 +2542,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-01-policy-laundering-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2551,7 +2551,7 @@
               "valueWei": "0"
             },
             {
-              "id": "tr-01-policy-laundering-2026-action-1",
+              "id": "action-1",
               "executionIndex": 1,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2562,7 +2562,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-policy-laundering-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2578,7 +2578,7 @@
               "amount": "600000"
             },
             {
-              "id": "tr-01-policy-laundering-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [1],
@@ -2610,7 +2610,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2654,7 +2654,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2665,7 +2665,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2694,7 +2694,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2738,7 +2738,7 @@
           "kind": "BENIGN_DRIFT",
           "actions": [
             {
-              "id": "tr-01-benign-hallucination-2026-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2747,7 +2747,7 @@
               "valueWei": "0"
             },
             {
-              "id": "tr-01-benign-hallucination-2026-action-1",
+              "id": "action-1",
               "executionIndex": 1,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2758,7 +2758,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-benign-hallucination-2026-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2774,7 +2774,7 @@
               "amount": "1000000"
             },
             {
-              "id": "tr-01-benign-hallucination-2026-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [1],
@@ -2804,7 +2804,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-tr-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2848,7 +2848,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-02-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2859,7 +2859,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-02-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2888,7 +2888,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-tr-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -2932,7 +2932,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-02-recipient-substitution-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -2943,7 +2943,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-02-recipient-substitution-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -2975,7 +2975,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-tr-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3019,7 +3019,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-02-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -3030,7 +3030,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-02-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3059,7 +3059,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-tr-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3103,7 +3103,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "tr-02-amount-inflation-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -3114,7 +3114,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-02-amount-inflation-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3155,7 +3155,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-ss-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3199,7 +3199,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ss-02-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -3210,7 +3210,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-02-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3226,7 +3226,7 @@
               "amount": "2000000"
             },
             {
-              "id": "ss-02-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3266,7 +3266,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-ss-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3310,7 +3310,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ss-02-slippage-widening-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -3321,7 +3321,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-02-slippage-widening-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3337,7 +3337,7 @@
               "amount": "2000000"
             },
             {
-              "id": "ss-02-slippage-widening-2027-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3378,7 +3378,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-ap-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3426,7 +3426,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-02-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -3437,7 +3437,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-02-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3473,7 +3473,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-ap-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3521,7 +3521,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ap-02-unlimited-approval-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -3532,7 +3532,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-02-unlimited-approval-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3571,7 +3571,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "6",
-          "idempotencyKey": "base-ap-06",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3619,7 +3619,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-06-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
@@ -3630,7 +3630,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-06-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3669,7 +3669,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "6",
-          "idempotencyKey": "base-ap-06",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3717,7 +3717,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "ap-06-deadline-extension-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
@@ -3728,7 +3728,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-06-deadline-extension-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -3775,7 +3775,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-bs-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3827,7 +3827,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "bs-02-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -3838,7 +3838,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-02-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -3854,7 +3854,7 @@
               "amount": "1500000"
             },
             {
-              "id": "bs-02-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -3870,7 +3870,7 @@
               "amount": "1500000"
             },
             {
-              "id": "bs-02-effect-0-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -3913,7 +3913,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "2",
-          "idempotencyKey": "base-bs-02",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -3965,7 +3965,7 @@
           "kind": "ADVERSARIAL",
           "actions": [
             {
-              "id": "bs-02-hidden-batch-2027-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -3976,7 +3976,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-02-hidden-batch-2027-effect-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -3992,7 +3992,7 @@
               "amount": "1500000"
             },
             {
-              "id": "bs-02-hidden-batch-2027-effect-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -4008,7 +4008,7 @@
               "amount": "1500000"
             },
             {
-              "id": "bs-02-hidden-batch-2027-effect-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -4026,7 +4026,7 @@
               "recipient": "0x2222222222222222222222222222222222222222"
             },
             {
-              "id": "bs-02-hidden-batch-2027-effect-3",
+              "id": "effect-3",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 2],

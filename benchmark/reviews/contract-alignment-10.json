@@ -16,7 +16,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-tr-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -60,7 +60,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -71,7 +71,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -103,7 +103,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "7",
-          "idempotencyKey": "base-tr-07",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -147,7 +147,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "tr-07-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -158,7 +158,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "tr-07-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -197,7 +197,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ap-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -245,7 +245,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -256,7 +256,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -295,7 +295,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "3",
-          "idempotencyKey": "base-ap-03",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -343,7 +343,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-03-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
@@ -354,7 +354,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ap-03-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -381,8 +381,8 @@
       "candidate": {
         "workflow": "APPROVAL_PERMIT2",
         "naturalLanguage": {
-          "text": "승인 대상은 공식 router라는 설명만 있으니 주소가 확정되지 않으면 확인한 뒤 USDC 1개를 허용해.",
-          "ambiguity": "AMBIGUOUS",
+          "text": "USDC 3개 승인 후 작업을 수행하지 말고 승인량 자체만 정확히 기록해.",
+          "ambiguity": "EXPLICIT",
           "criticalFieldsPresent": [
             "account",
             "chain",
@@ -395,8 +395,8 @@
         "intent": {
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "9",
-          "idempotencyKey": "base-ap-09",
+          "nonce": "5",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -423,7 +423,7 @@
                 "chainId": 1,
                 "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                 "maxGrossOutflow": "0",
-                "maxAllowanceExposure": "1000000"
+                "maxAllowanceExposure": "3000000"
               }
             ],
             "maxGasWei": "10000000000000000",
@@ -444,18 +444,18 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ap-09-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "selector": "0x095ea7b3",
-              "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f4240",
+              "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000002dc6c0",
               "valueWei": "0"
             }
           ],
           "expectedEffects": [
             {
-              "id": "ap-09-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -468,7 +468,7 @@
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1000000"
+              "amount": "3000000"
             }
           ]
         }
@@ -496,7 +496,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-ss-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -540,7 +540,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ss-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -551,7 +551,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -567,7 +567,7 @@
               "amount": "1000000"
             },
             {
-              "id": "ss-01-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -610,7 +610,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "7",
-          "idempotencyKey": "base-ss-07",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -654,7 +654,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "ss-07-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -665,7 +665,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "ss-07-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -681,7 +681,7 @@
               "amount": "900000"
             },
             {
-              "id": "ss-07-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0],
@@ -727,7 +727,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "1",
-          "idempotencyKey": "base-bs-01",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -779,7 +779,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "bs-01-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -790,7 +790,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-01-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -806,7 +806,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -822,7 +822,7 @@
               "amount": "1000000"
             },
             {
-              "id": "bs-01-effect-0-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -868,7 +868,7 @@
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "nonce": "7",
-          "idempotencyKey": "base-bs-07",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -920,7 +920,7 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "bs-07-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -931,7 +931,7 @@
           ],
           "expectedEffects": [
             {
-              "id": "bs-07-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -947,7 +947,7 @@
               "amount": "900000"
             },
             {
-              "id": "bs-07-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -963,7 +963,7 @@
               "amount": "900000"
             },
             {
-              "id": "bs-07-effect-0-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -989,8 +989,8 @@
       "candidate": {
         "workflow": "SWAP_BATCH",
         "naturalLanguage": {
-          "text": "재시도 시 동일 ERC-7821 batch nonce를 사용해 승인과 swap이 중복 실행되지 않게 해.",
-          "ambiguity": "EXPLICIT",
+          "text": "공식 Permit2 대신 ERC20 exact approval을 사용해 USDC 1.7개 batch swap을 구성해.",
+          "ambiguity": "IMPLICIT",
           "criticalFieldsPresent": [
             "account",
             "nonce",
@@ -1008,8 +1008,8 @@
         "intent": {
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "10",
-          "idempotencyKey": "base-bs-10",
+          "nonce": "8",
+          "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
               {
@@ -1039,8 +1039,8 @@
               {
                 "chainId": 1,
                 "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "1900000",
-                "maxAllowanceExposure": "1900000"
+                "maxGrossOutflow": "1700000",
+                "maxAllowanceExposure": "1700000"
               }
             ],
             "maxGasWei": "10000000000000000",
@@ -1053,7 +1053,7 @@
               "kind": "MIN_ASSET_BALANCE",
               "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
               "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "1980"
+              "minAmount": "1782"
             }
           ]
         },
@@ -1061,18 +1061,18 @@
           "kind": "BENIGN",
           "actions": [
             {
-              "id": "bs-10-action-0",
+              "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "selector": "0xe9ae5c53",
-              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001cfde00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000001cfde000000000000000000000000000000000000000000000000000000000000007bc000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000019f0a00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000800000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000019f0a000000000000000000000000000000000000000000000000000000000000006f6000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
               "valueWei": "0"
             }
           ],
           "expectedEffects": [
             {
-              "id": "bs-10-effect-0-0",
+              "id": "effect-0",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 0],
@@ -1085,10 +1085,10 @@
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1900000"
+              "amount": "1700000"
             },
             {
-              "id": "bs-10-effect-0-1",
+              "id": "effect-1",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1101,10 +1101,10 @@
               "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
               "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1900000"
+              "amount": "1700000"
             },
             {
-              "id": "bs-10-effect-0-2",
+              "id": "effect-2",
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [0, 1],
@@ -1116,9 +1116,9 @@
               "chainId": 1,
               "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
               "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-              "amountIn": "1900000",
-              "quotedAmountOut": "2000",
-              "minAmountOut": "1980",
+              "amountIn": "1700000",
+              "quotedAmountOut": "1800",
+              "minAmountOut": "1782",
               "recipient": "0x2222222222222222222222222222222222222222"
             }
           ]

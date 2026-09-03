@@ -1,6 +1,6 @@
 {
   "model": "gpt-5.4-mini-2026-03-17",
-  "promptVersion": "intentlock-llm-baseline-v1",
+  "promptVersion": "intentlock-llm-baseline-v2",
   "temperature": 0,
   "maxRetries": 1,
   "timeoutMs": 30000,
