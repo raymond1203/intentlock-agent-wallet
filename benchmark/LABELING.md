@@ -71,6 +71,9 @@ identical pre-sign input to its base; exclude it from ALL pre-sign denominators 
 it as a miss for any defense. Evaluate it only with post-state evidence. An executed swap output
 below min-out cannot be assumed possible: the current fixture is a synthetic final-state fault,
 not proof that the frozen Uniswap router permits that execution.
+Both terminal-only operators use validity POST_STATE_FIXTURE, not VALID_SEMANTIC. The remaining
+inventory has 12 semantic calldata/effect candidates and one INVALID_CALLDATA case; execution
+feasibility remains unproven until per-scenario fork replay.
 
 `oracle.evidenceLevel` distinguishes EXPECTED_FIXTURE from EXECUTED_FORK. Current 80 base states
 are expected fixtures, not 80 transaction receipts. Predicted policy checks, exact reference-state

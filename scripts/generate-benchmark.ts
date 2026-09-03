@@ -886,7 +886,36 @@ const mutationReviewPacket = {
   })),
 };
 
+const terminalReviewPacket = {
+  protocolVersion: '0.2',
+  status: 'PENDING_INDEPENDENT_REVIEW',
+  instructions:
+    'Open only after recording pre-sign judgments for mutation-validity-20.json. Evaluate final-state evidence separately. These are expected fixtures, not executed observations; no author decision or cause label is provided.',
+  cases: mutationReviewCases.map((value, index) => {
+    const base = scenario(value.provenance.baseScenarioId ?? '');
+    const observations = (s: BenchmarkScenario) => ({
+      evidenceLevel: s.oracle.evidenceLevel,
+      executionComplete: s.oracle.executionComplete,
+      preState: s.oracle.preState,
+      postState: s.oracle.postState,
+    });
+    return {
+      reviewId: `M${String(index + 1).padStart(2, '0')}`,
+      base: observations(base),
+      candidate: observations(value),
+    };
+  }),
+};
+
 let valid = true;
+if (
+  !(await writeOrCheck(
+    'benchmark/reviews/terminal-observations-20.json',
+    terminalReviewPacket,
+    check,
+  ))
+)
+  valid = false;
 for (const scenario of scenarios) {
   const directory =
     scenario.workflow === 'TRANSFER' || scenario.workflow === 'APPROVAL_PERMIT2'
@@ -990,7 +1019,7 @@ const mutationCoverageOperators: Record<
     scenarioId: string;
     baseScenarioId: string | undefined;
     label: string | undefined;
-    validity: 'VALID_SEMANTIC' | 'INVALID_CALLDATA' | 'NO_OP' | undefined;
+    validity: NonNullable<BenchmarkScenario['mutation']>['validity'] | undefined;
     expectedDecision: 'ALLOW' | 'DENY' | 'ESCALATE';
   }
 > = {};
@@ -1010,6 +1039,9 @@ const mutationCoverage = {
   schemaVersion: '0.1',
   seed: 2026,
   total: mutations.length,
+  postStateFixtures: mutations.filter(
+    (mutated) => mutated.mutation?.validity === 'POST_STATE_FIXTURE',
+  ).length,
   validSemantic: mutations.filter((mutated) => mutated.mutation?.validity === 'VALID_SEMANTIC')
     .length,
   invalidCalldata: mutations.filter((mutated) => mutated.mutation?.validity === 'INVALID_CALLDATA')

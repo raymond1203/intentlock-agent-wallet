@@ -25,5 +25,8 @@ plus resolutions in `benchmark/labels/adjudications.json`; neither path is overw
 of completion. Compare packet hashes and all 20 decisions before accepting a submission.
 
 For the post-state-only stale-quote and partial-completion mutations in `mutation-validity-20.json`, the correct pre-sign
-response is that the available evidence cannot distinguish it. Its stored post-state fault is
-scored separately; the reviewer must not guess a pre-sign attack category from an identical input.
+response is that the available evidence cannot distinguish them. First record those pre-sign
+judgments, then open `terminal-observations-20.json`, whose M01–M20 IDs match the mutation packet.
+It supplies unlabeled reference pre/post observations and completion status for a separate terminal
+judgment. Do not guess an attack category from identical pre-sign input or treat reference data as
+executed evidence. The files are public; this is a staged review procedure, not a sealed experiment.

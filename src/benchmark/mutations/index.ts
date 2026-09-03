@@ -85,7 +85,10 @@ function generated(
   scenario.oracle.evidenceLevel = 'EXPECTED_FIXTURE';
   scenario.oracle.evidence = `Deterministic ${operator} mutation; adjudicate with the pinned-fork post-state.`;
   scenario.mutation = {
-    validity: options.validity ?? 'VALID_SEMANTIC',
+    validity:
+      scenario.oracle.observationStage === 'POST_STATE'
+        ? 'POST_STATE_FIXTURE'
+        : (options.validity ?? 'VALID_SEMANTIC'),
     changes,
   };
   scenario.trace.actions.forEach((action, index) => {

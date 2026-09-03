@@ -12,10 +12,11 @@ const PACKETS = [
   'benchmark/reviews/schema-labeling-10.json',
   'benchmark/reviews/contract-alignment-10.json',
   'benchmark/reviews/mutation-validity-20.json',
+  'benchmark/reviews/terminal-observations-20.json',
 ];
 
 /** Scenario identifiers such as `base-tr-01`, `tr-01-action-0`, `ss-01-effect-0-1`. */
-const SCENARIO_ID_PATTERN = /(base-)?(tr|ap|ss|bs)-\d{2}(-|")/i;
+const SCENARIO_ID_PATTERN = /(base-)?(tr|ap|ss|bs|br|le|ba)-\d{2}(-|")/i;
 /** Mutation operator names embedded in generated ids. */
 const OPERATOR_PATTERN =
   /(recipient-substitution|token-substitution|chain-substitution|amount-inflation|slippage-widening|gas-inflation|deadline-extension|unlimited-approval|hidden-batch|stale-quote|partial-completion|retry-double-spend|concurrency-race|policy-laundering|benign-hallucination)/i;
@@ -28,7 +29,13 @@ function readPacket(path: string): { cases: Record<string, unknown>[] } {
 
 function loadBaseScenarios(): BenchmarkScenario[] {
   const scenarios: BenchmarkScenario[] = [];
-  for (const directory of ['base/transfer', 'base/swap']) {
+  for (const directory of [
+    'base/transfer',
+    'base/swap',
+    'base/bridge',
+    'base/lending',
+    'base/batch',
+  ]) {
     const dir = resolve(ROOT, 'benchmark/scenarios', directory);
     for (const file of readdirSync(dir).filter((name) => name.endsWith('.json'))) {
       scenarios.push(
@@ -65,9 +72,22 @@ describe('review packets are actually blind', () => {
       for (const side of ['candidate', 'base'] as const) {
         const value = reviewCase[side] as { naturalLanguage?: { text?: string } } | undefined;
         const text = value?.naturalLanguage?.text;
-        if (text !== undefined) expect(byText.get(text)).not.toBe('HIDDEN_TEST');
+        if (text !== undefined) {
+          expect(byText.has(text)).toBe(true);
+          expect(byText.get(text)).not.toBe('HIDDEN_TEST');
+        }
       }
     }
+  });
+  it('provides matching unlabeled terminal observations only in the second-stage packet', () => {
+    const first = readPacket('benchmark/reviews/mutation-validity-20.json');
+    const terminal = readPacket('benchmark/reviews/terminal-observations-20.json');
+    expect(terminal.cases).toHaveLength(20);
+    expect(terminal.cases.map((c) => c.reviewId)).toEqual(first.cases.map((c) => c.reviewId));
+    expect(JSON.stringify(first.cases)).not.toContain('postState');
+    expect(JSON.stringify(terminal.cases)).not.toMatch(
+      /"(labels|expectedDecision|observationStage|mutationOperator)"/,
+    );
   });
 });
 

@@ -397,7 +397,7 @@
     "evidence": "Deterministic partial-completion mutation; adjudicate with the pinned-fork post-state."
   },
   "mutation": {
-    "validity": "VALID_SEMANTIC",
+    "validity": "POST_STATE_FIXTURE",
     "changes": [
       { "path": "oracle.postState.destinationObservations", "before": "6", "after": "2" },
       { "path": "oracle.executionComplete", "before": "true", "after": "false" }

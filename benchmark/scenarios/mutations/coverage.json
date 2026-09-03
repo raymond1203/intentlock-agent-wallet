@@ -2,7 +2,8 @@
   "schemaVersion": "0.1",
   "seed": 2026,
   "total": 15,
-  "validSemantic": 14,
+  "postStateFixtures": 2,
+  "validSemantic": 12,
   "invalidCalldata": 1,
   "operators": {
     "recipient-substitution": {
@@ -72,14 +73,14 @@
       "scenarioId": "SS-01-STALE-QUOTE-2026",
       "baseScenarioId": "SS-01",
       "label": "STALE_QUOTE",
-      "validity": "VALID_SEMANTIC",
+      "validity": "POST_STATE_FIXTURE",
       "expectedDecision": "DENY"
     },
     "partial-completion": {
       "scenarioId": "BR-01-PARTIAL-COMPLETION-2026",
       "baseScenarioId": "BR-01",
       "label": "PARTIAL_COMPLETION",
-      "validity": "VALID_SEMANTIC",
+      "validity": "POST_STATE_FIXTURE",
       "expectedDecision": "ESCALATE"
     },
     "retry-double-spend": {

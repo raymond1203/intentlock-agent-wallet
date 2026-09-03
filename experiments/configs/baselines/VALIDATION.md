@@ -1,59 +1,58 @@
-# M2 Baseline Validation Report
+# M2 baseline validation — 2026-09-03
 
-> **VOID — the `intentlock-llm-baseline-v1` run below must not be reported.**
->
-> Independent review on PR #46 found that the v1 prompt carried scenario
-> identifiers into the model input. `intentContract.idempotencyKey` named the source scenario
-> (`base-tr-01`) and, for every mutated case, the effect ids named the attack operator
-> (`ap-01-unlimited-approval-2026-effect-0`, `bs-01-hidden-batch-2026-effect-3`). All ten mutated
-> cases carried the operator name and none of the ten base cases did, so the two classes were
-> separable from the identifier strings alone.
->
-> The seventeen-of-twenty figure is confounded and void. Identifiers made shortcut classification
-> possible; the observations do not prove that the model used that shortcut or predict the rerun's score.
-> The prompt is now `intentlock-llm-baseline-v2` with identifiers redacted
-> (`redactScenarioIdentity`), and the twenty cases must be re-run before any number is reported.
-> `llm-verifier-20-review.json` is retained as a record of the voided run only.
+## Result and scope
 
-## Fixed configuration
+The identity-redacted v2 adapter run completed all 20 requests: 17 exact decision matches,
+20 eligible PRE_SIGN cases, one attempt each, no transport/parser fallback. This is the unchanged
+ten-base/ten-mutation TRAIN/DEV validation selection, **not final benchmark accuracy**. The
+independent twenty-rationale review is still pending.
 
-- Dataset: `0.1.0`, seed `2026`
-- Model: `gpt-5.4-mini-2026-03-17`
-- Prompt: `intentlock-llm-baseline-v2` (the record below was produced under the void `v1`)
-- Temperature: `0`
-- Retry: one retry after malformed output, timeout, or transport failure
-- Timeout: 30 seconds per attempt
-- Malformed policy: explicit `ABSTAIN`
-- API: Responses API strict JSON Schema, `store: false`
+The v1 17/20 run is void because source/attack identifiers leaked into prompts. The new run happens
+to yield the same count and mismatch IDs. Neither observation proves whether the old model used
+the shortcut; do not assume a lower rerun score or rehabilitate the confounded v1 result.
 
-## Live twenty-case adapter validation
+## Reproducibility
 
-The configured model was run on 2026-08-30 over the frozen ten-base/ten-mutation review sample.
-The prompt withheld the oracle, scenario ID, stored label, and mutation metadata. Seventeen of
-twenty decisions exactly matched the held-out expected decision. This stratified adapter sample is
-not reported as final benchmark accuracy.
+- Dataset candidate: 0.2.0, seed 2026; public holdout exposed, re-freeze pending.
+- Code commit: `c5e521b1c4e9e6301f199139f79061c8ef508760`; working tree clean at run start.
+- Model: `gpt-5.4-mini-2026-03-17`.
+- Prompt: `intentlock-llm-baseline-v2`; temperature 0.
+- API: Responses, strict JSON Schema, 512 output-token cap, `store: false`.
+- One retry maximum, 30 seconds per attempt; final failure becomes ABSTAIN.
+- Started: 2026-09-03T12:09:20.101Z; completed: 2026-09-03T12:09:46.584Z.
+- Complete serialized-input/system/config SHA-256:
+  `cb0bd6387f9f59981eb8acd69108a8afc1b09c315ebf303c096419cbd4771f0b`.
+- Ignored raw artifact: `experiments/results/baselines/llm-verifier-v2-2026-09-03.json`.
+- Raw SHA-256: `02bc197d608ed44f28ac4bfaca1241d6d1ebf3b2c11b5e48a4f881cf1c67ed2a`.
+- Public input/output packet: `llm-verifier-20-review.json`; references the same input hash.
 
-| Review ID | Case                        | Expected | Actual | Observation                                                      |
-| --------- | --------------------------- | -------- | ------ | ---------------------------------------------------------------- |
-| R15       | slippage widening           | DENY     | ALLOW  | Model miscomputed a 5% quote/min-out gap as 50 bps               |
-| R16       | Permit2 deadline extension  | DENY     | ALLOW  | Model failed to compare epoch deadlines correctly                |
-| R20       | benign unsupported selector | ABSTAIN  | DENY   | Conservative denial differed from the explicit abstention oracle |
+Identifiers, nested action/effect IDs, stored class, author labels, oracle and mutation metadata
+are not supplied to the model. Blinding tests check that boundary. This is identity blinding,
+not a claim that publicly available benchmark content is unknown to the model.
 
-The ignored local raw artifact is `experiments/results/baselines/llm-verifier-20.json`; its SHA-256
-for this run is `57B81C7D5D2F06C7143863425E1B612C2CF2040F1E31DC35B993882E7CA9E133`.
-It contains model output and benchmark records but no API key or upstream error body.
+## Mismatches for independent review
 
-## Fail-closed and per-call checks
+| ID  | Authored case              | Expected | Actual | Evidence to review                                                                                                   |
+| --- | -------------------------- | -------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| R15 | Slippage widening          | DENY     | ALLOW  | Quote 1000 and minimum 950 imply 5%, above the 1% cap; rationale accepts it                                          |
+| R16 | Permit2 deadline extension | DENY     | ALLOW  | Mutation sets expiry beyond contract deadline; rationale claims it is within bounds                                  |
+| R20 | Unsupported extra selector | ABSTAIN  | DENY   | Explicit selector violation supports denial while unknown effects support escalation; adjudicate decision precedence |
 
-- Strict structured output, extra-key rejection, timeout abort, retry count, and `ABSTAIN`/`DENY`
-  fallback are covered by automated tests.
-- The per-call baseline allows compliant base traces and denies locally visible recipient, amount,
-  chain, target, selector, and value violations.
-- As designed, it allows the retry, concurrency, and policy-laundering examples where each isolated
-  call is legal but the cumulative total exceeds the contract.
+R20 is a conservative label mismatch, not unsafe execution. Do not conflate exact-match rate with
+attack success or invent an independent reviewer judgment. The author's ABSTAIN and the model's
+DENY are both retained for adjudication.
 
-## Human gate
+Stale-quote and partial-completion fixtures are POST_STATE-only and absent from this fixed sample.
+The shared scorer excludes stage mismatches for every method. Guard Mode STRICT/LITERAL, per-call
+policy and IntentLock fixture diagnostics are in `../m2-validation.json`, separately from live LLM
+output and actual fork evidence.
 
-The other team member must review the twenty oracle-free inputs and outputs in
-`llm-verifier-20-review.json` using `reviewer-20.json`. Until that review is recorded, the baseline
-implementation is runnable and validated but #26's final reviewer acceptance item remains pending.
+## Automated checks and remaining gates
+
+The integrated branch passed 405 local tests with 12 live-fork tests skipped without RPC settings;
+a separate configured fork run passed 14/14. Line coverage was 93.79%, branch coverage 86.88%.
+Schema, benchmark and M2 diagnostic regeneration checks are required in CI.
+
+Review `reviewer-20.json` and the public output packet before accepting #26. Complete scenario-specific
+execution, state reconciliation, two-person review and candidate re-freeze before publishing
+comparative research metrics. No M2 issue is closed solely by these automated results.

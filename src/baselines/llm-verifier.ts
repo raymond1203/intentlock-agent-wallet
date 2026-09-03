@@ -52,8 +52,8 @@ export const LLM_VERIFIER_SYSTEM_PROMPT = [
  * Scenario identifiers leak the answer: an idempotency key such as
  * `base-tr-01` names the source scenario, and an effect id such as
  * `ap-01-unlimited-approval-2026-effect-0` names the attack operator. Any
- * measurement taken with those strings in the prompt reports string matching,
- * not verification, so every identifier is replaced with a positional token.
+ * measurement taken with those strings is confounded by a possible shortcut;
+ * it does not establish whether the model used it. Replace every identifier.
  */
 export function redactScenarioIdentity(scenario: BenchmarkScenario): {
   userIntent: BenchmarkScenario['naturalLanguage'];

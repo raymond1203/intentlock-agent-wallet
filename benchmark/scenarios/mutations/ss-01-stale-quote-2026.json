@@ -221,7 +221,7 @@
     "evidence": "Deterministic stale-quote mutation; adjudicate with the pinned-fork post-state."
   },
   "mutation": {
-    "validity": "VALID_SEMANTIC",
+    "validity": "POST_STATE_FIXTURE",
     "changes": [{ "path": "oracle.postState.0.value", "before": "1000", "after": "989" }]
   }
 }

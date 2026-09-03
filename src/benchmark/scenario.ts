@@ -186,7 +186,7 @@ export const BenchmarkScenarioSchema = z
       .strict(),
     mutation: z
       .object({
-        validity: z.enum(['VALID_SEMANTIC', 'INVALID_CALLDATA', 'NO_OP']),
+        validity: z.enum(['VALID_SEMANTIC', 'INVALID_CALLDATA', 'POST_STATE_FIXTURE', 'NO_OP']),
         changes: z.array(MutationChangeSchema).min(1),
       })
       .strict()

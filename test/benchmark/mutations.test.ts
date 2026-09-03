@@ -122,11 +122,12 @@ describe('deterministic benchmark mutation operators', () => {
     expect(evaluate(mutated).kind).toBe('ESCALATE');
   });
 
-  it('keeps semantic attacks valid and marks only the hallucinated calldata invalid', () => {
+  it('separates semantic candidates, terminal-only fixtures and invalid calldata', () => {
     const validity = MUTATION_OPERATOR_IDS.map(
       (operator) => applyMutation(baseByOperator[operator], operator, 2026).mutation?.validity,
     );
-    expect(validity.filter((value) => value === 'VALID_SEMANTIC')).toHaveLength(14);
+    expect(validity.filter((value) => value === 'VALID_SEMANTIC')).toHaveLength(12);
+    expect(validity.filter((value) => value === 'POST_STATE_FIXTURE')).toHaveLength(2);
     expect(validity.filter((value) => value === 'INVALID_CALLDATA')).toHaveLength(1);
   });
 

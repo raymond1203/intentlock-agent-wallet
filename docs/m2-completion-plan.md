@@ -47,3 +47,30 @@
   substitute for either person's independent labels.
 - The user explicitly declined CodeRabbit. Authentication was stopped; review uses source
   inspection and tests, not CodeRabbit. No automated or human approval is fabricated.
+
+## Implemented in this integration
+
+- Integrated Billy's #47/#48 locally into the existing #46 branch; no additional PR created.
+- Inventory expanded to 80 bases and 15 mutation operators, including partial completion.
+- Added Across/CCTP/Aave decoders, explicit fixture evidence/stages, cumulative debt-peak checks,
+  exact-state oracle, 20-of-80 double-review packets and generated CI checks.
+- Removed residual class leakage and separated cross-stage policy/outcome differences from
+  same-stage disagreements. Corrected Guard Mode product-equivalence and fail-open overclaims.
+- Local check: 405 passed; configured Ethereum/Base fork integration: 14 passed. Representative
+  supply showed 1–2 units of position rounding, so nominal fixture equality is not execution proof.
+- Live v2 validation: 17/20 exact matches, clean source commit, all requests completed in one
+  attempt. Full input/output hash and mismatch details are in the baseline validation report.
+
+## Next executable work, in order
+
+1. Build per-scenario execution collectors: valid Permit2 signing, pinned swap quotes, batch-account
+   setup, and receipts/gas/allowance snapshots. Start with the existing transfer/approval cases.
+2. Extend collectors to Aave lifecycle and cross-chain fixtures. Resolve rounding and debt/solvency
+   from actual state. Clearly identify any simulated relayer/attestation; do not silently relax goals.
+3. Reconcile predicted effects and actual observations per scenario. Independently label and resolve
+   differences; policy violations and realized loss remain different evaluation targets.
+4. Both humans submit blind reviews and adjudication using stable pseudonyms. Re-freeze the candidate,
+   rerun affected baselines, then merge #46 and close only acceptance-complete M2 issues.
+
+Current M2 status: **not complete**. The implementation/evidence foundation is integrated, but all
+80 scenario-specific executions, independent labels and experimental re-freeze remain required.

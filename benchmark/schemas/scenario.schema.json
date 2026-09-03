@@ -941,7 +941,10 @@
     "mutation": {
       "type": "object",
       "properties": {
-        "validity": { "type": "string", "enum": ["VALID_SEMANTIC", "INVALID_CALLDATA", "NO_OP"] },
+        "validity": {
+          "type": "string",
+          "enum": ["VALID_SEMANTIC", "INVALID_CALLDATA", "POST_STATE_FIXTURE", "NO_OP"]
+        },
         "changes": {
           "minItems": 1,
           "type": "array",
