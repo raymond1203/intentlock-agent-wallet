@@ -91,4 +91,15 @@ export {
 export { evaluateLlmVerifier } from './baselines/llm-verifier.js';
 export { OpenAiResponsesClient } from './baselines/openai-responses-client.js';
 export { evaluatePerCallPolicy } from './baselines/per-call-policy.js';
+export {
+  evaluateGuardMode,
+  GUARD_REASON_CODES,
+  GuardModeConfigSchema,
+  GuardModeEmulator,
+  guardModeConfigFromScenario,
+  ROLLING_WINDOW_SECONDS,
+  type GuardModeConfig,
+  type GuardModeEvaluation,
+  type GuardReasonCode,
+} from './baselines/guard-mode-emulator.js';
 export type { BaselineDecision, BaselineVerdict } from './baselines/types.js';

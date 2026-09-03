@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const BaselineDecisionSchema = z.enum(['ALLOW', 'DENY', 'ABSTAIN']);
-export const BaselineNameSchema = z.enum(['LLM_VERIFIER', 'PER_CALL_POLICY']);
+export const BaselineNameSchema = z.enum([
+  'LLM_VERIFIER',
+  'PER_CALL_POLICY',
+  'GUARD_MODE_EMULATOR',
+]);
 
 export const BaselineVerdictSchema = z
   .object({
