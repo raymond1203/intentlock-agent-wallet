@@ -4,6 +4,9 @@
 - Date: 2026-08-30
 - Dataset version: 0.1.0
 
+> Historical proposal, superseded by [0008](0008-m2-integration-and-evidence-gates.md).
+> The v1 prompt leaked identifiers and the public holdout is exposed. Do not use its metrics.
+
 ## Decision
 
 Freeze forty curated base scenarios as four equal workflow groups and use a grouped-stratified

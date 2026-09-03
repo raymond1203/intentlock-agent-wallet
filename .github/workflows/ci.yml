@@ -40,6 +40,12 @@ jobs:
       - name: Validate
         run: pnpm run check
 
+      - name: Check generated schemas and benchmark
+        run: |
+          pnpm run schema:check
+          pnpm run benchmark:check
+          pnpm run m2:validate --check
+
   foundry:
     name: Foundry / Validate
     runs-on: ubuntu-latest

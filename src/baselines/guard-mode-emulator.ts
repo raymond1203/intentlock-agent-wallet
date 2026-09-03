@@ -30,6 +30,8 @@ export const GUARD_REASON_CODES = {
   OUTFLOW_UNTRACKED_FALLBACK: 'OUTFLOW_UNTRACKED_FALLBACK',
   /** Documented: signatures such as Permit2 are not part of the outflow total. */
   SIGNATURE_OUTSIDE_OUTFLOW: 'SIGNATURE_OUTSIDE_OUTFLOW',
+  INVALID_EVALUATION_TIME: 'INVALID_EVALUATION_TIME',
+  OUTFLOW_LIMIT_UNDEFINED: 'OUTFLOW_LIMIT_UNDEFINED',
 } as const;
 
 export type GuardReasonCode = (typeof GUARD_REASON_CODES)[keyof typeof GUARD_REASON_CODES];
@@ -197,6 +199,7 @@ export interface GuardModeEvaluation {
 export class GuardModeEmulator {
   private readonly config: GuardModeConfig;
   private readonly history: OutflowEntry[] = [];
+  private lastEvaluationMs = -Infinity;
 
   constructor(config: GuardModeConfig) {
     this.config = GuardModeConfigSchema.parse(config);
@@ -216,6 +219,8 @@ export class GuardModeEmulator {
     const account = scenario.intent.account;
     const effects = scenario.trace.expectedEffects;
     const reasonCodes: GuardReasonCode[] = [];
+    if (!Number.isFinite(atMs) || atMs < this.lastEvaluationMs)
+      reasonCodes.push(GUARD_REASON_CODES.INVALID_EVALUATION_TIME);
 
     const outflowTracked = !effects.some((effect) => effect.kind === 'UNKNOWN');
 
@@ -226,6 +231,15 @@ export class GuardModeEmulator {
       if (!includesAddress(this.config.addressAllowlist, action.target)) {
         reasonCodes.push(GUARD_REASON_CODES.ADDRESS_NOT_ALLOWED);
       }
+    }
+
+    // Simulated nested calls share the same allowlist boundary as top-level calls.
+    for (const effect of effects) {
+      const chainId = effect.kind === 'BRIDGE' ? effect.sourceChainId : effect.chainId;
+      if (!this.config.networkAllowlist.includes(chainId))
+        reasonCodes.push(GUARD_REASON_CODES.NETWORK_NOT_ALLOWED);
+      if (!includesAddress(this.config.addressAllowlist, effect.provenance.target))
+        reasonCodes.push(GUARD_REASON_CODES.ADDRESS_NOT_ALLOWED);
     }
 
     for (const { chainId, recipient } of recipientsToCheck(effects, account)) {
@@ -262,7 +276,10 @@ export class GuardModeEmulator {
         const limit = this.config.outflowLimits.find(
           (candidate) => budgetKey(candidate.chainId, candidate.asset) === key,
         );
-        if (limit === undefined) continue;
+        if (limit === undefined) {
+          reasonCodes.push(GUARD_REASON_CODES.OUTFLOW_LIMIT_UNDEFINED);
+          continue;
+        }
         if (this.spentInWindow(key, atMs) + amount > BigInt(limit.maxAmount)) {
           reasonCodes.push(GUARD_REASON_CODES.ROLLING_OUTFLOW_EXCEEDED);
         }
@@ -292,6 +309,7 @@ export class GuardModeEmulator {
     }
 
     const committed = outflowTracked ? [...totals].map(([key, amount]) => ({ key, amount })) : [];
+    this.lastEvaluationMs = atMs;
     for (const entry of committed) {
       this.history.push({ atMs, key: entry.key, amount: entry.amount });
     }

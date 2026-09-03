@@ -9,7 +9,8 @@ import {
   type MutationOperatorId,
 } from '../../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../../src/benchmark/scenario.js';
-import { evaluateIntent, type FinalGoalCheck } from '../../src/monitor/monitor.js';
+import { evaluateIntent } from '../../src/monitor/monitor.js';
+import { evaluatePostState } from '../../src/oracle/post-state-oracle.js';
 
 function load(relativePath: string): BenchmarkScenario {
   return BenchmarkScenarioSchema.parse(
@@ -28,6 +29,7 @@ const bases = {
   permit2: load('transfer/ap-03.json'),
   swap: load('swap/ss-01.json'),
   batch: load('swap/bs-01.json'),
+  bridge: load('bridge/br-01.json'),
 };
 
 const baseByOperator: Record<MutationOperatorId, BenchmarkScenario> = {
@@ -41,6 +43,7 @@ const baseByOperator: Record<MutationOperatorId, BenchmarkScenario> = {
   'unlimited-approval': bases.approval,
   'hidden-batch': bases.batch,
   'stale-quote': bases.swap,
+  'partial-completion': bases.bridge,
   'retry-double-spend': bases.transfer,
   'concurrency-race': bases.transfer,
   'policy-laundering': bases.transfer,
@@ -48,11 +51,17 @@ const baseByOperator: Record<MutationOperatorId, BenchmarkScenario> = {
 };
 
 function evaluate(scenario: BenchmarkScenario) {
-  const finalGoalChecks: FinalGoalCheck[] | undefined = scenario.oracle.labels.includes(
-    'STALE_QUOTE',
-  )
-    ? [{ goalIndex: 0, satisfied: false, evidence: 'actual output is below amountOutMinimum' }]
-    : undefined;
+  if (scenario.oracle.observationStage === 'POST_STATE') {
+    const result = evaluatePostState({
+      contract: scenario.intent,
+      preState: scenario.oracle.preState,
+      postState: scenario.oracle.postState,
+      observedEffects: scenario.trace.expectedEffects,
+      evidenceLevel: 'EXPECTED_FIXTURE',
+      executionComplete: scenario.oracle.executionComplete,
+    });
+    return { kind: result.decision };
+  }
   return evaluateIntent({
     contract: scenario.intent,
     acceptedEffects: [],
@@ -60,14 +69,13 @@ function evaluate(scenario: BenchmarkScenario) {
     candidateDecodeStatus:
       scenario.mutation?.validity === 'INVALID_CALLDATA' ? 'UNKNOWN' : 'COMPLETE',
     simulationStatus: 'SUCCESS',
-    ...(finalGoalChecks ? { finalGoalChecks } : {}),
     evaluatedAt: '2026-08-30T00:00:00Z',
   });
 }
 
 describe('deterministic benchmark mutation operators', () => {
   it('covers every declared operator with a schema-valid representative', () => {
-    expect(MUTATION_OPERATOR_IDS).toHaveLength(14);
+    expect(MUTATION_OPERATOR_IDS).toHaveLength(15);
     for (const operator of MUTATION_OPERATOR_IDS) {
       const mutated = applyMutation(baseByOperator[operator], operator, 2026);
       expect(BenchmarkScenarioSchema.safeParse(mutated).success, operator).toBe(true);
@@ -118,7 +126,7 @@ describe('deterministic benchmark mutation operators', () => {
     const validity = MUTATION_OPERATOR_IDS.map(
       (operator) => applyMutation(baseByOperator[operator], operator, 2026).mutation?.validity,
     );
-    expect(validity.filter((value) => value === 'VALID_SEMANTIC')).toHaveLength(13);
+    expect(validity.filter((value) => value === 'VALID_SEMANTIC')).toHaveLength(14);
     expect(validity.filter((value) => value === 'INVALID_CALLDATA')).toHaveLength(1);
   });
 

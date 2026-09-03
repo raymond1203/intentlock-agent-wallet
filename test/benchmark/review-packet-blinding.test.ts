@@ -18,7 +18,7 @@ const PACKETS = [
 const SCENARIO_ID_PATTERN = /(base-)?(tr|ap|ss|bs)-\d{2}(-|")/i;
 /** Mutation operator names embedded in generated ids. */
 const OPERATOR_PATTERN =
-  /(recipient-substitution|token-substitution|chain-substitution|amount-inflation|slippage-widening|gas-inflation|deadline-extension|unlimited-approval|hidden-batch|stale-quote|retry-double-spend|concurrency-race|policy-laundering|benign-hallucination)/i;
+  /(recipient-substitution|token-substitution|chain-substitution|amount-inflation|slippage-widening|gas-inflation|deadline-extension|unlimited-approval|hidden-batch|stale-quote|partial-completion|retry-double-spend|concurrency-race|policy-laundering|benign-hallucination)/i;
 
 function readPacket(path: string): { cases: Record<string, unknown>[] } {
   return JSON.parse(readFileSync(resolve(ROOT, path), 'utf8')) as {
@@ -49,6 +49,12 @@ describe('review packets are actually blind', () => {
   it.each(PACKETS)('%s never names the mutation operator', (path) => {
     // The operator is exactly what the reviewer has to infer for issue 23.
     expect(readFileSync(resolve(ROOT, path), 'utf8')).not.toMatch(OPERATOR_PATTERN);
+  });
+
+  it.each(PACKETS)('%s never exposes the author class through trace.kind', (path) => {
+    expect(readFileSync(resolve(ROOT, path), 'utf8')).not.toMatch(
+      /"kind":\s*"(BENIGN|ADVERSARIAL|BENIGN_DRIFT)"/,
+    );
   });
 
   it.each(PACKETS)('%s contains no hidden-test scenario', (path) => {

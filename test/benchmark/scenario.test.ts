@@ -89,7 +89,7 @@ describe('benchmark scenario schema and split freeze', () => {
         readFileSync(resolve(import.meta.dirname, '../../benchmark/splits/manifest.json'), 'utf8'),
       ),
     );
-    expect(Object.keys(manifest.assignments)).toHaveLength(40);
+    expect(Object.keys(manifest.assignments)).toHaveLength(80);
     for (const scenario of scenarios)
       expect(manifest.assignments[scenario.id]).toBe(scenario.split);
   });

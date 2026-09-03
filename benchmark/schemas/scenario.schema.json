@@ -36,6 +36,44 @@
       "required": ["kind", "sources"],
       "additionalProperties": false
     },
+    "fixture": {
+      "type": "object",
+      "properties": {
+        "manifest": { "type": "string", "const": "benchmark/fixtures/manifest.json" },
+        "chains": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "blockNumber": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "blockHash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+              "contracts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                    "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" }
+                  },
+                  "required": ["address", "codehash"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["chainId", "blockNumber", "blockHash", "contracts"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["manifest", "chains"],
+      "additionalProperties": false
+    },
     "naturalLanguage": {
       "type": "object",
       "properties": {
@@ -142,6 +180,30 @@
                 "additionalProperties": false
               }
             },
+            "debtLimits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "initialDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "maxDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "asset", "account", "initialDebt", "maxDebt"],
+                "additionalProperties": false
+              }
+            },
             "maxGasWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
             "maxSlippageBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
             "expiresAt": {
@@ -158,6 +220,44 @@
           "type": "array",
           "items": {
             "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_POSITION" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "protocol", "minAmount"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_HEALTH_FACTOR" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minWad": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "account", "protocol", "minWad"],
+                "additionalProperties": false
+              },
               {
                 "type": "object",
                 "properties": {
@@ -467,7 +567,15 @@
                   },
                   "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
                   "maxFee": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
-                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "destinationAsset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "minAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "deadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
                 },
                 "required": [
                   "id",
@@ -504,6 +612,55 @@
                     "additionalProperties": false
                   },
                   "kind": { "type": "string", "const": "DEBT" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "delta": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "protocol",
+                  "account",
+                  "asset",
+                  "delta"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "POSITION" },
                   "chainId": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
@@ -650,6 +807,17 @@
     "oracle": {
       "type": "object",
       "properties": {
+        "observationStage": {
+          "default": "PRE_SIGN",
+          "type": "string",
+          "enum": ["PRE_SIGN", "POST_STATE"]
+        },
+        "evidenceLevel": {
+          "default": "EXPECTED_FIXTURE",
+          "type": "string",
+          "enum": ["EXPECTED_FIXTURE", "EXECUTED_FORK"]
+        },
+        "executionComplete": { "default": true, "type": "boolean" },
         "expectedDecision": { "type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"] },
         "labels": {
           "minItems": 1,
@@ -688,7 +856,16 @@
               "subject": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
               "field": {
                 "type": "string",
-                "enum": ["BALANCE", "ALLOWANCE", "OWNER", "DEBT", "GAS_USED", "CODEHASH"]
+                "enum": [
+                  "BALANCE",
+                  "ALLOWANCE",
+                  "OWNER",
+                  "DEBT",
+                  "POSITION",
+                  "HEALTH_FACTOR",
+                  "GAS_USED",
+                  "CODEHASH"
+                ]
               },
               "asset": {
                 "anyOf": [
@@ -697,8 +874,12 @@
                 ]
               },
               "counterparty": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
               "value": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$|^0x[a-fA-F0-9]{40,64}$" },
-              "source": { "type": "string", "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE"] }
+              "source": {
+                "type": "string",
+                "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE", "EXPECTED_FIXTURE"]
+              }
             },
             "required": ["chainId", "subject", "field", "value", "source"],
             "additionalProperties": false
@@ -714,7 +895,16 @@
               "subject": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
               "field": {
                 "type": "string",
-                "enum": ["BALANCE", "ALLOWANCE", "OWNER", "DEBT", "GAS_USED", "CODEHASH"]
+                "enum": [
+                  "BALANCE",
+                  "ALLOWANCE",
+                  "OWNER",
+                  "DEBT",
+                  "POSITION",
+                  "HEALTH_FACTOR",
+                  "GAS_USED",
+                  "CODEHASH"
+                ]
               },
               "asset": {
                 "anyOf": [
@@ -723,8 +913,12 @@
                 ]
               },
               "counterparty": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
               "value": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$|^0x[a-fA-F0-9]{40,64}$" },
-              "source": { "type": "string", "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE"] }
+              "source": {
+                "type": "string",
+                "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE", "EXPECTED_FIXTURE"]
+              }
             },
             "required": ["chainId", "subject", "field", "value", "source"],
             "additionalProperties": false
@@ -732,7 +926,16 @@
         },
         "evidence": { "type": "string", "minLength": 3 }
       },
-      "required": ["expectedDecision", "labels", "preState", "postState", "evidence"],
+      "required": [
+        "observationStage",
+        "evidenceLevel",
+        "executionComplete",
+        "expectedDecision",
+        "labels",
+        "preState",
+        "postState",
+        "evidence"
+      ],
       "additionalProperties": false
     },
     "mutation": {

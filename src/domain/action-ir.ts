@@ -64,6 +64,9 @@ export const EconomicEffectSchema = z.discriminatedUnion('kind', [
     amount: UnsignedIntegerStringSchema,
     maxFee: UnsignedIntegerStringSchema,
     recipient: EvmAddressSchema,
+    destinationAsset: AssetIdSchema.optional(),
+    minAmountOut: UnsignedIntegerStringSchema.optional(),
+    deadline: UnsignedIntegerStringSchema.optional(),
   }).strict(),
   EffectBaseSchema.extend({
     kind: z.literal('DEBT'),
@@ -72,6 +75,14 @@ export const EconomicEffectSchema = z.discriminatedUnion('kind', [
     account: EvmAddressSchema,
     asset: AssetIdSchema,
     delta: z.string().regex(/^-?(0|[1-9]\d*)$/, 'expected a canonical signed integer string'),
+  }).strict(),
+  EffectBaseSchema.extend({
+    kind: z.literal('POSITION'),
+    chainId: z.number().int().positive(),
+    protocol: EvmAddressSchema,
+    account: EvmAddressSchema,
+    asset: AssetIdSchema,
+    delta: z.string().regex(/^-?(0|[1-9]\d*)$/),
   }).strict(),
   EffectBaseSchema.extend({
     kind: z.literal('OWNERSHIP'),
@@ -192,6 +203,7 @@ export function aggregateEffects(
         hasUnknown = true;
         break;
       case 'DEBT':
+      case 'POSITION':
       case 'OWNERSHIP':
       case 'SWAP':
         break;

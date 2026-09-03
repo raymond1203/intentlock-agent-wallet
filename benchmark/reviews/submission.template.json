@@ -1,0 +1,171 @@
+{
+  "protocolVersion": "0.2",
+  "datasetVersion": "0.2.0",
+  "packetSha256": "3dd32386489ea926423efd48599053fb0a34ff649d29cdc07db142b672c79212",
+  "reviewer": null,
+  "reviewerType": "HUMAN",
+  "submittedAt": null,
+  "status": "PENDING",
+  "cases": [
+    {
+      "reviewId": "D01",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D02",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D03",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D04",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D05",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D06",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D07",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D08",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D09",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D10",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D11",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D12",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D13",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D14",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D15",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D16",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D17",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D18",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D19",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    },
+    {
+      "reviewId": "D20",
+      "alignment": null,
+      "intermediateDecision": null,
+      "finalStateDecision": null,
+      "evidenceAdequate": null,
+      "notes": null
+    }
+  ]
+}

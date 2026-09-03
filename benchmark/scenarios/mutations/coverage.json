@@ -1,8 +1,8 @@
 {
   "schemaVersion": "0.1",
   "seed": 2026,
-  "total": 14,
-  "validSemantic": 13,
+  "total": 15,
+  "validSemantic": 14,
   "invalidCalldata": 1,
   "operators": {
     "recipient-substitution": {
@@ -74,6 +74,13 @@
       "label": "STALE_QUOTE",
       "validity": "VALID_SEMANTIC",
       "expectedDecision": "DENY"
+    },
+    "partial-completion": {
+      "scenarioId": "BR-01-PARTIAL-COMPLETION-2026",
+      "baseScenarioId": "BR-01",
+      "label": "PARTIAL_COMPLETION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "ESCALATE"
     },
     "retry-double-spend": {
       "scenarioId": "TR-01-RETRY-DOUBLE-SPEND-2026",

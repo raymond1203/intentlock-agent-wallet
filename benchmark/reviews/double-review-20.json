@@ -1,0 +1,4522 @@
+{
+  "protocolVersion": "0.2",
+  "datasetVersion": "0.2.0",
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "instructions": "Each reviewer independently assesses natural-language alignment, intermediate safety, final-state goals and evidence limitations. Expected fixtures do not demonstrate execution. Do not open source labels or diagnostics before submitting.",
+  "cases": [
+    {
+      "reviewId": "D01",
+      "input": {
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D02",
+      "input": {
+        "userIntent": {
+          "text": "회계 메모에 적힌 주소로 USDC 0.6개를 송금해. 주소 해석이 불확실하면 확인 후 진행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "600000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "600000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "600000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "600000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D03",
+      "input": {
+        "userIntent": {
+          "text": "SwapRouter02가 USDC 2개까지만 사용할 수 있도록 정확한 allowance를 설정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "2000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001e8480",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "2000000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "2000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D04",
+      "input": {
+        "userIntent": {
+          "text": "Permit2로 USDC 1.5개 한도와 이번 주 만료를 묶어 router 권한을 서명해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "selectors": ["0x2b67b570"]
+                  },
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "1500000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "selector": "0x2b67b570",
+            "calldata": "0x2b67b570000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000016e360000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000021234000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "selector": "0x2b67b570",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1500000",
+            "expiration": "1788534000",
+            "signatureDeadline": "1788534000",
+            "nonce": "2"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "1500000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D05",
+      "input": {
+        "userIntent": {
+          "text": "USDC 3개 승인 후 작업을 수행하지 말고 승인량 자체만 정확히 기록해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "5",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "3000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000002dc6c0",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "3000000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "3000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D06",
+      "input": {
+        "userIntent": {
+          "text": "USDC 1개를 WETH로 바꾸고 quote 대비 최대 1퍼센트 slippage로 수취인에게 보내.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D07",
+      "input": {
+        "userIntent": {
+          "text": "수취인 별칭이 불명확한 USDC 0.9개 swap은 주소 확인이 끝난 뒤 실행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "900000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "941"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000dbba000000000000000000000000000000000000000000000000000000000000003ad0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "900000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "900000",
+            "quotedAmountOut": "950",
+            "minAmountOut": "941",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "950",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D08",
+      "input": {
+        "userIntent": {
+          "text": "USDC 1개 승인과 WETH swap을 ERC-7821 batch 하나로 묶고 두 내부 호출만 허용해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D09",
+      "input": {
+        "userIntent": {
+          "text": "batch 수취인 설명이 모호하므로 주소 확인 뒤 approve와 swap 두 단계만 실행해.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "900000",
+                "maxAllowanceExposure": "900000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "971"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000dbba00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000dbba000000000000000000000000000000000000000000000000000000000000003cb000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "900000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "900000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "900000",
+            "quotedAmountOut": "980",
+            "minAmountOut": "971",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "980",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "900000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D10",
+      "input": {
+        "userIntent": {
+          "text": "공식 Permit2 대신 ERC20 exact approval을 사용해 USDC 1.7개 batch swap을 구성해.",
+          "ambiguity": "IMPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "8",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1700000",
+                "maxAllowanceExposure": "1700000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1782"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000019f0a00000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000800000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000019f0a000000000000000000000000000000000000000000000000000000000000006f6000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1700000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1700000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1700000",
+            "quotedAmountOut": "1800",
+            "minAmountOut": "1782",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "value": "1800",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "1700000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D11",
+      "input": {
+        "userIntent": {
+          "text": "Bridge one USDC from Ethereum through Across, then exchange the delivered USDC for WETH in my Base account.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "0",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                    "selectors": ["0x7b939232"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "999000",
+                "maxAllowanceExposure": "999000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 8453,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c500000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "selector": "0x7b939232",
+            "calldata": "0x7b939232000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006a82a9bf000000000000000000000000000000000000000000000000000000006a82c4f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f3e58",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 8453,
+            "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "selector": "0x7b939232",
+              "source": "CALLDATA"
+            },
+            "kind": "BRIDGE",
+            "sourceChainId": 1,
+            "destinationChainId": 8453,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "amount": "1000000",
+            "maxFee": "1000",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "minAmountOut": "999000",
+            "deadline": "1786955000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 8453,
+            "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "assetOut": "0x4200000000000000000000000000000000000006",
+            "amountIn": "999000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "999000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "999000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D12",
+      "input": {
+        "userIntent": {
+          "text": "Burn one USDC using CCTP V1; wait for Base mint before approving the router and swapping to WETH.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+                    "selectors": ["0x6fd3504e"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 8453,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b3000000000000000000000000bd3fa81b58ba92a82136038b25adec7066af315500000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+            "selector": "0x6fd3504e",
+            "calldata": "0x6fd3504e00000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000006000000000000000000000000f39Fd6e51aad88F6F4ce6aB8827279cffFb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 8453,
+            "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+              "selector": "0x6fd3504e",
+              "source": "CALLDATA"
+            },
+            "kind": "BRIDGE",
+            "sourceChainId": 1,
+            "destinationChainId": 8453,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "amount": "1000000",
+            "maxFee": "0",
+            "recipient": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "minAmountOut": "1000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 8453,
+            "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "assetOut": "0x4200000000000000000000000000000000000006",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D13",
+      "input": {
+        "userIntent": {
+          "text": "Clear prior source approval before the Across deposit, and revoke source and destination allowances after conversion.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "4",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                    "selectors": ["0x7b939232"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "999000",
+                "maxAllowanceExposure": "999000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5"
+            },
+            {
+              "chainId": 8453,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x2626664c2603336E57B271c5C0b26F421741e481"
+            },
+            {
+              "chainId": 8453,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c50000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c500000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 1,
+            "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "selector": "0x7b939232",
+            "calldata": "0x7b939232000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006a82a9bf000000000000000000000000000000000000000000000000000000006a82c4f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c50000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-4",
+            "executionIndex": 4,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f3e58",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-5",
+            "executionIndex": 5,
+            "chainId": 8453,
+            "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-6",
+            "executionIndex": 6,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e4810000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "amount": "0"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "selector": "0x7b939232",
+              "source": "CALLDATA"
+            },
+            "kind": "BRIDGE",
+            "sourceChainId": 1,
+            "destinationChainId": 8453,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "amount": "1000000",
+            "maxFee": "1000",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "minAmountOut": "999000",
+            "deadline": "1786955000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "amount": "0"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [4],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-5",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [5],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-6",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [5],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 8453,
+            "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "assetOut": "0x4200000000000000000000000000000000000006",
+            "amountIn": "999000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          },
+          {
+            "id": "effect-7",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [6],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "0"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "999000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D14",
+      "input": {
+        "userIntent": {
+          "text": "Move a small USDC balance to Base and buy WETH after I confirm the unspecified limits and recovery behavior.",
+          "ambiguity": "AMBIGUOUS",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "6",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                    "selectors": ["0x7b939232"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "999000",
+                "maxAllowanceExposure": "999000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 8453,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c500000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "selector": "0x7b939232",
+            "calldata": "0x7b939232000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006a82a9bf000000000000000000000000000000000000000000000000000000006a82c4f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f3e58",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 8453,
+            "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "selector": "0x7b939232",
+              "source": "CALLDATA"
+            },
+            "kind": "BRIDGE",
+            "sourceChainId": 1,
+            "destinationChainId": 8453,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "amount": "1000000",
+            "maxFee": "1000",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "minAmountOut": "999000",
+            "deadline": "1786955000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "999000"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 8453,
+            "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "assetOut": "0x4200000000000000000000000000000000000006",
+            "amountIn": "999000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "999000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "field": "BALANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "value": "999000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D15",
+      "input": {
+        "userIntent": {
+          "text": "Supply one WETH on Ethereum Aave and retain the collateral position without opening debt.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "0",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+                    "selectors": ["0x617ba037"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "maxGrossOutflow": "1000000000000000000",
+                "maxAllowanceExposure": "1000000000000000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+            },
+            {
+              "chainId": 1,
+              "kind": "MIN_POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "minAmount": "1000000000000000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0x617ba037",
+            "calldata": "0x617ba037000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "POSITION",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "delta": "1000000000000000000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "0"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D16",
+      "input": {
+        "userIntent": {
+          "text": "Supply one WETH and borrow 100 USDC into my own account.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+                    "selectors": ["0x617ba037", "0xa415bcad"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "maxGrossOutflow": "1000000000000000000",
+                "maxAllowanceExposure": "1000000000000000000"
+              }
+            ],
+            "debtLimits": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                "initialDebt": "0",
+                "maxDebt": "100000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+            },
+            {
+              "chainId": 1,
+              "kind": "MIN_POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "minAmount": "1000000000000000000"
+            },
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "100000000"
+            },
+            {
+              "chainId": 1,
+              "kind": "MAX_DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "maxAmount": "100000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0x617ba037",
+            "calldata": "0x617ba037000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0xa415bcad",
+            "calldata": "0xa415bcad000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "POSITION",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "delta": "1000000000000000000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "0"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0xa415bcad",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+            "to": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "amount": "100000000"
+          },
+          {
+            "id": "effect-5",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0xa415bcad",
+              "source": "CALLDATA"
+            },
+            "kind": "DEBT",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "delta": "100000000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "100000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "100000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "100000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D17",
+      "input": {
+        "userIntent": {
+          "text": "Open the WETH collateral position, borrow USDC, then repay exactly half of the debt.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "4",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+                    "selectors": ["0x617ba037", "0xa415bcad", "0x573ade81"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+                  "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                "maxGrossOutflow": "1000000000000000000",
+                "maxAllowanceExposure": "1000000000000000000"
+              },
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "50000000",
+                "maxAllowanceExposure": "50000000"
+              }
+            ],
+            "debtLimits": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                "initialDebt": "0",
+                "maxDebt": "100000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+            },
+            {
+              "chainId": 1,
+              "kind": "MIN_POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "minAmount": "1000000000000000000"
+            },
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "50000000"
+            },
+            {
+              "chainId": 1,
+              "kind": "MAX_DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "maxAmount": "50000000"
+            },
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0x617ba037",
+            "calldata": "0x617ba037000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 1,
+            "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-3",
+            "executionIndex": 3,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0xa415bcad",
+            "calldata": "0xa415bcad000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-4",
+            "executionIndex": 4,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000002faf080",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-5",
+            "executionIndex": 5,
+            "chainId": 1,
+            "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "selector": "0x573ade81",
+            "calldata": "0x573ade81000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000002faf0800000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-6",
+            "executionIndex": 6,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "POSITION",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "delta": "1000000000000000000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "0"
+          },
+          {
+            "id": "effect-4",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0xa415bcad",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+            "to": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "amount": "100000000"
+          },
+          {
+            "id": "effect-5",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [3],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0xa415bcad",
+              "source": "CALLDATA"
+            },
+            "kind": "DEBT",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "delta": "100000000"
+          },
+          {
+            "id": "effect-6",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [4],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "50000000"
+          },
+          {
+            "id": "effect-7",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [5],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x573ade81",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+            "amount": "50000000"
+          },
+          {
+            "id": "effect-8",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [5],
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selector": "0x573ade81",
+              "source": "CALLDATA"
+            },
+            "kind": "DEBT",
+            "chainId": 1,
+            "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "delta": "-50000000"
+          },
+          {
+            "id": "effect-9",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [6],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "amount": "0"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "50000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+              "field": "BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "50000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "DEBT",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "50000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D18",
+      "input": {
+        "userIntent": {
+          "text": "Use my usual supply-only lending setup on the confirmed Base pool.",
+          "ambiguity": "IMPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "7",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x4200000000000000000000000000000000000006",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+                    "selectors": ["0x617ba037"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 8453,
+                "asset": "0x4200000000000000000000000000000000000006",
+                "maxGrossOutflow": "1000000000000000000",
+                "maxAllowanceExposure": "1000000000000000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 8453,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"
+            },
+            {
+              "chainId": 8453,
+              "kind": "MIN_POSITION",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "protocol": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "minAmount": "1000000000000000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 8453,
+            "target": "0x4200000000000000000000000000000000000006",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b3000000000000000000000000a238dd80c259a72e81d7e4664a9801593f98d1c50000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 8453,
+            "target": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+            "selector": "0x617ba037",
+            "calldata": "0x617ba03700000000000000000000000042000000000000000000000000000000000000060000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-2",
+            "executionIndex": 2,
+            "chainId": 8453,
+            "target": "0x4200000000000000000000000000000000000006",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b3000000000000000000000000a238dd80c259a72e81d7e4664a9801593f98d1c50000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x4200000000000000000000000000000000000006",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x4200000000000000000000000000000000000006",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0x4200000000000000000000000000000000000006",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+            "amount": "1000000000000000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "selector": "0x617ba037",
+              "source": "CALLDATA"
+            },
+            "kind": "POSITION",
+            "chainId": 8453,
+            "protocol": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+            "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "asset": "0x4200000000000000000000000000000000000006",
+            "delta": "1000000000000000000"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [2],
+              "target": "0x4200000000000000000000000000000000000006",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x4200000000000000000000000000000000000006",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+            "amount": "0"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+              "field": "BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "POSITION",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+              "value": "1000000000000000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D19",
+      "input": {
+        "userIntent": {
+          "text": "Batch two USDC payments to the confirmed payee under one total outflow cap.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "0",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000061a8000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "400000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "600000"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 1,
+              "subject": "0x2222222222222222222222222222222222222222",
+              "field": "BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "value": "1000000",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "D20",
+      "input": {
+        "userIntent": {
+          "text": "Clear allowances on both Ethereum and Base without moving token balances.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "5",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x00000000"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x00000000"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "0"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"
+            },
+            {
+              "chainId": 8453,
+              "kind": "NO_RESIDUAL_ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x2626664c2603336E57B271c5C0b26F421741e481"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc450000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 8453,
+            "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e4810000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "0"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 8453,
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "amount": "0"
+          }
+        ],
+        "observations": {
+          "evidenceLevel": "EXPECTED_FIXTURE",
+          "before": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ],
+          "after": [
+            {
+              "chainId": 1,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            },
+            {
+              "chainId": 8453,
+              "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "field": "ALLOWANCE",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "value": "0",
+              "source": "EXPECTED_FIXTURE"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

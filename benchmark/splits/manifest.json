@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "datasetVersion": "0.1.0",
+  "datasetVersion": "0.2.0",
   "strategy": "grouped-stratified-60-20-20",
   "salt": "intentlock-m2-v0-2026",
   "assignments": {
@@ -43,13 +43,64 @@
     "BS-07": "DEV",
     "BS-08": "DEV",
     "BS-09": "HIDDEN_TEST",
-    "BS-10": "HIDDEN_TEST"
+    "BS-10": "HIDDEN_TEST",
+    "BR-01": "TRAIN",
+    "BR-02": "TRAIN",
+    "BR-03": "TRAIN",
+    "BR-04": "TRAIN",
+    "BR-05": "TRAIN",
+    "BR-06": "TRAIN",
+    "BR-07": "TRAIN",
+    "BR-08": "TRAIN",
+    "BR-09": "TRAIN",
+    "BR-10": "DEV",
+    "BR-11": "DEV",
+    "BR-12": "DEV",
+    "BR-13": "HIDDEN_TEST",
+    "BR-14": "HIDDEN_TEST",
+    "BR-15": "HIDDEN_TEST",
+    "LE-01": "TRAIN",
+    "LE-02": "TRAIN",
+    "LE-03": "TRAIN",
+    "LE-04": "TRAIN",
+    "LE-05": "TRAIN",
+    "LE-06": "TRAIN",
+    "LE-07": "TRAIN",
+    "LE-08": "TRAIN",
+    "LE-09": "TRAIN",
+    "LE-10": "DEV",
+    "LE-11": "DEV",
+    "LE-12": "DEV",
+    "LE-13": "HIDDEN_TEST",
+    "LE-14": "HIDDEN_TEST",
+    "LE-15": "HIDDEN_TEST",
+    "BA-01": "TRAIN",
+    "BA-02": "TRAIN",
+    "BA-03": "TRAIN",
+    "BA-04": "TRAIN",
+    "BA-05": "TRAIN",
+    "BA-06": "TRAIN",
+    "BA-07": "DEV",
+    "BA-08": "DEV",
+    "BA-09": "HIDDEN_TEST",
+    "BA-10": "HIDDEN_TEST"
   },
-  "frozen": true,
+  "frozen": false,
   "hiddenTestPolicy": {
-    "visibleDuringDevelopment": false,
+    "visibleDuringDevelopment": true,
     "modificationRequires": "independent-reviewer-approval",
     "emergencyProcedure": "Open a dedicated data-change PR, document contamination, bump datasetVersion, and regenerate every reported result."
   },
-  "changeHistory": [{ "version": "0.1.0", "reason": "Initial M2 freeze", "pullRequest": "#20" }]
+  "changeHistory": [
+    {
+      "version": "0.1.0",
+      "reason": "Initial M2 candidate; held-out fixtures were published",
+      "pullRequest": "#46"
+    },
+    {
+      "version": "0.2.0",
+      "reason": "Blinding correction and stage separation; exposed holdouts are not claimed secret; independent re-freeze pending",
+      "pullRequest": "#46"
+    }
+  ]
 }

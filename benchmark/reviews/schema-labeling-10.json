@@ -57,7 +57,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -155,7 +154,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -253,7 +251,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -352,7 +349,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -477,7 +473,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -598,7 +593,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -685,7 +679,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -783,7 +776,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -890,7 +882,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -1027,7 +1018,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN_DRIFT",
           "actions": [
             {
               "id": "action-0",
@@ -1076,7 +1066,7 @@
               },
               "kind": "UNKNOWN",
               "chainId": 1,
-              "reason": "tool hallucinated a selector that does not alter state",
+              "reason": "unsupported selector; state effects are not known",
               "rawSelector": "0xdeadbeef"
             }
           ]

@@ -145,11 +145,15 @@ describe('rolling 24-hour outflow', () => {
     expect(emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:30:00Z').verdict.decision).toBe('ALLOW');
   });
 
-  it('ignores assets that carry no configured limit', () => {
+  it('holds unvalued outflows when an asset has no configured limit', () => {
     const config = { ...guardModeConfigFromScenario(BASE_TRANSFER), outflowLimits: [] };
     const emulator = new GuardModeEmulator(config);
-    expect(emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:00:00Z').verdict.decision).toBe('ALLOW');
-    expect(emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:10:00Z').verdict.decision).toBe('ALLOW');
+    expect(emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:00:00Z').verdict.decision).toBe(
+      'ABSTAIN',
+    );
+    expect(emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:10:00Z').verdict.decision).toBe(
+      'ABSTAIN',
+    );
   });
 });
 

@@ -1,6 +1,6 @@
 # M2 Baseline Protocol
 
-IntentLock is compared with two deliberately narrower baselines over the same benchmark scenario,
+IntentLock is compared with three narrower baselines over the same benchmark scenario,
 Intent Contract, decoded ActionIR effects, and held-out oracle. The oracle is used for scoring only;
 the LLM prompt also omits scenario IDs, stored labels, and mutation metadata.
 
@@ -55,3 +55,15 @@ review fields. The issue remains incomplete while the file status is
 
 Run `pnpm baseline:llm:run` after putting `OPENAI_API_KEY` in the ignored `.env.local`. The runner
 never writes the key or API error bodies to its result artifact.
+
+## Guard Mode and shared scoring
+
+The third baseline is the [public-docs Guard Mode emulator](baselines/guard-mode.md), integrated
+from Billy's #47. STRICT and LITERAL are both retained. None of the baselines is a MetaMask product
+security assessment. `pnpm m2:validate` replays the same input inventory and produces a diagnostic
+report. POST_STATE-only cases are excluded from the pre-sign denominator for every method.
+
+The live runner records a hash of the complete serialized inputs, system prompt and configuration,
+plus the source commit and whether the tree was dirty. Evidence from a dirty tree is not attributed
+to the commit alone. v1 results are void because answer hints confounded the measurement; their
+presence does not prove the model actually used the shortcut or predict the rerun's score.

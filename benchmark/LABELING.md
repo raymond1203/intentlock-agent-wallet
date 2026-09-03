@@ -50,10 +50,29 @@ The #20 review sample is ten Golden scenarios. #24 expands double review to 25% 
 
 ## Split policy
 
-- Grouped, stratified 60/20/20 assignment: 24 train, 8 dev, 8 hidden-test base scenarios.
+- Grouped, stratified 60/20/20 assignment: 48 train, 16 dev, 16 held-out base scenarios in v0.2.0.
 - A base scenario and all its mutations stay in the same split.
 - Normalized natural-language and structural fingerprints are checked for leakage across splits.
-- The hidden-test files can exist in the private repository, but benchmark loaders must exclude them during
-  development. “Hidden” means hidden from model/prompt tuning, not hidden from the two repository maintainers.
+- `HIDDEN_TEST` is a legacy split name, not a secrecy claim. The fixtures and generator have already
+  been published, and two held-out cases appeared in a development review packet. v0.2.0 records
+  this exposure; removing those cases from the packet does not erase it. Development review and
+  model validation exclude this split, but a truly unseen evaluation requires a new sealed set.
 - Changing a hidden assignment requires independent reviewer approval, a dataset version bump, a dedicated
   PR, a contamination note, and regeneration of every reported result.
+
+## Observable stage and evidence level (v0.2.0)
+
+`oracle.executionComplete` is false for the cross-chain partial-completion fixture: destination
+observations are missing, so the terminal oracle returns INSUFFICIENT_EVIDENCE, not success. Its
+planned pre-sign input is unchanged and it is also excluded from pre-sign denominators.
+
+`oracle.observationStage` separates PRE_SIGN and POST_STATE scoring. The stale-quote example has
+identical pre-sign input to its base; exclude it from ALL pre-sign denominators rather than count
+it as a miss for any defense. Evaluate it only with post-state evidence. An executed swap output
+below min-out cannot be assumed possible: the current fixture is a synthetic final-state fault,
+not proof that the frozen Uniswap router permits that execution.
+
+`oracle.evidenceLevel` distinguishes EXPECTED_FIXTURE from EXECUTED_FORK. Current 80 base states
+are expected fixtures, not 80 transaction receipts. Predicted policy checks, exact reference-state
+checks and actual execution are separate evidence columns. Cause labels are authored metadata;
+the oracle computes state violations without guessing attacker motive.

@@ -57,7 +57,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -141,7 +140,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -228,7 +226,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -312,7 +309,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -399,7 +395,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -483,7 +478,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -570,7 +564,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -654,7 +647,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -750,7 +742,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -861,7 +852,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -966,7 +956,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -1050,7 +1039,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -1162,7 +1150,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -1260,7 +1247,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -1361,7 +1347,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -1456,7 +1441,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -1563,7 +1547,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -1701,7 +1684,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -1847,7 +1829,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -1958,7 +1939,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -2012,16 +1992,23 @@
     {
       "reviewId": "M11",
       "base": {
-        "workflow": "TRANSFER",
+        "workflow": "BRIDGE_SWAP",
         "naturalLanguage": {
-          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "text": "Bridge one USDC from Ethereum through Across, then exchange the delivered USDC for WETH in my Base account.",
           "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
         },
         "intent": {
           "version": "0.1",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "1",
+          "nonce": "0",
           "idempotencyKey": "redacted-intent",
           "safety": {
             "chainScopes": [
@@ -2030,97 +2017,34 @@
                 "allowedTargets": [
                   {
                     "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0xa9059cbb"]
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                    "selectors": ["0x7b939232"]
                   }
                 ],
                 "allowedRecipients": [
-                  "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
                 ]
-              }
-            ],
-            "assetBudgets": [
-              {
-                "chainId": 1,
-                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "1000000",
-                "maxAllowanceExposure": "0"
-              }
-            ],
-            "maxGasWei": "10000000000000000",
-            "maxSlippageBps": 100,
-            "expiresAt": "2026-09-05T00:00:00+09:00"
-          },
-          "finalStateGoals": [
-            {
-              "chainId": 1,
-              "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "1000000"
-            }
-          ]
-        },
-        "trace": {
-          "kind": "BENIGN",
-          "actions": [
-            {
-              "id": "action-0",
-              "executionIndex": 0,
-              "chainId": 1,
-              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
-              "valueWei": "0"
-            }
-          ],
-          "expectedEffects": [
-            {
-              "id": "effect-0",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0xa9059cbb",
-                "source": "CALLDATA"
               },
-              "kind": "TRANSFER",
-              "chainId": 1,
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x2222222222222222222222222222222222222222",
-              "amount": "1000000"
-            }
-          ]
-        }
-      },
-      "candidate": {
-        "workflow": "TRANSFER",
-        "naturalLanguage": {
-          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
-          "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
-        },
-        "intent": {
-          "version": "0.1",
-          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "1",
-          "idempotencyKey": "redacted-intent",
-          "safety": {
-            "chainScopes": [
               {
-                "chainId": 1,
+                "chainId": 8453,
                 "allowedTargets": [
                   {
-                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0xa9059cbb"]
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
                   }
                 ],
                 "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
                   "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
                 ]
               }
             ],
@@ -2129,7 +2053,13 @@
                 "chainId": 1,
                 "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                 "maxGrossOutflow": "1000000",
-                "maxAllowanceExposure": "0"
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "999000",
+                "maxAllowanceExposure": "999000"
               }
             ],
             "maxGasWei": "10000000000000000",
@@ -2138,33 +2068,50 @@
           },
           "finalStateGoals": [
             {
-              "chainId": 1,
+              "chainId": 8453,
               "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "1000000"
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
             }
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
               "executionIndex": 0,
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c500000000000000000000000000000000000000000000000000000000000f4240",
               "valueWei": "0"
             },
             {
               "id": "action-1",
               "executionIndex": 1,
               "chainId": 1,
-              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+              "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "selector": "0x7b939232",
+              "calldata": "0x7b939232000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006a82a9bf000000000000000000000000000000000000000000000000000000006a82c4f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-2",
+              "executionIndex": 2,
+              "chainId": 8453,
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f3e58",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-3",
+              "executionIndex": 3,
+              "chainId": 8453,
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
               "valueWei": "0"
             }
           ],
@@ -2175,14 +2122,14 @@
               "provenance": {
                 "callPath": [0],
                 "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0xa9059cbb",
+                "selector": "0x095ea7b3",
                 "source": "CALLDATA"
               },
-              "kind": "TRANSFER",
+              "kind": "APPROVAL",
               "chainId": 1,
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x2222222222222222222222222222222222222222",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
               "amount": "1000000"
             },
             {
@@ -2190,16 +2137,284 @@
               "phase": "PREDICTED",
               "provenance": {
                 "callPath": [1],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0xa9059cbb",
+                "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                "selector": "0x7b939232",
+                "source": "CALLDATA"
+              },
+              "kind": "BRIDGE",
+              "sourceChainId": 1,
+              "destinationChainId": 8453,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "amount": "1000000",
+              "maxFee": "1000",
+              "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "minAmountOut": "999000",
+              "deadline": "1786955000"
+            },
+            {
+              "id": "effect-2",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [2],
+                "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 8453,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "amount": "999000"
+            },
+            {
+              "id": "effect-3",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [3],
+                "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                "selector": "0x04e45aaf",
                 "source": "CALLDATA"
               },
               "kind": "TRANSFER",
+              "chainId": 8453,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "amount": "999000"
+            },
+            {
+              "id": "effect-4",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [3],
+                "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 8453,
+              "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "assetOut": "0x4200000000000000000000000000000000000006",
+              "amountIn": "999000",
+              "quotedAmountOut": "1000",
+              "minAmountOut": "990",
+              "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "workflow": "BRIDGE_SWAP",
+        "naturalLanguage": {
+          "text": "Bridge one USDC from Ethereum through Across, then exchange the delivered USDC for WETH in my Base account.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "recipient",
+            "amount",
+            "target",
+            "finalGoal"
+          ]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "0",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                    "selectors": ["0x7b939232"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222"
+                ]
+              },
+              {
+                "chainId": 8453,
+                "allowedTargets": [
+                  {
+                    "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                  "0x2222222222222222222222222222222222222222",
+                  "0x2626664c2603336E57B271c5C0b26F421741e481"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              },
+              {
+                "chainId": 8453,
+                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "maxGrossOutflow": "999000",
+                "maxAllowanceExposure": "999000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 8453,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0x4200000000000000000000000000000000000006",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "1000"
+            }
+          ]
+        },
+        "trace": {
+          "actions": [
+            {
+              "id": "action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b30000000000000000000000005c7bcd6e7de5423a257d81b442095a1a6ced35c500000000000000000000000000000000000000000000000000000000000f4240",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-1",
+              "executionIndex": 1,
+              "chainId": 1,
+              "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+              "selector": "0x7b939232",
+              "calldata": "0x7b939232000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000021050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006a82a9bf000000000000000000000000000000000000000000000000000000006a82c4f8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-2",
+              "executionIndex": 2,
+              "chainId": 8453,
+              "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "selector": "0x095ea7b3",
+              "calldata": "0x095ea7b30000000000000000000000002626664c2603336e57b271c5c0b26f421741e48100000000000000000000000000000000000000000000000000000000000f3e58",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-3",
+              "executionIndex": 3,
+              "chainId": 8453,
+              "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "selector": "0x04e45aaf",
+              "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "effect-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
               "chainId": 1,
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x2222222222222222222222222222222222222222",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
               "amount": "1000000"
+            },
+            {
+              "id": "effect-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [1],
+                "target": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+                "selector": "0x7b939232",
+                "source": "CALLDATA"
+              },
+              "kind": "BRIDGE",
+              "sourceChainId": 1,
+              "destinationChainId": 8453,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "amount": "1000000",
+              "maxFee": "1000",
+              "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "destinationAsset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "minAmountOut": "999000",
+              "deadline": "1786955000"
+            },
+            {
+              "id": "effect-2",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [2],
+                "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                "selector": "0x095ea7b3",
+                "source": "CALLDATA"
+              },
+              "kind": "APPROVAL",
+              "chainId": 8453,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "spender": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "amount": "999000"
+            },
+            {
+              "id": "effect-3",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [3],
+                "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 8453,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2626664c2603336E57B271c5C0b26F421741e481",
+              "amount": "999000"
+            },
+            {
+              "id": "effect-4",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [3],
+                "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
+                "selector": "0x04e45aaf",
+                "source": "CALLDATA"
+              },
+              "kind": "SWAP",
+              "chainId": 8453,
+              "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "assetOut": "0x4200000000000000000000000000000000000006",
+              "amountIn": "999000",
+              "quotedAmountOut": "1000",
+              "minAmountOut": "990",
+              "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
             }
           ]
         }
@@ -2259,7 +2474,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -2343,7 +2557,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -2455,7 +2668,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -2539,7 +2751,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -2547,7 +2758,7 @@
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
               "valueWei": "0"
             },
             {
@@ -2556,7 +2767,7 @@
               "chainId": 1,
               "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
               "valueWei": "0"
             }
           ],
@@ -2575,7 +2786,7 @@
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "to": "0x2222222222222222222222222222222222222222",
-              "amount": "600000"
+              "amount": "1000000"
             },
             {
               "id": "effect-1",
@@ -2591,7 +2802,7 @@
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
               "to": "0x2222222222222222222222222222222222222222",
-              "amount": "600000"
+              "amount": "1000000"
             }
           ]
         }
@@ -2651,7 +2862,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -2735,7 +2945,200 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN_DRIFT",
+          "actions": [
+            {
+              "id": "action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+              "valueWei": "0"
+            },
+            {
+              "id": "action-1",
+              "executionIndex": 1,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "effect-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "600000"
+            },
+            {
+              "id": "effect-1",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [1],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "600000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "M15",
+      "base": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "trace": {
+          "actions": [
+            {
+              "id": "action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "effect-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "1000000"
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "trace": {
           "actions": [
             {
               "id": "action-0",
@@ -2784,179 +3187,8 @@
               },
               "kind": "UNKNOWN",
               "chainId": 1,
-              "reason": "tool hallucinated a selector that does not alter state",
+              "reason": "unsupported selector; state effects are not known",
               "rawSelector": "0xdeadbeef"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "reviewId": "M15",
-      "base": {
-        "workflow": "TRANSFER",
-        "naturalLanguage": {
-          "text": "오늘 안에 등록된 정산 주소로 USDC 2.5개를 전송하되 총유출은 그 금액을 넘기지 마.",
-          "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
-        },
-        "intent": {
-          "version": "0.1",
-          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "2",
-          "idempotencyKey": "redacted-intent",
-          "safety": {
-            "chainScopes": [
-              {
-                "chainId": 1,
-                "allowedTargets": [
-                  {
-                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0xa9059cbb"]
-                  }
-                ],
-                "allowedRecipients": [
-                  "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                ]
-              }
-            ],
-            "assetBudgets": [
-              {
-                "chainId": 1,
-                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "2500000",
-                "maxAllowanceExposure": "0"
-              }
-            ],
-            "maxGasWei": "10000000000000000",
-            "maxSlippageBps": 100,
-            "expiresAt": "2026-09-05T00:00:00+09:00"
-          },
-          "finalStateGoals": [
-            {
-              "chainId": 1,
-              "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "2500000"
-            }
-          ]
-        },
-        "trace": {
-          "kind": "BENIGN",
-          "actions": [
-            {
-              "id": "action-0",
-              "executionIndex": 0,
-              "chainId": 1,
-              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002625a0",
-              "valueWei": "0"
-            }
-          ],
-          "expectedEffects": [
-            {
-              "id": "effect-0",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0xa9059cbb",
-                "source": "CALLDATA"
-              },
-              "kind": "TRANSFER",
-              "chainId": 1,
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x2222222222222222222222222222222222222222",
-              "amount": "2500000"
-            }
-          ]
-        }
-      },
-      "candidate": {
-        "workflow": "TRANSFER",
-        "naturalLanguage": {
-          "text": "오늘 안에 등록된 정산 주소로 USDC 2.5개를 전송하되 총유출은 그 금액을 넘기지 마.",
-          "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
-        },
-        "intent": {
-          "version": "0.1",
-          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "2",
-          "idempotencyKey": "redacted-intent",
-          "safety": {
-            "chainScopes": [
-              {
-                "chainId": 1,
-                "allowedTargets": [
-                  {
-                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0xa9059cbb"]
-                  }
-                ],
-                "allowedRecipients": [
-                  "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                ]
-              }
-            ],
-            "assetBudgets": [
-              {
-                "chainId": 1,
-                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "2500000",
-                "maxAllowanceExposure": "0"
-              }
-            ],
-            "maxGasWei": "10000000000000000",
-            "maxSlippageBps": 100,
-            "expiresAt": "2026-09-05T00:00:00+09:00"
-          },
-          "finalStateGoals": [
-            {
-              "chainId": 1,
-              "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "2500000"
-            }
-          ]
-        },
-        "trace": {
-          "kind": "ADVERSARIAL",
-          "actions": [
-            {
-              "id": "action-0",
-              "executionIndex": 0,
-              "chainId": 1,
-              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "selector": "0xa9059cbb",
-              "calldata": "0xa9059cbb000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000000000000002625a0",
-              "valueWei": "0"
-            }
-          ],
-          "expectedEffects": [
-            {
-              "id": "effect-0",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0xa9059cbb",
-                "source": "CALLDATA"
-              },
-              "kind": "TRANSFER",
-              "chainId": 1,
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x3333333333333333333333333333333333333333",
-              "amount": "2500000"
             }
           ]
         }
@@ -3016,7 +3248,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -3100,7 +3331,175 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
+          "actions": [
+            {
+              "id": "action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000000000000002625a0",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "effect-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x3333333333333333333333333333333333333333",
+              "amount": "2500000"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "reviewId": "M17",
+      "base": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "오늘 안에 등록된 정산 주소로 USDC 2.5개를 전송하되 총유출은 그 금액을 넘기지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "2500000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "2500000"
+            }
+          ]
+        },
+        "trace": {
+          "actions": [
+            {
+              "id": "action-0",
+              "executionIndex": 0,
+              "chainId": 1,
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002625a0",
+              "valueWei": "0"
+            }
+          ],
+          "expectedEffects": [
+            {
+              "id": "effect-0",
+              "phase": "PREDICTED",
+              "provenance": {
+                "callPath": [0],
+                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "selector": "0xa9059cbb",
+                "source": "CALLDATA"
+              },
+              "kind": "TRANSFER",
+              "chainId": 1,
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "to": "0x2222222222222222222222222222222222222222",
+              "amount": "2500000"
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "workflow": "TRANSFER",
+        "naturalLanguage": {
+          "text": "오늘 안에 등록된 정산 주소로 USDC 2.5개를 전송하되 총유출은 그 금액을 넘기지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intent": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "2500000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "2500000"
+            }
+          ]
+        },
+        "trace": {
           "actions": [
             {
               "id": "action-0",
@@ -3134,7 +3533,7 @@
       }
     },
     {
-      "reviewId": "M17",
+      "reviewId": "M18",
       "base": {
         "workflow": "SWAP_SINGLE",
         "naturalLanguage": {
@@ -3196,7 +3595,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -3307,7 +3705,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -3359,7 +3756,7 @@
       }
     },
     {
-      "reviewId": "M18",
+      "reviewId": "M19",
       "base": {
         "workflow": "APPROVAL_PERMIT2",
         "naturalLanguage": {
@@ -3423,7 +3820,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -3518,7 +3914,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -3552,7 +3947,7 @@
       }
     },
     {
-      "reviewId": "M19",
+      "reviewId": "M20",
       "base": {
         "workflow": "APPROVAL_PERMIT2",
         "naturalLanguage": {
@@ -3616,7 +4011,6 @@
           ]
         },
         "trace": {
-          "kind": "BENIGN",
           "actions": [
             {
               "id": "action-0",
@@ -3714,7 +4108,6 @@
           ]
         },
         "trace": {
-          "kind": "ADVERSARIAL",
           "actions": [
             {
               "id": "action-0",
@@ -3745,301 +4138,6 @@
               "expiration": "1788537600",
               "signatureDeadline": "1788537600",
               "nonce": "5"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "reviewId": "M20",
-      "base": {
-        "workflow": "SWAP_BATCH",
-        "naturalLanguage": {
-          "text": "USDC에서 USDT를 거쳐 WETH로 가는 multi-hop 경로에 최소 수령량과 최종 수취인을 고정해.",
-          "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": [
-            "account",
-            "nonce",
-            "chain",
-            "target",
-            "selector",
-            "recipient",
-            "amount",
-            "allowance",
-            "slippage",
-            "deadline",
-            "finalGoal"
-          ]
-        },
-        "intent": {
-          "version": "0.1",
-          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "2",
-          "idempotencyKey": "redacted-intent",
-          "safety": {
-            "chainScopes": [
-              {
-                "chainId": 1,
-                "allowedTargets": [
-                  {
-                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                    "selectors": ["0x04e45aaf", "0xb858183f"]
-                  },
-                  {
-                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0x095ea7b3"]
-                  },
-                  {
-                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-                    "selectors": ["0xe9ae5c53"]
-                  }
-                ],
-                "allowedRecipients": [
-                  "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                ]
-              }
-            ],
-            "assetBudgets": [
-              {
-                "chainId": 1,
-                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "1500000",
-                "maxAllowanceExposure": "1500000"
-              }
-            ],
-            "maxGasWei": "10000000000000000",
-            "maxSlippageBps": 100,
-            "expiresAt": "2026-09-05T00:00:00+09:00"
-          },
-          "finalStateGoals": [
-            {
-              "chainId": 1,
-              "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "1584"
-            }
-          ]
-        },
-        "trace": {
-          "kind": "BENIGN",
-          "actions": [
-            {
-              "id": "action-0",
-              "executionIndex": 0,
-              "chainId": 1,
-              "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "selector": "0xe9ae5c53",
-              "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000016e3600000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000124b858183f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000800000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000016e36000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000042A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4dAC17F958D2ee523a2206206994597C13D831ec70001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-              "valueWei": "0"
-            }
-          ],
-          "expectedEffects": [
-            {
-              "id": "effect-0",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 0],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0x095ea7b3",
-                "source": "CALLDATA"
-              },
-              "kind": "APPROVAL",
-              "chainId": 1,
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1500000"
-            },
-            {
-              "id": "effect-1",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 1],
-                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                "selector": "0xb858183f",
-                "source": "CALLDATA"
-              },
-              "kind": "TRANSFER",
-              "chainId": 1,
-              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1500000"
-            },
-            {
-              "id": "effect-2",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 1],
-                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                "selector": "0xb858183f",
-                "source": "CALLDATA"
-              },
-              "kind": "SWAP",
-              "chainId": 1,
-              "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-              "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-              "amountIn": "1500000",
-              "quotedAmountOut": "1600",
-              "minAmountOut": "1584",
-              "recipient": "0x2222222222222222222222222222222222222222"
-            }
-          ]
-        }
-      },
-      "candidate": {
-        "workflow": "SWAP_BATCH",
-        "naturalLanguage": {
-          "text": "USDC에서 USDT를 거쳐 WETH로 가는 multi-hop 경로에 최소 수령량과 최종 수취인을 고정해.",
-          "ambiguity": "EXPLICIT",
-          "criticalFieldsPresent": [
-            "account",
-            "nonce",
-            "chain",
-            "target",
-            "selector",
-            "recipient",
-            "amount",
-            "allowance",
-            "slippage",
-            "deadline",
-            "finalGoal"
-          ]
-        },
-        "intent": {
-          "version": "0.1",
-          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-          "nonce": "2",
-          "idempotencyKey": "redacted-intent",
-          "safety": {
-            "chainScopes": [
-              {
-                "chainId": 1,
-                "allowedTargets": [
-                  {
-                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                    "selectors": ["0x04e45aaf", "0xb858183f"]
-                  },
-                  {
-                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                    "selectors": ["0x095ea7b3"]
-                  },
-                  {
-                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-                    "selectors": ["0xe9ae5c53"]
-                  }
-                ],
-                "allowedRecipients": [
-                  "0x2222222222222222222222222222222222222222",
-                  "0x7777777777777777777777777777777777777777",
-                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-                ]
-              }
-            ],
-            "assetBudgets": [
-              {
-                "chainId": 1,
-                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "maxGrossOutflow": "1500000",
-                "maxAllowanceExposure": "1500000"
-              }
-            ],
-            "maxGasWei": "10000000000000000",
-            "maxSlippageBps": 100,
-            "expiresAt": "2026-09-05T00:00:00+09:00"
-          },
-          "finalStateGoals": [
-            {
-              "chainId": 1,
-              "kind": "MIN_ASSET_BALANCE",
-              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-              "account": "0x2222222222222222222222222222222222222222",
-              "minAmount": "1584"
-            }
-          ]
-        },
-        "trace": {
-          "kind": "ADVERSARIAL",
-          "actions": [
-            {
-              "id": "action-0",
-              "executionIndex": 0,
-              "chainId": 1,
-              "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "selector": "0xe9ae5c53",
-              "calldata": "0xe9ae5c5301000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000042000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000300000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000016e3600000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000124b858183f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000800000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000016e36000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000042a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4dac17f958d2ee523a2206206994597c13d831ec70001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000003333333333333333333333333333333333333333ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
-              "valueWei": "0"
-            }
-          ],
-          "expectedEffects": [
-            {
-              "id": "effect-0",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 0],
-                "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-                "selector": "0x095ea7b3",
-                "source": "CALLDATA"
-              },
-              "kind": "APPROVAL",
-              "chainId": 1,
-              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1500000"
-            },
-            {
-              "id": "effect-1",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 1],
-                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                "selector": "0xb858183f",
-                "source": "CALLDATA"
-              },
-              "kind": "TRANSFER",
-              "chainId": 1,
-              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-              "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "amount": "1500000"
-            },
-            {
-              "id": "effect-2",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 1],
-                "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-                "selector": "0xb858183f",
-                "source": "CALLDATA"
-              },
-              "kind": "SWAP",
-              "chainId": 1,
-              "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-              "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-              "amountIn": "1500000",
-              "quotedAmountOut": "1600",
-              "minAmountOut": "1584",
-              "recipient": "0x2222222222222222222222222222222222222222"
-            },
-            {
-              "id": "effect-3",
-              "phase": "PREDICTED",
-              "provenance": {
-                "callPath": [0, 2],
-                "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-                "selector": "0x095ea7b3",
-                "source": "CALLDATA"
-              },
-              "kind": "APPROVAL",
-              "chainId": 1,
-              "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-              "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-              "spender": "0x3333333333333333333333333333333333333333",
-              "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
             }
           ]
         }

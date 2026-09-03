@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 import { format, resolveConfig } from 'prettier';
@@ -26,6 +26,7 @@ import { decodeBatchCalldata, ERC7821_ABI } from '../src/effects/batch-decoder.j
 import { ERC20_ABI } from '../src/effects/erc20-decoder.js';
 import { PERMIT2_ABI } from '../src/effects/permit2-decoder.js';
 import { SWAP_ROUTER_02_ABI } from '../src/effects/swap-decoder.js';
+import { buildExtendedScenarios, fixtureReference } from './extended-benchmark.js';
 
 const ACCOUNT: Address = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const RECIPIENT: Address = '0x2222222222222222222222222222222222222222';
@@ -383,6 +384,7 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
     class: 'BASE',
     split: splitFor(localIndex),
     provenance: { kind: 'CURATED', sources: SOURCE_URLS },
+    fixture: fixtureReference([1]),
     naturalLanguage: {
       text: draft.text,
       ambiguity: draft.ambiguity,
@@ -695,7 +697,57 @@ async function writeOrCheck(path: string, value: unknown, check: boolean): Promi
 }
 
 const check = process.argv.includes('--check');
-const scenarios = buildBaseScenarios();
+const scenarios = [...buildBaseScenarios(), ...buildExtendedScenarios()].map((value) => {
+  const scenario = structuredClone(value);
+  scenario.oracle.preState.forEach((row) => {
+    row.source = 'EXPECTED_FIXTURE';
+  });
+  scenario.oracle.postState.forEach((row) => {
+    row.source = 'EXPECTED_FIXTURE';
+  });
+  for (const goal of scenario.intent.finalStateGoals) {
+    if (
+      goal.kind === 'MIN_ASSET_BALANCE' &&
+      !scenario.oracle.postState.some(
+        (row) =>
+          row.field === 'BALANCE' &&
+          row.chainId === goal.chainId &&
+          row.asset?.toLowerCase() === goal.asset.toLowerCase() &&
+          row.subject.toLowerCase() === goal.account.toLowerCase(),
+      )
+    ) {
+      const before = scenario.oracle.preState.find(
+        (row) =>
+          row.field === 'BALANCE' &&
+          row.chainId === goal.chainId &&
+          row.asset?.toLowerCase() === goal.asset.toLowerCase() &&
+          row.subject.toLowerCase() === goal.account.toLowerCase(),
+      );
+      scenario.oracle.postState.push({
+        chainId: goal.chainId,
+        field: 'BALANCE',
+        subject: goal.account,
+        asset: goal.asset,
+        value: before?.value ?? '0',
+        source: 'EXPECTED_FIXTURE',
+      });
+    }
+  }
+  for (const after of scenario.oracle.postState) {
+    if (
+      !scenario.oracle.preState.some(
+        (before) =>
+          before.chainId === after.chainId &&
+          before.subject.toLowerCase() === after.subject.toLowerCase() &&
+          before.field === after.field &&
+          before.asset === after.asset &&
+          before.counterparty === after.counterparty,
+      )
+    )
+      scenario.oracle.preState.push({ ...after, value: '0' });
+  }
+  return BenchmarkScenarioSchema.parse(scenario);
+});
 const scenarioById = new Map(scenarios.map((scenario) => [scenario.id, scenario]));
 function scenario(id: string): BenchmarkScenario {
   const value = scenarioById.get(id);
@@ -714,6 +766,7 @@ const mutationBaseIds: Record<MutationOperatorId, string> = {
   'unlimited-approval': 'AP-01',
   'hidden-batch': 'BS-01',
   'stale-quote': 'SS-01',
+  'partial-completion': 'BR-01',
   'retry-double-spend': 'TR-01',
   'concurrency-race': 'TR-01',
   'policy-laundering': 'TR-01',
@@ -733,7 +786,7 @@ function mutation(operator: MutationOperatorId): BenchmarkScenario {
 
 const golden = BenchmarkDatasetSchema.parse({
   schemaVersion: '0.1',
-  datasetVersion: '0.1.0',
+  datasetVersion: '0.2.0',
   scenarios: [
     scenario('TR-01'),
     scenario('AP-01'),
@@ -767,7 +820,6 @@ function blindScenario(value: BenchmarkScenario) {
     naturalLanguage: value.naturalLanguage,
     intent: { ...value.intent, idempotencyKey: 'redacted-intent' },
     trace: {
-      ...value.trace,
       actions: value.trace.actions.map((action, index) => ({
         ...action,
         id: `action-${String(index)}`,
@@ -800,7 +852,7 @@ const extraReviewMutations = [
   applyMutation(scenario('AP-06'), 'deadline-extension', 2027),
   applyMutation(scenario('BS-02'), 'hidden-batch', 2027),
 ];
-const mutationReviewCases = [...mutations, ...extraReviewMutations];
+const mutationReviewCases = [...mutations, ...extraReviewMutations].slice(0, 20);
 
 const schemaReviewPacket = {
   protocolVersion: '0.1',
@@ -833,18 +885,19 @@ const mutationReviewPacket = {
     candidate: blindScenario(value),
   })),
 };
-if (!check) {
-  await rm(resolve('benchmark/scenarios/base/transfer'), { recursive: true, force: true });
-  await rm(resolve('benchmark/scenarios/base/swap'), { recursive: true, force: true });
-  await rm(resolve('benchmark/scenarios/mutations'), { recursive: true, force: true });
-}
 
 let valid = true;
 for (const scenario of scenarios) {
   const directory =
     scenario.workflow === 'TRANSFER' || scenario.workflow === 'APPROVAL_PERMIT2'
       ? 'transfer'
-      : 'swap';
+      : scenario.workflow === 'BRIDGE_SWAP'
+        ? 'bridge'
+        : scenario.workflow === 'LENDING'
+          ? 'lending'
+          : scenario.workflow === 'BATCH_RECOVERY'
+            ? 'batch'
+            : 'swap';
   const path = `benchmark/scenarios/base/${directory}/${scenario.id.toLowerCase()}.json`;
   if (!(await writeOrCheck(path, scenario, check))) valid = false;
 }
@@ -852,18 +905,30 @@ for (const scenario of scenarios) {
 const assignments = Object.fromEntries(scenarios.map((scenario) => [scenario.id, scenario.split]));
 const splitManifest = {
   schemaVersion: '0.1',
-  datasetVersion: '0.1.0',
+  datasetVersion: '0.2.0',
   strategy: 'grouped-stratified-60-20-20',
   salt: 'intentlock-m2-v0-2026',
   assignments,
-  frozen: true,
+  frozen: false,
   hiddenTestPolicy: {
-    visibleDuringDevelopment: false,
+    visibleDuringDevelopment: true,
     modificationRequires: 'independent-reviewer-approval',
     emergencyProcedure:
       'Open a dedicated data-change PR, document contamination, bump datasetVersion, and regenerate every reported result.',
   },
-  changeHistory: [{ version: '0.1.0', reason: 'Initial M2 freeze', pullRequest: '#20' }],
+  changeHistory: [
+    {
+      version: '0.1.0',
+      reason: 'Initial M2 candidate; held-out fixtures were published',
+      pullRequest: '#46',
+    },
+    {
+      version: '0.2.0',
+      reason:
+        'Blinding correction and stage separation; exposed holdouts are not claimed secret; independent re-freeze pending',
+      pullRequest: '#46',
+    },
+  ],
 };
 if (!(await writeOrCheck('benchmark/splits/manifest.json', splitManifest, check))) valid = false;
 

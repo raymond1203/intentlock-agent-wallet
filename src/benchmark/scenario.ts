@@ -94,11 +94,21 @@ export const StateObservationSchema = z
   .object({
     chainId: z.number().int().positive(),
     subject: EvmAddressSchema,
-    field: z.enum(['BALANCE', 'ALLOWANCE', 'OWNER', 'DEBT', 'GAS_USED', 'CODEHASH']),
+    field: z.enum([
+      'BALANCE',
+      'ALLOWANCE',
+      'OWNER',
+      'DEBT',
+      'POSITION',
+      'HEALTH_FACTOR',
+      'GAS_USED',
+      'CODEHASH',
+    ]),
     asset: EvmAddressSchema.or(z.literal('native')).optional(),
     counterparty: EvmAddressSchema.optional(),
+    tokenId: UnsignedIntegerStringSchema.optional(),
     value: z.string().regex(/^-?(0|[1-9]\d*)$|^0x[a-fA-F0-9]{40,64}$/),
-    source: z.enum(['FIXED_FORK', 'RECEIPT', 'POST_STATE']),
+    source: z.enum(['FIXED_FORK', 'RECEIPT', 'POST_STATE', 'EXPECTED_FIXTURE']),
   })
   .strict();
 
@@ -120,6 +130,31 @@ export const BenchmarkScenarioSchema = z
     class: ScenarioClassSchema,
     split: ScenarioSplitSchema,
     provenance: ScenarioProvenanceSchema,
+    fixture: z
+      .object({
+        manifest: z.literal('benchmark/fixtures/manifest.json'),
+        chains: z
+          .array(
+            z
+              .object({
+                chainId: z.number().int().positive(),
+                blockNumber: z.number().int().positive(),
+                blockHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+                contracts: z.array(
+                  z
+                    .object({
+                      address: EvmAddressSchema,
+                      codehash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+                    })
+                    .strict(),
+                ),
+              })
+              .strict(),
+          )
+          .min(1),
+      })
+      .strict()
+      .optional(),
     naturalLanguage: z
       .object({
         text: z.string().min(10),
@@ -137,6 +172,9 @@ export const BenchmarkScenarioSchema = z
       .strict(),
     oracle: z
       .object({
+        observationStage: z.enum(['PRE_SIGN', 'POST_STATE']).default('PRE_SIGN'),
+        evidenceLevel: z.enum(['EXPECTED_FIXTURE', 'EXECUTED_FORK']).default('EXPECTED_FIXTURE'),
+        executionComplete: z.boolean().default(true),
         expectedDecision: z.enum(['ALLOW', 'DENY', 'ESCALATE']),
         labels: z.array(ViolationLabelSchema).min(1),
         violationAmount: UnsignedIntegerStringSchema.optional(),
@@ -272,7 +310,7 @@ export const SplitManifestSchema = z
     frozen: z.boolean(),
     hiddenTestPolicy: z
       .object({
-        visibleDuringDevelopment: z.literal(false),
+        visibleDuringDevelopment: z.boolean(),
         modificationRequires: z.literal('independent-reviewer-approval'),
         emergencyProcedure: z.string().min(20),
       })

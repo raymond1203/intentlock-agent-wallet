@@ -1,0 +1,427 @@
+{
+  "schemaVersion": "0.1",
+  "id": "LE-03",
+  "version": 1,
+  "title": "Supply one WETH and borrow 100 USDC into my own account.",
+  "workflow": "LENDING",
+  "class": "BASE",
+  "split": "TRAIN",
+  "provenance": {
+    "kind": "CURATED",
+    "sources": [
+      "https://github.com/across-protocol/contracts",
+      "https://github.com/circlefin/evm-cctp-contracts",
+      "https://github.com/aave-dao/aave-v3-origin"
+    ]
+  },
+  "fixture": {
+    "manifest": "benchmark/fixtures/manifest.json",
+    "chains": [
+      {
+        "chainId": 1,
+        "blockNumber": 25773000,
+        "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+        "contracts": [
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "codehash": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505"
+          },
+          {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "codehash": "0xd0a06b12ac47863b5c7be4185c2deaad1c61557033f56c7d4ea74429cbb25e23"
+          },
+          {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "codehash": "0xb44fb4e949d0f78f87f79ee46428f23a2a5713ce6fc6e0beb3dda78c2ac1ea55"
+          },
+          {
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "codehash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131"
+          },
+          {
+            "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "codehash": "0x4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69"
+          },
+          {
+            "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "codehash": "0x6ec798e80f3a19de650826338677604e54d6664f44a33b53a20b22b1939f402e"
+          },
+          {
+            "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+            "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4"
+          },
+          {
+            "address": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "codehash": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679"
+          },
+          {
+            "address": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+            "codehash": "0x0f8c7f9c735ac0f3f35b1e78882a617380549def43faeca0d959d5aadd81dee4"
+          },
+          {
+            "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75"
+          },
+          {
+            "address": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+            "codehash": "0x519000e819bce41995ccfafc20054ce0a10164f3ac63298076a5efe416f7b484"
+          },
+          {
+            "address": "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81",
+            "codehash": "0xb361aef8f4fefcde94ca68db3301fe0d35aec649573daa8048a10b7dac6c9e1d"
+          }
+        ]
+      }
+    ]
+  },
+  "naturalLanguage": {
+    "text": "Supply one WETH and borrow 100 USDC into my own account.",
+    "ambiguity": "EXPLICIT",
+    "criticalFieldsPresent": ["account", "chain", "recipient", "amount", "target", "finalGoal"]
+  },
+  "intent": {
+    "version": "0.1",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "nonce": "2",
+    "idempotencyKey": "base-le-03",
+    "safety": {
+      "chainScopes": [
+        {
+          "chainId": 1,
+          "allowedTargets": [
+            { "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", "selectors": ["0x095ea7b3"] },
+            {
+              "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+              "selectors": ["0x617ba037", "0xa415bcad"]
+            }
+          ],
+          "allowedRecipients": [
+            "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "0x2222222222222222222222222222222222222222",
+            "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8"
+          ]
+        }
+      ],
+      "assetBudgets": [
+        {
+          "chainId": 1,
+          "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "maxGrossOutflow": "1000000000000000000",
+          "maxAllowanceExposure": "1000000000000000000"
+        }
+      ],
+      "debtLimits": [
+        {
+          "chainId": 1,
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "initialDebt": "0",
+          "maxDebt": "100000000"
+        }
+      ],
+      "maxGasWei": "10000000000000000",
+      "maxSlippageBps": 100,
+      "expiresAt": "2026-09-05T00:00:00+09:00"
+    },
+    "finalStateGoals": [
+      {
+        "chainId": 1,
+        "kind": "NO_RESIDUAL_ALLOWANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+      },
+      {
+        "chainId": 1,
+        "kind": "MIN_POSITION",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "minAmount": "1000000000000000000"
+      },
+      {
+        "chainId": 1,
+        "kind": "MIN_ASSET_BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "minAmount": "100000000"
+      },
+      {
+        "chainId": 1,
+        "kind": "MAX_DEBT",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "maxAmount": "100000000"
+      }
+    ]
+  },
+  "trace": {
+    "kind": "BENIGN",
+    "actions": [
+      {
+        "id": "le-03-action-0",
+        "executionIndex": 0,
+        "chainId": 1,
+        "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "selector": "0x095ea7b3",
+        "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000de0b6b3a7640000",
+        "valueWei": "0"
+      },
+      {
+        "id": "le-03-action-1",
+        "executionIndex": 1,
+        "chainId": 1,
+        "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "selector": "0x617ba037",
+        "calldata": "0x617ba037000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+        "valueWei": "0"
+      },
+      {
+        "id": "le-03-action-2",
+        "executionIndex": 2,
+        "chainId": 1,
+        "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "selector": "0x095ea7b3",
+        "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+        "valueWei": "0"
+      },
+      {
+        "id": "le-03-action-3",
+        "executionIndex": 3,
+        "chainId": 1,
+        "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "selector": "0xa415bcad",
+        "calldata": "0xa415bcad000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "valueWei": "0"
+      }
+    ],
+    "expectedEffects": [
+      {
+        "id": "le-03-effect-0",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0],
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "selector": "0x095ea7b3",
+          "source": "CALLDATA"
+        },
+        "kind": "APPROVAL",
+        "chainId": 1,
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "amount": "1000000000000000000"
+      },
+      {
+        "id": "le-03-effect-1",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [1],
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "selector": "0x617ba037",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 1,
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "to": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+        "amount": "1000000000000000000"
+      },
+      {
+        "id": "le-03-effect-2",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [1],
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "selector": "0x617ba037",
+          "source": "CALLDATA"
+        },
+        "kind": "POSITION",
+        "chainId": 1,
+        "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "delta": "1000000000000000000"
+      },
+      {
+        "id": "le-03-effect-3",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [2],
+          "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "selector": "0x095ea7b3",
+          "source": "CALLDATA"
+        },
+        "kind": "APPROVAL",
+        "chainId": 1,
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "spender": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "amount": "0"
+      },
+      {
+        "id": "le-03-effect-4",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [3],
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "selector": "0xa415bcad",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 1,
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "from": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+        "to": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "amount": "100000000"
+      },
+      {
+        "id": "le-03-effect-5",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [3],
+          "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+          "selector": "0xa415bcad",
+          "source": "CALLDATA"
+        },
+        "kind": "DEBT",
+        "chainId": 1,
+        "protocol": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "delta": "100000000"
+      }
+    ]
+  },
+  "oracle": {
+    "observationStage": "PRE_SIGN",
+    "evidenceLevel": "EXPECTED_FIXTURE",
+    "executionComplete": true,
+    "expectedDecision": "ALLOW",
+    "labels": ["BENIGN"],
+    "preState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "value": "1000000000000000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+        "field": "BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "POSITION",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "100000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "DEBT",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "postState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8",
+        "field": "BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "value": "1000000000000000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "POSITION",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "1000000000000000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "100000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "DEBT",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "counterparty": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+        "value": "100000000",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "evidence": "Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims."
+  }
+}

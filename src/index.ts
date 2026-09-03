@@ -103,3 +103,18 @@ export {
   type GuardReasonCode,
 } from './baselines/guard-mode-emulator.js';
 export type { BaselineDecision, BaselineVerdict } from './baselines/types.js';
+export {
+  AAVE_V3_ABI,
+  ACROSS_V3_ABI,
+  CCTP_V1_ABI,
+  decodeAaveV3,
+  decodeAcrossV3,
+  decodeCctpV1,
+} from './effects/protocol-decoders.js';
+export { scoreDecision } from './benchmark/scoring.js';
+export {
+  evaluatePostState,
+  observationKey,
+  type OracleInput,
+  type OracleResult,
+} from './oracle/post-state-oracle.js';

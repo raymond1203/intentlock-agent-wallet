@@ -9,7 +9,8 @@
 > cases carried the operator name and none of the ten base cases did, so the two classes were
 > separable from the identifier strings alone.
 >
-> The seventeen-of-twenty figure therefore measures string matching, not verification, and is void.
+> The seventeen-of-twenty figure is confounded and void. Identifiers made shortcut classification
+> possible; the observations do not prove that the model used that shortcut or predict the rerun's score.
 > The prompt is now `intentlock-llm-baseline-v2` with identifiers redacted
 > (`redactScenarioIdentity`), and the twenty cases must be re-run before any number is reported.
 > `llm-verifier-20-review.json` is retained as a record of the voided run only.

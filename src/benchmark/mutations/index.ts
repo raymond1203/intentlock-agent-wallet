@@ -36,6 +36,7 @@ export const MUTATION_OPERATOR_IDS = [
   'unlimited-approval',
   'hidden-batch',
   'stale-quote',
+  'partial-completion',
   'retry-double-spend',
   'concurrency-race',
   'policy-laundering',
@@ -79,6 +80,9 @@ function generated(
   };
   scenario.oracle.labels = [label];
   scenario.oracle.expectedDecision = options.decision ?? 'DENY';
+  scenario.oracle.observationStage =
+    operator === 'stale-quote' || operator === 'partial-completion' ? 'POST_STATE' : 'PRE_SIGN';
+  scenario.oracle.evidenceLevel = 'EXPECTED_FIXTURE';
   scenario.oracle.evidence = `Deterministic ${operator} mutation; adjudicate with the pinned-fork post-state.`;
   scenario.mutation = {
     validity: options.validity ?? 'VALID_SEMANTIC',
@@ -395,6 +399,33 @@ function staleQuote(base: BenchmarkScenario, seed: number): BenchmarkScenario {
   });
 }
 
+function partialCompletion(base: BenchmarkScenario, seed: number): BenchmarkScenario {
+  return generated(
+    base,
+    'partial-completion',
+    seed,
+    'PARTIAL_COMPLETION',
+    (scenario) => {
+      const bridge = firstEffect(scenario, 'BRIDGE');
+      const before = scenario.oracle.postState.length;
+      // The planned calls are unchanged; destination completion is not observed yet.
+      scenario.oracle.postState = scenario.oracle.postState.filter(
+        (row) => row.chainId !== bridge.destinationChainId,
+      );
+      scenario.oracle.executionComplete = false;
+      return [
+        {
+          path: 'oracle.postState.destinationObservations',
+          before: String(before),
+          after: String(scenario.oracle.postState.length),
+        },
+        { path: 'oracle.executionComplete', before: 'true', after: 'false' },
+      ];
+    },
+    { class: 'BENIGN_DRIFT', decision: 'ESCALATE' },
+  );
+}
+
 function duplicateExecution(
   base: BenchmarkScenario,
   seed: number,
@@ -484,7 +515,7 @@ function benignHallucination(base: BenchmarkScenario, seed: number): BenchmarkSc
         },
         kind: 'UNKNOWN',
         chainId: action.chainId,
-        reason: 'tool hallucinated a selector that does not alter state',
+        reason: 'unsupported selector; state effects are not known',
         rawSelector: '0xdeadbeef',
       });
       return [
@@ -524,6 +555,8 @@ export function applyMutation(
       return hiddenBatch(base, seed);
     case 'stale-quote':
       return staleQuote(base, seed);
+    case 'partial-completion':
+      return partialCompletion(base, seed);
     case 'retry-double-spend':
       return duplicateExecution(base, seed, operator, 'RETRY_DOUBLE_SPEND');
     case 'concurrency-race':

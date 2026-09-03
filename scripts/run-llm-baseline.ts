@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
@@ -7,10 +8,12 @@ import { z } from 'zod';
 
 import { applyMutation, type MutationOperatorId } from '../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
+import { scoreDecision } from '../src/benchmark/scoring.js';
 import {
   createLlmVerifierUserPrompt,
   evaluateLlmVerifier,
   LlmVerifierConfigSchema,
+  LLM_VERIFIER_SYSTEM_PROMPT,
 } from '../src/baselines/llm-verifier.js';
 import { OpenAiResponsesClient } from '../src/baselines/openai-responses-client.js';
 
@@ -51,7 +54,12 @@ async function apiKey(): Promise<string> {
 }
 
 function scenarioPath(id: string): string {
-  const directory = id.startsWith('TR-') || id.startsWith('AP-') ? 'transfer' : 'swap';
+  const directory =
+    id.startsWith('TR-') || id.startsWith('AP-')
+      ? 'transfer'
+      : id.startsWith('BR-')
+        ? 'bridge'
+        : 'swap';
   return resolve('benchmark/scenarios/base', directory, `${id.toLowerCase()}.json`);
 }
 
@@ -70,6 +78,7 @@ const mutationBaseIds: Record<MutationOperatorId, string> = {
   'unlimited-approval': 'AP-01',
   'hidden-batch': 'BS-01',
   'stale-quote': 'SS-01',
+  'partial-completion': 'BR-01',
   'retry-double-spend': 'TR-01',
   'concurrency-race': 'TR-01',
   'policy-laundering': 'TR-01',
@@ -102,6 +111,21 @@ async function main(): Promise<void> {
     }),
   );
   const sample = [...baseScenarios, ...mutationScenarios];
+  if (sample.some((scenario) => scenario.split === 'HIDDEN_TEST')) {
+    throw new Error('Development validation cannot use held-out scenarios');
+  }
+  const codeCommit = gitCommit();
+  const workingTreeDirty =
+    execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0;
+  const inputSha256 = createHash('sha256')
+    .update(
+      JSON.stringify({
+        config,
+        system: LLM_VERIFIER_SYSTEM_PROMPT,
+        inputs: sample.map(createLlmVerifierUserPrompt),
+      }),
+    )
+    .digest('hex');
   const client = new OpenAiResponsesClient(await apiKey());
   const startedAt = new Date().toISOString();
   const outputs = [];
@@ -110,10 +134,7 @@ async function main(): Promise<void> {
     const results = await Promise.all(
       batch.map(async (scenario, batchIndex) => {
         const verdict = await evaluateLlmVerifier(scenario, config, client);
-        const expectedDecision =
-          scenario.oracle.expectedDecision === 'ESCALATE'
-            ? 'ABSTAIN'
-            : scenario.oracle.expectedDecision;
+        const score = scoreDecision(scenario, verdict.decision, 'PRE_SIGN');
         const reviewIndex = offset + batchIndex + 1;
         console.log(`completed R${String(reviewIndex).padStart(2, '0')}: ${verdict.decision}`);
         return {
@@ -121,9 +142,9 @@ async function main(): Promise<void> {
           scenarioId: scenario.id,
           split: scenario.split,
           class: scenario.class,
-          oracle: { expectedDecision, labels: scenario.oracle.labels },
+          oracle: { expectedDecision: score.expectedDecision, labels: scenario.oracle.labels },
           verdict,
-          exactMatch: verdict.decision === expectedDecision,
+          ...score,
         };
       }),
     );
@@ -131,13 +152,17 @@ async function main(): Promise<void> {
   }
   const result = {
     schemaVersion: '0.1',
-    datasetVersion: '0.1.0',
-    codeCommit: gitCommit(),
+    datasetVersion: '0.2.0',
+    codeCommit,
+    workingTreeDirty,
+    inputSha256,
+    evaluationStage: 'PRE_SIGN',
     seed: 2026,
     startedAt,
     completedAt: new Date().toISOString(),
     config,
     sampleSize: outputs.length,
+    eligibleCount: outputs.filter((output) => output.eligible).length,
     exactMatches: outputs.filter((output) => output.exactMatch).length,
     outputs,
     reviewerStatus: 'PENDING_INDEPENDENT_REVIEW',
@@ -145,7 +170,8 @@ async function main(): Promise<void> {
   const reviewPacket = {
     protocolVersion: '0.1',
     status: 'PENDING_INDEPENDENT_REVIEW',
-    datasetVersion: '0.1.0',
+    datasetVersion: '0.2.0',
+    inputSha256,
     seed: 2026,
     config,
     instructions:
