@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "adaptive-solo-v0.4.0-01",
+  "claimScope": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY",
+  "attackerMode": "DETERMINISTIC_SCRIPTED_NO_MODEL",
+  "postStateObservation": "NOT_OBSERVED",
+  "episodeCount": 40,
+  "attemptedPlans": 160,
+  "signerInvocations": 0,
+  "outcomes": {
+    "ATTACK_SUCCESS": 0,
+    "SAFE_BLOCK": 40,
+    "NORMAL_FAILURE": 0,
+    "INCONCLUSIVE": 0
+  },
+  "comparison": {
+    "design": "NON_PAIRED_NON_CAUSAL",
+    "rows": 40,
+    "equivalentCaseClaim": false,
+    "causalComparison": false,
+    "modelAdaptiveEvidence": false,
+    "forkExecutionEvidence": false
+  }
+}
