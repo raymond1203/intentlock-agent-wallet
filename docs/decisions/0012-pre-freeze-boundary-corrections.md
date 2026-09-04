@@ -32,3 +32,19 @@ and single-process reservations from production distributed guarantees. AIS is i
 prior work. These are claim corrections before results, not post-result dataset or metric tuning.
 
 Final author approval remains pending; the selected review protocol is SOLO_AI_ASSISTED.
+
+## Historical collector verification
+
+Changing shared ActionIR runtime code changes the current M2 collector fingerprint, even though
+the historical executed transactions are retained at their original commit. Validation therefore
+reconstructs the collector fingerprint from each evidence-bound Git source commit, including its
+emitted JavaScript using the exact installed/pinned TypeScript version. The collector algorithm
+and path list must match the historical source byte-for-byte; unsupported compiler/configuration
+or missing files fail closed. No historical source is executed and no recorded digest is used as
+the trust root. Content-addressed raw bytes, original scenario hashes, ancestry, receipts and
+oracle recomputation remain required. The current-only publishing gate is unchanged.
+
+Reports retain `collectorMatchesCurrent` (false after this change) and separately expose
+`collectorMatchesBoundSource`. Thus the old execution can support historical data validity, not a
+claim that M2 ran the patched M3 implementation. A diagnostic reconstruction of source `a0cca37`
+reproduced the recorded collector digest `d3ca47765b9de0aa86d88a55d0a048e6708692711f82a7778c14ba147fa50474`.

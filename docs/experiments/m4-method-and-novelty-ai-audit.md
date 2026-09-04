@@ -254,3 +254,64 @@ the claim families and exposed concrete nearest-work overlap. Three bounded sear
 agent-wallet cumulative authorization, wallet-intent guardrails and economic authorization
 budgets; the materially new finding was AIS. Blogs, forum posts and search snippets were not used
 as support. This is a targeted contrary-evidence review, not a claim of exhaustive novelty search.
+
+## 8. Resolution appendix — committed pre-freeze corrections
+
+The coordinating task committed the boundary corrections as
+`95a38e09281c09ee7e9f366dd3e1f917f9aa802e` on 2026-09-05. This appendix updates the remaining-gate
+status in §7; it does not erase the original failed regression or rewrite its historical context.
+
+### Historical G05 outcome and current policy
+
+Read-only inspection of the commit and `test/e2e/golden-scenarios.e2e.test.ts` confirmed:
+
+- `benchmark/scenarios/golden/scenarios.json` and the benchmark evidence were unchanged by this
+  commit. G05 retains its original calldata, quote and historical `ALLOW` label.
+- The current-policy regression explicitly expects `DENY` with `SLIPPAGE_EXCEEDED` for that
+  floor-rounded payload. This is a stricter implementation decision, not a rewritten old outcome.
+- A separate test constructs `ceil(quotedAmountOut * 9900 / 10000)` and encodes the corrected swap
+  only in memory. Its expected outcome is `EXECUTED_VERIFIED` with one executor call. The fixture
+  executor is local; this is not a new pinned-fork run or evidence that the old collector used the
+  patched monitor.
+- The coordinating task observed **17 golden tests passed**. This reviewer checked the committed
+  assertions and test scope; it did not rerun that suite in this read-only follow-up.
+
+The inspected golden test source SHA-256 is
+`959be09f1a6d2ee7904c61d8c7122933c7897668b622b9f3009108203a5b8dff`.
+
+### Project validation and evidence provenance
+
+The coordinating task observed `pnpm check` pass with **626 tests passed, 12 skipped; 53 test files
+passed, 2 skipped**. The package command includes formatting, ESLint, TypeScript checking and
+coverage tests. These exact counts are the coordinating task's recorded command-output summary,
+not a fresh run or a count reconstructed from a mutable test cache by this reviewer.
+
+Local read-only inspection found the golden suite marked non-failing in the Vitest cache and a
+coverage artifact updated at 08:30 KST. Those local artifacts support the existence of a recent
+run but do not independently certify its exact total: the cache retains entries for historical
+files and does not store individual assertion counts. Do not reinterpret stale cache entries as
+current failures or use the cache as an immutable full-suite report.
+
+The historical-test disposition and project-check gates described in §7 were therefore resolved
+for the committed pre-freeze corrections. The same commit also adds AIS and ScopeGate to the
+manuscript and explicitly distinguishes their design comparison from measured local baselines.
+
+During this follow-up, separate working-tree changes addressed reconstruction of the M2 collector
+fingerprint from its evidence-bound historical source. Those changes were not covered by the
+earlier 626-test claim. The coordinating task subsequently observed a newer `pnpm check` complete
+with exit code zero: **650 tests passed, 12 skipped; 54 test files passed, 2 skipped**, with
+**91.39% line coverage and 89.51% statement coverage**. The additional coverage includes 22
+historical-collector tests and 2 evidence-validator tests. This reviewer inspected those test
+changes read-only; the exact latest totals and coverage remain attributed to the coordinating
+task's actual command output rather than an independent full-suite rerun.
+
+The two check summaries describe different successive source states; they must not be merged or
+presented as separate experimental replications. The latest check covers the working-tree
+collector corrections, but a build, clean-source commit and canonical M2 validation remain the
+coordinator's next steps. Reconstructing an old fingerprint does not change the original executed
+source identity or create new on-chain evidence. This appendix does not certify a completed
+freeze or a new M2 execution result.
+
+No M3 performance results exist in this review record. The dry-run/freeze, actual main and
+secondary experiments, resulting manuscript assembly and final author approval remain separate
+gates. Author adjudication is still **PENDING** under `SOLO_AI_ASSISTED`.

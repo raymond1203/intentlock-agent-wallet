@@ -678,6 +678,8 @@ function sameLatest(
 export interface PublishedM2ValidationOptions {
   scenarios: readonly BenchmarkScenario[];
   currentCollectorSha256: string;
+  /** Independently rebuilt collector identities at original source commits, never copied from evidence. */
+  sourceCollectorSha256?: ReadonlyMap<string, string>;
   sourceCommitResolves: (commit: string) => boolean;
   sourceCommitIsAncestor: (commit: string) => boolean;
   /** Must return the exact bytes at `HEAD:path` for GIT_HEAD_TRACKED validation. */
@@ -707,6 +709,13 @@ export function validatePublishedM2Evidence(
     throw new Error('current execution evidence does not match the current dataset count');
   }
   Sha256Schema.parse(options.currentCollectorSha256);
+  const expectedCollectorFor = (commit: string): string => {
+    if (!options.sourceCollectorSha256) return options.currentCollectorSha256;
+    const expected = options.sourceCollectorSha256.get(commit);
+    if (expected === undefined)
+      throw new Error(`missing independently rebuilt collector: ${commit}`);
+    return Sha256Schema.parse(expected);
+  };
 
   const computedProblems = new Map<PublishedM2Attempt, string[]>();
   const independentlyEvaluated = new Map<
@@ -752,7 +761,7 @@ export function validatePublishedM2Evidence(
     ) {
       throw new Error(`stale published execution evidence: ${attempt.scenarioId}`);
     }
-    if (raw.collectorSha256 !== options.currentCollectorSha256) {
+    if (raw.collectorSha256 !== expectedCollectorFor(raw.sourceCommit)) {
       throw new Error(`stale raw execution collector: ${attempt.scenarioId}`);
     }
     if (
@@ -859,7 +868,7 @@ export function validatePublishedM2Evidence(
     (attempt) =>
       options.rawEvidenceSource === 'GIT_HEAD_TRACKED' &&
       !attempt.workingTreeDirty &&
-      attempt.collectorSha256 === options.currentCollectorSha256 &&
+      attempt.collectorSha256 === expectedCollectorFor(attempt.sourceCommit) &&
       options.sourceCommitResolves(attempt.sourceCommit) &&
       options.sourceCommitIsAncestor(attempt.sourceCommit),
   ).length;

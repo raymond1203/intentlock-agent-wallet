@@ -30,7 +30,11 @@ import {
   sha256Source,
 } from '../src/experiments/freeze-gates.js';
 import { executionCollectorSha256 } from './m2-execution/provenance.js';
-import { validatePublishedM2Evidence } from './m2-execution/evidence-validation.js';
+import {
+  M2PublishedEvidenceSchema,
+  validatePublishedM2Evidence,
+} from './m2-execution/evidence-validation.js';
+import { boundCollectorSha256 } from './m2-execution/historical-collector.js';
 import { M2_ATTEMPT_SELECTION_POLICY } from './m2-execution/attempt-selection.js';
 
 const check = process.argv.includes('--check');
@@ -150,17 +154,25 @@ const emptyPublishedExecution = {
   latest: [],
   attempts: [],
 };
-const verifiedPublishedExecution = validatePublishedM2Evidence(
+const publishedInput = M2PublishedEvidenceSchema.parse(
   rawPublishedExecution ? JSON.parse(rawPublishedExecution) : emptyPublishedExecution,
-  {
-    scenarios: base,
-    currentCollectorSha256,
-    sourceCommitResolves,
-    sourceCommitIsAncestor,
-    readRawEvidenceBytes: readTrackedRawEvidenceBytes,
-    rawEvidenceSource: 'GIT_HEAD_TRACKED',
-  },
 );
+const sourceCollectorSha256 = new Map<string, string>();
+for (const commit of new Set(publishedInput.attempts.map((attempt) => attempt.sourceCommit))) {
+  if (!sourceCommitResolves(commit) || !sourceCommitIsAncestor(commit)) {
+    throw new Error(`published source commit is not in the current HEAD lineage: ${commit}`);
+  }
+  sourceCollectorSha256.set(commit, await boundCollectorSha256(commit));
+}
+const verifiedPublishedExecution = validatePublishedM2Evidence(publishedInput, {
+  scenarios: base,
+  currentCollectorSha256,
+  sourceCollectorSha256,
+  sourceCommitResolves,
+  sourceCommitIsAncestor,
+  readRawEvidenceBytes: readTrackedRawEvidenceBytes,
+  rawEvidenceSource: 'GIT_HEAD_TRACKED',
+});
 const {
   evidence: publishedExecution,
   latestExecution,
@@ -252,6 +264,9 @@ const rows = [...base, ...mutations].map((s) => {
             collectorSha256: selectedAttempt.get(s.id)?.collectorSha256 ?? null,
             collectorMatchesCurrent:
               selectedAttempt.get(s.id)?.collectorSha256 === currentCollectorSha256,
+            collectorMatchesBoundSource:
+              selectedAttempt.get(s.id)?.collectorSha256 ===
+              sourceCollectorSha256.get(selectedAttempt.get(s.id)?.sourceCommit ?? ''),
             fixtureCorrected: latestExecution.get(s.id)?.fixtureCorrected ?? null,
           }
         : { status: 'NOT_COLLECTED' },

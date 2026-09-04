@@ -265,6 +265,7 @@ function validatePublished(
   bytesByPath: ReadonlyMap<string, Uint8Array>,
   overrides: {
     currentCollectorSha256?: string;
+    sourceCollectorSha256?: ReadonlyMap<string, string>;
     sourceCommitResolves?: (commit: string) => boolean;
     sourceCommitIsAncestor?: (commit: string) => boolean;
   } = {},
@@ -272,6 +273,9 @@ function validatePublished(
   return validatePublishedM2Evidence(input, {
     scenarios: [scenario],
     currentCollectorSha256: overrides.currentCollectorSha256 ?? collectorSha256,
+    ...(overrides.sourceCollectorSha256
+      ? { sourceCollectorSha256: overrides.sourceCollectorSha256 }
+      : {}),
     sourceCommitResolves: overrides.sourceCommitResolves ?? (() => true),
     sourceCommitIsAncestor: overrides.sourceCommitIsAncestor ?? (() => true),
     readRawEvidenceBytes: (path) => {
@@ -452,6 +456,40 @@ describe('published execution evidence validation', () => {
     ).toThrow('stale raw execution collector');
     expect(() =>
       validatePublished(bundle.evidence, bytesByPath, {
+        sourceCommitIsAncestor: () => false,
+      }),
+    ).toThrow('raw source commit is not in the current HEAD lineage');
+  });
+
+  it('accepts the rebuilt bound collector without claiming it is the current collector', () => {
+    const bundle = validBundle();
+    const result = validatePublished(
+      bundle.evidence,
+      new Map([[bundle.attempt.rawFilePath, bundle.bytes]]),
+      {
+        currentCollectorSha256: 'd'.repeat(64),
+        sourceCollectorSha256: new Map([[bundle.attempt.sourceCommit, collectorSha256]]),
+      },
+    );
+    expect(result.cleanCommittedExecutedBaseCount).toBe(1);
+  });
+
+  it('fails closed on missing, changed or unrelated historical collector bindings', () => {
+    const bundle = validBundle();
+    const bytes = new Map([[bundle.attempt.rawFilePath, bundle.bytes]]);
+    expect(() =>
+      validatePublished(bundle.evidence, bytes, {
+        sourceCollectorSha256: new Map(),
+      }),
+    ).toThrow('missing independently rebuilt collector');
+    expect(() =>
+      validatePublished(bundle.evidence, bytes, {
+        sourceCollectorSha256: new Map([[bundle.attempt.sourceCommit, 'd'.repeat(64)]]),
+      }),
+    ).toThrow('stale raw execution collector');
+    expect(() =>
+      validatePublished(bundle.evidence, bytes, {
+        sourceCollectorSha256: new Map([[bundle.attempt.sourceCommit, collectorSha256]]),
         sourceCommitIsAncestor: () => false,
       }),
     ).toThrow('raw source commit is not in the current HEAD lineage');
