@@ -240,8 +240,10 @@ function evaluateEffectSpecificRules(
         }
         const quoted = BigInt(effect.quotedAmountOut);
         const minimum = BigInt(effect.minAmountOut);
-        const slippageBps = quoted === 0n ? 10_001n : ((quoted - minimum) * 10_000n) / quoted;
-        if (minimum > quoted || slippageBps > BigInt(input.contract.safety.maxSlippageBps)) {
+        // Cross-multiply: flooring the bps ratio can allow a fractional-bps violation.
+        const exceedsSlippage =
+          (quoted - minimum) * 10_000n > quoted * BigInt(input.contract.safety.maxSlippageBps);
+        if (quoted === 0n || minimum > quoted || exceedsSlippage) {
           return deny(
             input,
             REASON_CODES.SLIPPAGE_EXCEEDED,
@@ -250,7 +252,7 @@ function evaluateEffectSpecificRules(
             evidence(
               'effect.minAmountOut',
               `slippage <= ${String(input.contract.safety.maxSlippageBps)} bps`,
-              `${slippageBps.toString()} bps`,
+              `minimum ${minimum.toString()}; quote ${quoted.toString()}`,
               'ACTION_IR',
             ),
           );

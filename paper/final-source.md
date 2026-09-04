@@ -39,7 +39,11 @@ CaMeL은 trusted query에서 control/data flow를 추출하고 capability 정책
 
 AgentDojo는 도구와 외부 데이터를 사용하는 agent의 보안·utility를 평가하는 확장 가능한 환경이다. Web3 직접 선행인 Real AI Agents with Fake Memories는 prompt·memory·외부 feed의 context 조작과 승인되지 않은 자산 이전을 다룬다. 본 연구는 일반 prompt-injection benchmark를 대체하지 않는다. 고정 EVM 상태의 allowance, debt, transfer와 최종 목표를 서로 구분하는 좁은 실험으로 문제를 구체화한다. [AgentDojo, v3](https://arxiv.org/abs/2406.13352v3), [Real AI Agents with Fake Memories, v3](https://arxiv.org/abs/2503.16248v3).
 
-이 논문에서 Task Shield·DRIFT·Progent 등은 설계 비교 대상이다. 원 구현을 지갑 환경에 충실히 이식해 측정한 것이 아니므로, 이하의 generic LLM verifier와 per-call policy 점수를 그 논문들의 성능으로 표시하지 않는다.
+최근의 Authority–Inference Separation(AIS)은 금융 action intent를 결정론적으로 심사하고, 정확한 경제 의미·정책 버전·nonce에 결속된 실행 권한과 사후 증거를 연결한다. 금융 의도와 추론의 분리, 재현 가능한 권한 판단 자체도 본 연구만의 제안은 아니다. IntentLock은 EVM 멀티 호출의 누적 효과·spender별 allowance와 별도 고정 포크 실행 증거에 초점을 둔 좁은 구현 연구로 위치시킨다. AIS의 기관 권한·회계 책임 체계를 재현하거나 성능 우위를 검증한 것은 아니다. [Gong·Samawi·Medda, AIS v1, 2026-08-31](https://arxiv.org/abs/2608.30519v1).
+
+ScopeGate 역시 tool 접근 가능성과 구체적인 인자·금액에 대한 권한을 구분하고, 결정론적인 금액 상한·idempotency·기본 거부를 제시한다. 따라서 값 단위 권한 검사나 replay 방지 자체를 신규성으로 주장하지 않는다. [ScopeGate, v1](https://arxiv.org/abs/2606.28679v1).
+
+이 논문에서 Task Shield·DRIFT·Progent·AIS·ScopeGate 등은 설계 비교 대상이다. 원 구현을 지갑 환경에 충실히 이식해 측정한 것이 아니므로, 이하의 generic LLM verifier와 per-call policy 점수를 그 논문들의 성능으로 표시하지 않는다.
 
 ## 3. 시스템 모델과 위협 범위
 
@@ -73,11 +77,15 @@ monitor는 계약, 이전에 허용된 효과, 현재 후보의 효과와 simula
 
 허용 여부는 chain·counterparty·selector 같은 범위와 gross outflow·allowance·gas 같은 누적 자원에 의존한다. 단순히 각 거래가 작다는 이유로 전체가 허용되지 않으며, 동일한 실행 순서를 반복한 retry·concurrency 변이도 별도로 식별한다. 주 offline replay의 중복 실행 검사는 고정 trace 구조를 이용하므로, 임의의 분산 worker schedule을 모두 탐색한 동시성 검증으로 해석하지 않는다.
 
+사전 allowance 검사는 chain·asset별로 spender마다 마지막 승인액을 유지하고 그 합의 prefix 최댓값을 제한한다. 같은 spender의 재승인을 이중 합산하지 않지만, 이후 revoke가 앞선 초과 권한을 지우지도 않는다. transfer 소비에 의한 감소는 이 사전 검사에서 추론하지 않아 보수적 오거부가 가능하며, 관측되지 않은 기존 allowance의 완전성을 보장하지 않는다. 최종 residual allowance는 별도 사후 상태 관측으로 검사한다. 슬리피지는 비율의 내림 반올림 없이 정수 교차 곱으로 한도를 비교한다.
+
 ### 4.4. 서명 경계와 예약 원장
 
 연구 adapter는 같은 실행 경로 안에서 decode, monitor 판정, 원장 예약을 수행한 뒤에만 executor를 호출한다. 예약 원장은 대기·실행 완료·위반 상태의 효과를 예산 계산에 유지하고, 동일 idempotency 실행을 다시 승인하지 않는다. 명확한 실패에서는 관측된 gas를 남겨 정산한다. transport 오류로 실행 여부를 알 수 없으면 대기 예약이 남을 수 있다.
 
 원장의 직렬화는 하나의 프로세스 안에서 동작하는 in-memory 구현이다. snapshot 구조는 있지만 분산 데이터베이스, 장애 복구와 여러 signer 서비스 사이의 원자적 합의를 구현한 것은 아니다. ALLOW 판정은 intent hash에 연결된 내부 값이며 외부 서비스가 검증하는 일회성 암호 capability는 아니다. 모든 서명 경로를 하나의 계약 digest와 payload digest에 묶는 capability는 운영 배포를 위한 확장 제안이다.
+
+현재 adapter는 계약의 idempotency key를 재사용하므로 동일 계약의 두 번째 별도 요청은 중복으로 차단한다. 지원 batch 한 번과 여러 요청에 걸친 session은 동일하지 않으며, primary의 순차 효과 replay는 별도 평가 경로다. 계약별 action key와 공통 예산 session의 운영 구현은 남은 과제다. 예약 자원은 유출·allowance·gas이며 pending debt의 동시 예약까지 구현했다고 주장하지 않는다.
 
 ### 4.5. 실행 후 상태 대조
 
@@ -93,7 +101,7 @@ adapter가 mismatch를 발견하면 해당 호출을 EXECUTED_MISMATCH로 반환
 
 초기 상태가 Inv(C)에 있고 k번째까지의 예약·실행 prefix가 안전하다고 가정한다. 다음 요청은 이미 유효한 모든 예약을 포함해 상한을 확인한다. 조건을 통과한 경우에만 원자적으로 예약하므로 같은 잔여 예산이 동시에 재사용되지 않는다. 실제 효과가 예약한 안전 상계를 넘지 않고 확인한 payload와 일치한다는 전제에서 k+1번째 prefix도 안전하다. 완료 목표는 마지막 상태에서 별도로 검사한다.
 
-이는 추상 transition의 조건부 증명 개요이며 구현의 mechanized proof가 아니다. 계약 누락, 해석 오류, 예상 밖 실제 효과나 서명 우회가 있으면 전제가 성립하지 않는다. 실행 후 발견은 깨진 전제를 진단하는 증거일 뿐 이미 발생한 위반을 사전에 막았다는 보장이 아니다. liveness, future price, MEV와 자동 복구도 이 논증에 포함되지 않는다.
+이는 추상 transition의 조건부 증명 개요이며 구현의 mechanized proof가 아니다. 계약 누락, 해석 오류, 예상 밖 실제 효과나 서명 우회가 있으면 전제가 성립하지 않는다. compiler의 trusted substring 검사는 의미적 함의를 증명하지 않고, 같은 개수의 final goal을 더 약한 목표로 바꾸는 모든 경우를 포착하지도 않는다. 따라서 확인 절차의 건전성은 검증된 결과가 아니라 전제다. 실행 후 발견은 깨진 전제를 진단하는 증거일 뿐 이미 발생한 위반을 사전에 막았다는 보장이 아니다. liveness, future price, MEV와 자동 복구도 이 논증에 포함되지 않는다.
 
 ## 5. 평가 설계
 

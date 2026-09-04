@@ -133,6 +133,27 @@ interface TransitionCase {
 const transitions: TransitionCase[] = [
   { name: 'bounded transfer', kind: 'ALLOW', change: () => undefined },
   {
+    name: 'allowance exposure sums distinct allowed spenders across accepted and candidate effects',
+    kind: 'DENY',
+    code: REASON_CODES.ALLOWANCE_EXPOSURE_EXCEEDED,
+    change: (value) => {
+      value.contract.safety.chainScopes[0]?.allowedTargets.push({
+        target: OTHER,
+        selectors: ['0x095ea7b3'],
+      });
+      value.acceptedEffects = [approval('60')];
+      value.candidateEffects = [{ ...approval('60', OTHER), id: 'second-spender' }];
+    },
+  },
+  {
+    name: 'later revoke cannot hide an excessive prefix approval',
+    kind: 'DENY',
+    code: REASON_CODES.ALLOWANCE_EXPOSURE_EXCEEDED,
+    change: (value) => {
+      value.candidateEffects = [approval('101'), { ...approval('0'), id: 'revoke' }];
+    },
+  },
+  {
     name: 'expired intent',
     kind: 'DENY',
     code: REASON_CODES.INTENT_EXPIRED,
@@ -283,6 +304,40 @@ const transitions: TransitionCase[] = [
     kind: 'DENY',
     code: REASON_CODES.SLIPPAGE_EXCEEDED,
     change: (value) => (value.candidateEffects = [swap({ minAmountOut: '989' })]),
+  },
+  {
+    name: 'swap exact slippage cap is allowed',
+    kind: 'ALLOW',
+    change: (value) => (value.candidateEffects = [swap()]),
+  },
+  {
+    name: 'swap fractional-bps overflow cannot be rounded down',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '10001', minAmountOut: '9900' })]),
+  },
+  {
+    name: 'swap rounded-up minimum respects exact slippage cap',
+    kind: 'ALLOW',
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '10001', minAmountOut: '9901' })]),
+  },
+  {
+    name: 'swap sub-bps violation above safe integer range is denied',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [
+        swap({ quotedAmountOut: '100000000000000000001', minAmountOut: '99000000000000000000' }),
+      ]),
+  },
+  {
+    name: 'swap zero quote cannot satisfy a slippage bound',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '0', minAmountOut: '0' })]),
   },
   {
     name: 'swap recipient substituted',

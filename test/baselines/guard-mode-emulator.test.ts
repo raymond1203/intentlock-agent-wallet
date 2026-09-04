@@ -68,8 +68,8 @@ describe('violations the public policy catches', () => {
   });
 });
 
-describe('documented gaps the public policy does not cover', () => {
-  it('allows an unlimited approval because signatures are outside the outflow calculation', () => {
+describe('scope limitations of the public-policy emulator', () => {
+  it('allows an unlimited approval under the zero-immediate-outflow approximation', () => {
     const verdict = evaluateGuardMode(load('mutations/ap-01-unlimited-approval-2026'));
     expect(verdict.decision).toBe('ALLOW');
     expect(verdict.reasonCodes).toContain(GUARD_REASON_CODES.SIGNATURE_OUTSIDE_OUTFLOW);
@@ -123,7 +123,7 @@ describe('address allowlist reading', () => {
 });
 
 describe('rolling 24-hour outflow', () => {
-  it('accumulates only across confirmed transactions and expires with the window', () => {
+  it('accumulates across allowed transactions assuming confirmation and expires with the window', () => {
     const emulator = new GuardModeEmulator(guardModeConfigFromScenario(BASE_TRANSFER));
 
     const first = emulator.evaluate(BASE_TRANSFER, '2026-08-30T00:00:00Z');

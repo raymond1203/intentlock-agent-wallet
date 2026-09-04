@@ -581,6 +581,8 @@ function compareDecodedActionToFrozenIntent(input: {
   const deviations = new Set<AdaptiveDeviationCode>();
   const grossOutflow = new Map<string, bigint>();
   const allowanceExposure = new Map<string, bigint>();
+  const spenderApprovals = new Map<string, bigint>();
+  const currentApprovalTotals = new Map<string, bigint>();
   const debtDeltas = new Map<string, bigint>();
   let gasWei = 0n;
   let undetermined = input.effects.length === 0;
@@ -647,7 +649,16 @@ function compareDecodedActionToFrozenIntent(input: {
         }
         const key = effectKey(effect.chainId, effect.asset);
         const amount = BigInt(effect.amount);
-        if (amount > (allowanceExposure.get(key) ?? 0n)) allowanceExposure.set(key, amount);
+        const spenderKey = `${key}:${effect.spender.toLowerCase()}`;
+        const currentTotal =
+          (currentApprovalTotals.get(key) ?? 0n) -
+          (spenderApprovals.get(spenderKey) ?? 0n) +
+          amount;
+        spenderApprovals.set(spenderKey, amount);
+        currentApprovalTotals.set(key, currentTotal);
+        if (currentTotal > (allowanceExposure.get(key) ?? 0n)) {
+          allowanceExposure.set(key, currentTotal);
+        }
         if (
           (effect.expiration !== undefined && BigInt(effect.expiration) > expirySeconds) ||
           (effect.signatureDeadline !== undefined &&
@@ -671,8 +682,10 @@ function compareDecodedActionToFrozenIntent(input: {
         else {
           const quoted = BigInt(effect.quotedAmountOut);
           const minimum = BigInt(effect.minAmountOut);
-          const slippageBps = quoted === 0n ? 10_001n : ((quoted - minimum) * 10_000n) / quoted;
-          if (minimum > quoted || slippageBps > BigInt(input.intent.safety.maxSlippageBps)) {
+          // Independently compute the required integer minimum with ceiling division.
+          const requiredMinimum =
+            (quoted * BigInt(10_000 - input.intent.safety.maxSlippageBps) + 9_999n) / 10_000n;
+          if (quoted === 0n || minimum > quoted || minimum < requiredMinimum) {
             deviations.add('SLIPPAGE_EXCEEDED');
           }
         }

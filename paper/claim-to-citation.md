@@ -169,4 +169,9 @@ MetaMask architecture·trading modes·outflow policy도 다시 열었다. 본문
 - M2 80/80은 기록된 첫 완료 시도 선택 후의 데이터 실행 검증이다. 첫 시도 availability나 공격
   방어율이 아니다. zero-allowance revoke는 idempotence 사례로 제한한다.
 
+추가로 2026-08-31 공개된 AIS v1의 금융 의도 권한·실행 결속·사후 증거와의 근접성을 원문으로
+확인해 본문에 반영했다. `금융 의도 권한 분리의 최초 제안`을 주장하지 않는다. 감사 기록은
+[`m4-method-and-novelty-ai-audit.md`](../docs/experiments/m4-method-and-novelty-ai-audit.md)에
+구체적인 반례와 구현 한계를 남긴다. ScopeGate와 AgentSpec의 표현력도 신규성의 제한으로 다룬다.
+
 이 파일은 AI 보조 대조 기록이며 최종 저자의 승인 기록은 아니다.

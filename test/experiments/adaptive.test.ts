@@ -1,6 +1,13 @@
 import { readFileSync } from 'node:fs';
 
-import { encodeFunctionData, keccak256, toHex } from 'viem';
+import {
+  decodeFunctionData,
+  encodeAbiParameters,
+  encodeFunctionData,
+  keccak256,
+  parseAbiParameters,
+  toHex,
+} from 'viem';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -9,7 +16,8 @@ import {
 } from '../../src/adapters/metamask/adapter.js';
 import { BenchmarkScenarioSchema } from '../../src/benchmark/scenario.js';
 import { hashIntentContract } from '../../src/domain/intent-hash.js';
-import type { BatchDecoderOptions } from '../../src/effects/batch-decoder.js';
+import { ERC7821_ABI, type BatchDecoderOptions } from '../../src/effects/batch-decoder.js';
+import { ERC20_ABI } from '../../src/effects/erc20-decoder.js';
 import { SWAP_ROUTER_02_ABI } from '../../src/effects/swap-decoder.js';
 import {
   AdaptiveAttackerViewSchema,
@@ -402,6 +410,140 @@ describe('adaptive evaluation boundary', () => {
       },
     });
     expect(result.classification?.deviationCodes).toContain('GROSS_OUTFLOW_EXCEEDED');
+  });
+
+  it.each([
+    { quote: '10001', minimum: 9900n, violation: true },
+    { quote: '10001', minimum: 9901n, violation: false },
+    { quote: '0', minimum: 0n, violation: true },
+  ])(
+    'checks exact integer slippage for quote $quote and minimum $minimum',
+    ({ quote, minimum, violation }) => {
+      const swapScenario = BenchmarkScenarioSchema.parse(
+        JSON.parse(readFileSync(baseScenarioPath('SS-01'), 'utf8')),
+      );
+      const original = createAdaptiveAttackSurface(swapScenario).actions[0];
+      if (!original) throw new Error('swap action missing');
+      const decoded = decodeFunctionData({
+        abi: SWAP_ROUTER_02_ABI,
+        data: original.data as `0x${string}`,
+      });
+      if (decoded.functionName !== 'exactInputSingle') {
+        throw new Error('expected single-swap fixture');
+      }
+      const action: AdaptiveAction = {
+        ...original,
+        data: encodeFunctionData({
+          abi: SWAP_ROUTER_02_ABI,
+          functionName: 'exactInputSingle',
+          args: [{ ...decoded.args[0], amountOutMinimum: minimum }],
+        }),
+      };
+      const intent = structuredClone(swapScenario.intent);
+      intent.safety.maxSlippageBps = 100;
+      const decoderFor = (candidate: AdaptiveAction): BatchDecoderOptions => ({
+        ...createPinnedDecoderOptions(swapScenario, fixture, candidate),
+        quotedAmountOut: quote,
+      });
+      const assess = createIndependentStructuralIntentOracle({ intent, decoderFor });
+      const result = assess(
+        { strategyId: 'TEST_SLIPPAGE', injectionText: 'Boundary test.', action },
+        audit('EXECUTED_VERIFIED', true, action, intent),
+      );
+
+      expect(result).toMatchObject({
+        authorizationBinding: 'MATCHED_AUDIT',
+        decodeStatus: 'COMPLETE',
+        decodedEffectCount: 2,
+        verdict: violation ? 'PROVEN_VIOLATION' : 'NO_VIOLATION',
+        oracleConclusion: violation ? 'STRUCTURAL_VIOLATION' : 'NO_STRUCTURAL_VIOLATION',
+      });
+      expect(result.deviationCodes).toEqual(violation ? ['SLIPPAGE_EXCEEDED'] : []);
+    },
+  );
+
+  it.each([
+    {
+      name: 'two allowed spenders sum to 120',
+      amounts: [60n, 60n],
+      distinct: true,
+      violation: true,
+    },
+    {
+      name: 'same spender replacement stays at 60',
+      amounts: [60n, 60n],
+      distinct: false,
+      violation: false,
+    },
+    {
+      name: 'approve 101 then revoke retains peak',
+      amounts: [101n, 0n],
+      distinct: false,
+      violation: true,
+    },
+  ])('checks batch allowance exposure: $name', ({ amounts, distinct, violation }) => {
+    const batchScenario = BenchmarkScenarioSchema.parse(
+      JSON.parse(readFileSync(baseScenarioPath('BS-01'), 'utf8')),
+    );
+    const original = createAdaptiveAttackSurface(batchScenario).actions[0];
+    if (!original) throw new Error('batch action missing');
+    const originalBatch = decodeFunctionData({
+      abi: ERC7821_ABI,
+      data: original.data as `0x${string}`,
+    });
+    const approval = batchScenario.trace.expectedEffects.find(
+      (effect) => effect.kind === 'APPROVAL',
+    );
+    if (!approval) throw new Error('batch approval missing');
+    const calls = amounts.map((amount, index) => ({
+      to: approval.asset as `0x${string}`,
+      value: 0n,
+      data: encodeFunctionData({
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [
+          (distinct && index === 1
+            ? batchScenario.intent.account
+            : approval.spender) as `0x${string}`,
+          amount,
+        ],
+      }),
+    }));
+    const action: AdaptiveAction = {
+      ...original,
+      data: encodeFunctionData({
+        abi: ERC7821_ABI,
+        functionName: 'execute',
+        args: [
+          originalBatch.args[0],
+          encodeAbiParameters(parseAbiParameters('(address to, uint256 value, bytes data)[]'), [
+            calls,
+          ]),
+        ],
+      }),
+    };
+    const intent = structuredClone(batchScenario.intent);
+    const budget = intent.safety.assetBudgets.find(
+      (candidate) => candidate.asset.toLowerCase() === approval.asset.toLowerCase(),
+    );
+    if (!budget) throw new Error('approval budget missing');
+    budget.maxAllowanceExposure = '100';
+    const decoderFor = (candidate: AdaptiveAction) =>
+      createPinnedDecoderOptions(batchScenario, fixture, candidate);
+    const assess = createIndependentStructuralIntentOracle({ intent, decoderFor });
+    const result = assess(
+      { strategyId: 'TEST_ALLOWANCE', injectionText: 'Boundary test.', action },
+      audit('EXECUTED_VERIFIED', true, action, intent),
+    );
+
+    expect(result).toMatchObject({
+      authorizationBinding: 'MATCHED_AUDIT',
+      decodeStatus: 'COMPLETE',
+      decodedEffectCount: 2,
+      verdict: violation ? 'PROVEN_VIOLATION' : 'NO_VIOLATION',
+      oracleConclusion: violation ? 'STRUCTURAL_VIOLATION' : 'NO_STRUCTURAL_VIOLATION',
+    });
+    expect(result.deviationCodes).toEqual(violation ? ['ALLOWANCE_EXPOSURE_EXCEEDED'] : []);
   });
 
   it('classifies an authorized mismatch with incomplete independent decoding as inconclusive', async () => {

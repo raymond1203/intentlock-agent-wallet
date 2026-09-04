@@ -1,5 +1,10 @@
 # 선행연구 비교표와 baseline 선정
 
+2026-09-05 주의: 아래 초기 설계 비교는 역사적 기록이다. 실제 비교군·보장 범위와 최신 근접
+연구는 `paper/final-source.md` 및 `docs/experiments/m4-method-and-novelty-ai-audit.md`가 우선한다.
+실제 주 평가는 5개 시스템의 authored counterfactual replay이며 capability 구현이나 전체
+실행 후 상태 기반 실측으로 확대 해석하지 않는다.
+
 - 기준일: 2026-08-17 KST
 - 관련 Issue: #9
 - 인용 목록: [`paper/references.md`](../paper/references.md)

@@ -26,9 +26,9 @@ export const GUARD_REASON_CODES = {
   /** Only under the STRICT reading of the address allowlist. */
   APPROVAL_SPENDER_NOT_ALLOWED: 'APPROVAL_SPENDER_NOT_ALLOWED',
   ROLLING_OUTFLOW_EXCEEDED: 'ROLLING_OUTFLOW_EXCEEDED',
-  /** Documented: untrackable outflow falls back to the allowlists. */
+  /** Emulator hypothesis: untrackable outflow uses allowlists only; backend behavior unverified. */
   OUTFLOW_UNTRACKED_FALLBACK: 'OUTFLOW_UNTRACKED_FALLBACK',
-  /** Documented: signatures such as Permit2 are not part of the outflow total. */
+  /** Compatibility code for excluded approval effects; direct approve is not a signature. */
   SIGNATURE_OUTSIDE_OUTFLOW: 'SIGNATURE_OUTSIDE_OUTFLOW',
   INVALID_EVALUATION_TIME: 'INVALID_EVALUATION_TIME',
   OUTFLOW_LIMIT_UNDEFINED: 'OUTFLOW_LIMIT_UNDEFINED',
@@ -86,9 +86,9 @@ function includesAddress(list: readonly string[], candidate: string): boolean {
 }
 
 /**
- * Derives Guard Mode allowlists and limits from the same intent contract the
- * user confirmed. A real operator configures Guard Mode by hand; giving the
- * baseline exactly the user's own scope keeps the comparison fair.
+ * Derives allowlists and per-asset limits from the same authored benchmark contract.
+ * Real user confirmation is not observed here. Manual policy configuration and
+ * USD valuation in the service are approximated as described in docs/baselines/guard-mode.md.
  */
 export function guardModeConfigFromScenario(
   scenario: BenchmarkScenario,
@@ -113,9 +113,11 @@ export function guardModeConfigFromScenario(
 
 /**
  * Outflow attribution. Transfers leaving the account and bridge departures move
- * value, so they count. Approvals and Permit2 signatures do not, because the
- * public outflow policy states that signatures are excluded. That exclusion is
- * the behaviour under study, not an emulator shortcut.
+ * value, so they count. Approval effects add no immediate transfer amount in this
+ * emulator. The documented signature exclusion covers examples such as Permit2;
+ * it does not establish the service's treatment of direct ERC20 approve transactions.
+ * SIGNATURE_OUTSIDE_OUTFLOW is a legacy reason-code name, not a claim that every
+ * APPROVAL effect is an off-chain signature.
  */
 function outflowByBudget(
   effects: readonly EconomicEffect[],
@@ -193,8 +195,8 @@ export interface GuardModeEvaluation {
 
 /**
  * Stateful emulator. The public policy adds simulated value to the 24-hour
- * total once a transaction is confirmed, so outflow is committed only for
- * allowed scenarios.
+ * total once a transaction is confirmed. This synchronous approximation commits
+ * outflow on ALLOW and assumes successful confirmation; it does not observe receipts.
  */
 export class GuardModeEmulator {
   private readonly config: GuardModeConfig;
@@ -268,8 +270,8 @@ export class GuardModeEmulator {
     }
 
     if (!outflowTracked) {
-      // Documented fallback: when a transaction cannot be simulated the policy
-      // relies on the allowlists rather than blocking.
+      // Explicit research hypothesis based on the advice to rely on allowlists;
+      // the public text does not establish the backend's exact failure decision.
       reasonCodes.push(GUARD_REASON_CODES.OUTFLOW_UNTRACKED_FALLBACK);
     } else {
       for (const [key, amount] of totals) {

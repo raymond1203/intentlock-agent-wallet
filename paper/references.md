@@ -96,7 +96,7 @@
 - Haoyu Wang, Christopher M. Poskitt, Jun Sun.
 - _AgentSpec: Customizable Runtime Enforcement for Safe and Reliable LLM Agents._ ICSE 2026. arXiv v3, 2025.
 - URL: https://arxiv.org/abs/2503.18666
-- Use: generic runtime rule DSL and stateless checkpoint baseline
+- Use: generic runtime rule DSL, including trajectory predicates; not a reproduced or stateless-only baseline
 
 ### DEF-05 — CaMeL
 
@@ -118,6 +118,14 @@
 - _Capability Gates Are Not Authorization: Confused-Deputy Failures in LLM Agent Frameworks._ arXiv v1, 2026.
 - URL: https://arxiv.org/abs/2606.28679
 - Use: fail-closed concrete-argument value authorization, money ceiling and idempotency
+
+### DEF-08 — Authority–Inference Separation (AIS)
+
+- Hui Gong, Michail Samawi, Francesca Medda.
+- _Authority-Inference Separation in Agentic Finance: First-Line Control, Blockchain Enforcement, and Replayable Assurance._ arXiv v1, 2026-08-31, preprint.
+- URL: https://arxiv.org/abs/2608.30519v1
+- Checked: 2026-09-05; full-text sections 3.4, 4.2, 7, 8.5.
+- Use: close financial-intent authorization prior work; constrains novelty claims. Not locally reproduced.
 
 ## Formal monitoring
 

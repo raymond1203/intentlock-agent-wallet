@@ -69,6 +69,63 @@ describe('ActionIR', () => {
     expect(totals.grossOutflow.get(key)).toBeUndefined();
   });
 
+  it.each([
+    {
+      name: 'distinct spenders are summed',
+      values: [
+        [TARGET, '60'],
+        [RECIPIENT, '60'],
+      ],
+      peak: 120n,
+    },
+    {
+      name: 'same spender replacement is not double counted',
+      values: [
+        [TARGET, '60'],
+        [TARGET, '70'],
+      ],
+      peak: 70n,
+    },
+    {
+      name: 'a revoke does not erase an earlier peak',
+      values: [
+        [TARGET, '101'],
+        [TARGET, '0'],
+      ],
+      peak: 101n,
+    },
+    {
+      name: 'revoked current exposure is removed before another spender',
+      values: [
+        [TARGET, '60'],
+        [TARGET, '0'],
+        [RECIPIENT, '60'],
+      ],
+      peak: 60n,
+    },
+    {
+      name: 'spender matching is case insensitive',
+      values: [
+        [TARGET, '40'],
+        [TARGET.toUpperCase(), '50'],
+      ],
+      peak: 50n,
+    },
+  ])('$name', ({ values, peak }) => {
+    const effects: EconomicEffect[] = values.map(([spender, amount], index) => ({
+      id: `approval-${String(index)}`,
+      phase: 'PREDICTED',
+      provenance,
+      kind: 'APPROVAL',
+      chainId: 1,
+      asset: TOKEN,
+      owner: ACCOUNT,
+      spender: spender ?? TARGET,
+      amount: amount ?? '0',
+    }));
+    expect(aggregateEffects(effects, ACCOUNT).allowanceExposure.get(`1:${TOKEN}`)).toBe(peak);
+  });
+
   it('marks unknown effects fail-closed input', () => {
     const totals = aggregateEffects(
       [

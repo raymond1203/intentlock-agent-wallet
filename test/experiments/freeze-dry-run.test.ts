@@ -321,6 +321,27 @@ describe('pre-freeze exact-20 deterministic dry run', () => {
       { encoding: 'utf8' },
     ).trim();
     const review = approvedReview(sharedArtifacts);
+    const committedConfig = FrozenEvalConfigSchema.parse(
+      parse(
+        execFileSync(
+          'git',
+          ['-C', repositoryRoot, 'show', `${currentHead}:experiments/configs/frozen-eval.yaml`],
+          { encoding: 'utf8' },
+        ),
+      ),
+    );
+    const modeFields =
+      committedConfig.reviewProtocol?.mode === 'SOLO_AI_ASSISTED'
+        ? {
+            schemaVersion: '0.3',
+            status: 'COMPLETE_AI_ASSISTED',
+            reviewerType: 'AI',
+            independenceAttestation: false,
+            reviewMode: 'SOLO_AI_ASSISTED',
+            finalAuthorApproval: 'PENDING',
+            independentHumanReviewClaim: false,
+          }
+        : {};
     await expect(
       validateFreezeReviewEvidenceFromRepository({
         repositoryRoot,
@@ -328,6 +349,7 @@ describe('pre-freeze exact-20 deterministic dry run', () => {
         requireTrackedArtifacts: true,
         reviewInput: {
           ...review,
+          ...modeFields,
           reviewedCommit: currentHead,
           dryRunEvidence: {
             ...review.dryRunEvidence,
