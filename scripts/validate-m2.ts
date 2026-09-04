@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { format, resolveConfig } from 'prettier';
+import { z } from 'zod';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
 import { redactScenarioIdentity } from '../src/baselines/llm-verifier.js';
@@ -9,6 +11,8 @@ import { evaluateGuardMode } from '../src/baselines/guard-mode-emulator.js';
 import { evaluatePerCallPolicy } from '../src/baselines/per-call-policy.js';
 import { evaluateIntent } from '../src/monitor/monitor.js';
 import { evaluatePostState } from '../src/oracle/post-state-oracle.js';
+import { executionCollectorSha256 } from './m2-execution/provenance.js';
+import { classifyExecutionEvidence } from './m2-execution/evidence-validation.js';
 
 const check = process.argv.includes('--check');
 async function load(dir: string): Promise<BenchmarkScenario[]> {
@@ -30,6 +34,118 @@ const base = (
 ).flat();
 const mutations = await load('benchmark/scenarios/mutations');
 const byId = new Map(base.map((s) => [s.id, s]));
+
+const PublishedExecutionSchema = z.object({
+  datasetVersion: z.string(),
+  baseCount: z.number().int().nonnegative(),
+  attemptedCount: z.number().int().nonnegative(),
+  completedExecutionCount: z.number().int().nonnegative(),
+  strictAuthoredFixtureExecutionCount: z.number().int().nonnegative(),
+  finalGoalPassCount: z.number().int().nonnegative(),
+  strictAuthoredFixtureFinalGoalPassCount: z.number().int().nonnegative(),
+  humanReview: z.string(),
+  m2Complete: z.boolean(),
+  latest: z.array(
+    z.object({
+      scenarioId: z.string(),
+      run: z.string(),
+      rawFileSha256: z.string(),
+      executionComplete: z.boolean(),
+      fixtureCorrected: z.boolean(),
+      oracleStatus: z.string(),
+    }),
+  ),
+  attempts: z.array(
+    z.object({
+      scenarioId: z.string(),
+      run: z.string(),
+      rawFileSha256: z.string(),
+      sourceCommit: z.string(),
+      workingTreeDirty: z.boolean(),
+      collectorSha256: z.string().nullable(),
+      sourceScenarioSha256: z.string(),
+      executionComplete: z.boolean(),
+      fixtureCorrected: z.boolean(),
+      oracle: z.object({ status: z.string() }),
+    }),
+  ),
+});
+const publishedExecution = PublishedExecutionSchema.parse(
+  JSON.parse(await readFile('benchmark/evidence/m2-execution-diagnostic-20260904.json', 'utf8')),
+);
+if (publishedExecution.datasetVersion !== '0.2.0' || publishedExecution.baseCount !== base.length)
+  throw new Error('published execution evidence does not match the current dataset version/count');
+const latestExecution = new Map(publishedExecution.latest.map((row) => [row.scenarioId, row]));
+const latestAttempt = new Map(publishedExecution.attempts.map((row) => [row.scenarioId, row]));
+if (
+  latestExecution.size !== publishedExecution.latest.length ||
+  latestExecution.size !== publishedExecution.attemptedCount
+)
+  throw new Error('published execution evidence has duplicate or inconsistent latest rows');
+const recomputedCompleted = publishedExecution.latest.filter((row) => row.executionComplete).length;
+const recomputedPass = publishedExecution.latest.filter(
+  (row) => row.executionComplete && row.oracleStatus === 'PASS',
+).length;
+const recomputedStrict = publishedExecution.latest.filter(
+  (row) => row.executionComplete && !row.fixtureCorrected,
+).length;
+const recomputedStrictPass = publishedExecution.latest.filter(
+  (row) => row.executionComplete && !row.fixtureCorrected && row.oracleStatus === 'PASS',
+).length;
+if (
+  recomputedCompleted !== publishedExecution.completedExecutionCount ||
+  recomputedPass !== publishedExecution.finalGoalPassCount ||
+  recomputedStrict !== publishedExecution.strictAuthoredFixtureExecutionCount ||
+  recomputedStrictPass !== publishedExecution.strictAuthoredFixtureFinalGoalPassCount
+)
+  throw new Error('published execution aggregate does not match its latest rows');
+for (const scenario of base) {
+  const published = latestExecution.get(scenario.id);
+  const attempt = latestAttempt.get(scenario.id);
+  if (
+    !published ||
+    !attempt ||
+    attempt.rawFileSha256 !== published.rawFileSha256 ||
+    attempt.executionComplete !== published.executionComplete ||
+    attempt.fixtureCorrected !== published.fixtureCorrected ||
+    attempt.oracle.status !== published.oracleStatus
+  )
+    throw new Error(`missing latest published execution evidence: ${scenario.id}`);
+  const scenarioSha256 = createHash('sha256').update(JSON.stringify(scenario)).digest('hex');
+  if (attempt.sourceScenarioSha256 !== scenarioSha256)
+    throw new Error(`stale published execution evidence: ${scenario.id}`);
+}
+const currentCollectorSha256 = await executionCollectorSha256();
+const resolvableCommits = new Map<string, boolean>();
+function sourceCommitResolves(commit: string): boolean {
+  const cached = resolvableCommits.get(commit);
+  if (cached !== undefined) return cached;
+  try {
+    execFileSync('git', ['cat-file', '-e', `${commit}^{commit}`], { stdio: 'ignore' });
+    resolvableCommits.set(commit, true);
+    return true;
+  } catch {
+    resolvableCommits.set(commit, false);
+    return false;
+  }
+}
+const cleanCommittedExecutedBaseCount = base.filter((scenario) => {
+  const latest = latestExecution.get(scenario.id);
+  const attempt = latestAttempt.get(scenario.id);
+  return (
+    latest?.executionComplete === true &&
+    attempt?.workingTreeDirty === false &&
+    attempt.collectorSha256 === currentCollectorSha256 &&
+    sourceCommitResolves(attempt.sourceCommit)
+  );
+}).length;
+const executionEvidenceStatus = classifyExecutionEvidence({
+  baseCount: base.length,
+  completedExecutionCount: publishedExecution.completedExecutionCount,
+  strictAuthoredFixtureExecutionCount: publishedExecution.strictAuthoredFixtureExecutionCount,
+  cleanCommittedExecutedBaseCount,
+});
+
 const rows = [...base, ...mutations].map((s) => {
   const pre = evaluateIntent({
     contract: s.intent,
@@ -76,7 +192,20 @@ const rows = [...base, ...mutations].map((s) => {
       missing: reference.missing,
       violations: reference.violations,
     },
-    executionEvidence: 'NOT_COLLECTED_PER_SCENARIO',
+    executionEvidence:
+      s.class === 'BASE'
+        ? {
+            status: latestExecution.get(s.id)?.executionComplete ? 'COMPLETE' : 'INCOMPLETE',
+            oracleStatus: latestExecution.get(s.id)?.oracleStatus ?? null,
+            run: latestExecution.get(s.id)?.run ?? null,
+            sourceCommit: latestAttempt.get(s.id)?.sourceCommit ?? null,
+            workingTreeDirty: latestAttempt.get(s.id)?.workingTreeDirty ?? null,
+            collectorSha256: latestAttempt.get(s.id)?.collectorSha256 ?? null,
+            collectorMatchesCurrent:
+              latestAttempt.get(s.id)?.collectorSha256 === currentCollectorSha256,
+            fixtureCorrected: latestExecution.get(s.id)?.fixtureCorrected ?? null,
+          }
+        : { status: 'NOT_COLLECTED' },
   };
 });
 const validation = {
@@ -90,7 +219,13 @@ const validation = {
   ).length,
   baseMonitorAllow: rows.filter((r) => r.class === 'BASE' && r.preSign.intentLock === 'ALLOW')
     .length,
-  executedBaseCount: 0,
+  executedBaseCount: publishedExecution.completedExecutionCount,
+  strictAuthoredFixtureExecutedBaseCount: publishedExecution.strictAuthoredFixtureExecutionCount,
+  cleanCommittedExecutedBaseCount,
+  executionEvidenceStatus,
+  executionFinalGoalPassCount: publishedExecution.finalGoalPassCount,
+  strictAuthoredFixtureFinalGoalPassCount:
+    publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
   referenceLabelDisagreements: rows
     .filter((r) => r.referencePostState.authoredLabelAgreement === false)
     .map((r) => r.scenarioId),
@@ -200,5 +335,5 @@ await output('benchmark/reviews/double-review-20.json', packet);
 await output('benchmark/reviews/submission.template.json', template);
 await output('benchmark/labels/review-requirements.json', status);
 console.log(
-  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; executed base ${String(validation.executedBaseCount)}; human review PENDING.`,
+  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); human review PENDING.`,
 );

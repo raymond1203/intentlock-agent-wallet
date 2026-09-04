@@ -4,7 +4,14 @@ import type { AddressInfo } from 'node:net';
 import { PassThrough } from 'node:stream';
 import { encodeAbiParameters, keccak256, numberToHex, pad, type Hex } from 'viem';
 import { afterEach, describe, expect, it } from 'vitest';
-import { AnvilFork, redactSensitiveText, type ForkConfig } from '../scripts/anvil-harness.ts';
+import {
+  AnvilFork,
+  parseForkUrls,
+  redactSensitiveText,
+  sanitizeExecutionFailure,
+  summarizeRpcFailure,
+  type ForkConfig,
+} from '../scripts/anvil-harness.ts';
 
 const TOKEN = '0x0000000000000000000000000000000000000001';
 const HOLDER = '0x0000000000000000000000000000000000000002';
@@ -16,6 +23,37 @@ function mappingKey(slot: number): Hex {
 }
 
 describe('redactSensitiveText', () => {
+  it('accepts distinct HTTP(S) fork upstreams', () => {
+    expect(
+      parseForkUrls(
+        'https://a.example.test/key, https://b.example.test/key,https://a.example.test/key',
+      ),
+    ).toEqual(['https://a.example.test/key', 'https://b.example.test/key']);
+    expect(() => parseForkUrls('')).toThrow(/at least one/);
+    expect(() => parseForkUrls('file:///private')).toThrow(/HTTP/);
+    expect(() => parseForkUrls('not-a-url-with-a-secret')).toThrow(
+      'fork RPC URL must be a valid HTTP(S) URL',
+    );
+  });
+  it('does not expose upstream URLs or HTML in RPC failures', () => {
+    expect(summarizeRpcFailure('HTTP 429 <html>client address and token</html>')).toBe(
+      'upstream rate limit',
+    );
+    expect(summarizeRpcFailure('Transport(Custom("https://rpc.test/secret"))')).toBe(
+      'upstream RPC failure (details withheld)',
+    );
+    expect(summarizeRpcFailure('timeout with private diagnostics')).toBe('upstream timeout');
+    expect(summarizeRpcFailure('state at old block is pruned')).toBe(
+      'upstream archive state unavailable',
+    );
+    expect(summarizeRpcFailure('invalid argument plus token')).toBe(
+      'upstream RPC failure (details withheld)',
+    );
+    expect(
+      sanitizeExecutionFailure('Unauthorized api key project-secret', ['project-secret']),
+    ).toBe('upstream RPC failure (details withheld)');
+    expect(sanitizeExecutionFailure('unsupported fixture chain')).toBe('unsupported fixture chain');
+  });
   it('removes the exact upstream value from child diagnostics', () => {
     const secret = 'https://rpc.example.test/project-secret';
     const output = redactSensitiveText(`failed to connect to ${secret}`, [secret]);

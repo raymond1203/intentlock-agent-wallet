@@ -72,5 +72,23 @@
 4. Both humans submit blind reviews and adjudication using stable pseudonyms. Re-freeze the candidate,
    rerun affected baselines, then merge #46 and close only acceptance-complete M2 issues.
 
-Current M2 status: **not complete**. The implementation/evidence foundation is integrated, but all
-80 scenario-specific executions, independent labels and experimental re-freeze remain required.
+At the 2026-09-03 checkpoint, M2 was **not complete**: all 80 scenario-specific executions,
+independent labels, and experimental re-freeze still remained. The checkpoint below supersedes the
+execution-count part of that statement; a clean strict-authored rerun and the human gates remain.
+
+## Execution checkpoint — 2026-09-04
+
+- The scenario-specific collector now covers Permit2 signing, pinned QuoterV2 reads, isolated
+  ERC-7821 batch execution, Across/CCTP local relay fixtures, and Aave lifecycle post-state.
+- All 80 base paths completed after retaining failed RPC attempts and retrying only incomplete cases.
+  Seventy-seven used authored prefix funding unchanged; LE-09, LE-10, and LE-15 required an explicit
+  local account funding correction. Latest diagnostic results are 69 PASS and 11 lending VIOLATION,
+  with no missing execution evidence. The compact artifact is
+  `benchmark/evidence/m2-execution-diagnostic-20260904.json`.
+- The run exposed a material candidate defect: 38 swap actions declare a 100 bps maximum but their
+  encoded minima imply about 9,999 bps against the pinned quote. It also exposed fabricated absolute
+  post-state rows, incorrect Permit2 spender annotations, and 1–3 atomic-unit Aave rounding/interest
+  gaps. See `docs/experiments/m2-execution-findings-20260904.md`.
+- The 80-execution gate is now evidenced diagnostically, but not yet as a clean frozen run. Dataset
+  correction/versioning, regenerated packets, two independent human submissions, adjudication, and
+  re-freeze remain open. Do not merge #46 or close #20–#26 before those gates are satisfied.
