@@ -1,8 +1,8 @@
 # 벤치마크·평가·한계·MetaMask 제안 초안
 
 > 상태: v0.4.0 M3 동결 결과 전 구조 초안. `[결과 삽입]` 표시는 raw result와 분석 스크립트가
-> 생성한 값으로만 교체한다. v0.4.0 실행 evidence와 독립 인간 검수는 아직 `PENDING`이며, 이
-> 초안은 사람 검수 완료를 주장하지 않는다.
+> 생성한 값으로만 교체한다. v0.4.0 M2 실행 evidence와 live LLM run은 수집됐지만 독립 인간
+> 검수는 `PENDING`이며, 이 초안은 M2 완료나 사람 검수 완료를 주장하지 않는다.
 
 ## 1. 평가 목적
 
@@ -26,8 +26,9 @@ contract, ordered calls, expected economic effects, fixed-fork reference와 orac
 사용하며, invalid calldata나 no-op을 수량 충족용 공격으로 세지 않는다.
 
 Ethereum과 Base의 block number, block hash, contract codehash를 고정한다. v0.4.0 base 80개의
-fixed-fork 실행 evidence는 clean committed candidate에서 전량 다시 수집해야 하며 현재는 `PENDING`이다.
-수집되지 않은 행은 `EXPECTED_FIXTURE`로 남긴다. mutation은 semantic transaction candidate,
+fixed-fork 실행 evidence는 clean committed candidate에서 전량 수집됐고, 독립 재검증 결과 80개
+final-goal PASS와 0개 synthetic-reference disagreement다. 이는 M2 데이터 품질 증거이며 아직 M3
+시스템 비교 결과가 아니다. mutation은 semantic transaction candidate,
 post-state-only fixture, invalid-call drift를 구분한다. cross-chain destination 단계의 test
 relayer·attester는 production bridge liveness나 attestation security를 재현하지 않는다.
 
@@ -84,8 +85,8 @@ base-intent group을 단위로 한 stratified bootstrap 10,000회로 계산한�
 남긴다. 또한 폐기된 local v0.3.0 clean replay는 swap batch 7건에서 exact router consumption 뒤의
 terminal finite allowance를 0이 아닌 승인량으로 남긴 reference 결함을 진단했다. 이 replay와 파생
 artifact는 [`ADR 0010`](../docs/decisions/0010-m2-v0.4-data-contract.md)에 따라 v0.4.0 primary score,
-M2 완료 또는 시스템 성능의 근거로 사용하지 않는다. v0.4.0 execution evidence와 version-matched
-독립 인간 검수는 모두 아직 `PENDING`이다.
+M2 완료 또는 시스템 성능의 근거로 사용하지 않는다. v0.4.0 execution evidence는 수집됐지만
+version-matched 독립 인간 검수는 아직 `PENDING`이다.
 
 ### RQ2 — Security–utility 비교
 

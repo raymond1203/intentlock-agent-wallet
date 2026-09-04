@@ -4,7 +4,9 @@ The current collector targets the corrected v0.4.0 candidate. It does not turn a
 `EXPECTED_FIXTURE` into an executed fact, silently change intent limits, or approve human review.
 Normal-call success, final economic goals, and agreement with the synthetic reference are separate.
 The published v0.2.0 run and the rejected clean v0.3.0 80/80 replay remain historical diagnostic
-evidence and are not counted here. No v0.4.0 execution evidence or human review is complete yet.
+evidence and are not counted here. The v0.4.0 machine evidence is complete at 80/80 strict-authored
+executions, 80/80 final-goal PASS, and zero synthetic reference disagreements. Human review remains
+incomplete, so this does not make M2 complete.
 
 ## Reproduction
 

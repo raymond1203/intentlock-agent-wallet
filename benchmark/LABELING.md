@@ -102,5 +102,6 @@ decisions, labels, splits, quote inputs, calldata, or oracle operators.
 
 The clean v0.3.0 replay reached 80/80 normal execution PASS but disagreed with the synthetic
 reference on those seven allowance rows. It is rejected diagnostic history, not current evidence.
-M2 completion and freeze require a fresh clean v0.4.0 replay with zero synthetic reference
-disagreements as well as the version-matched two-person review; neither gate is currently complete.
+The replacement clean v0.4.0 replay is complete: 80/80 strict-authored executions and reference
+checks passed with zero disagreements. The version-matched two-person review and independent LLM
+rationale review remain pending, so M2 completion is false and freeze remains blocked.

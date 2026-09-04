@@ -1,4 +1,5 @@
 coverage/
 dist/
+benchmark/evidence/raw/
 experiments/results/
 package-lock.json

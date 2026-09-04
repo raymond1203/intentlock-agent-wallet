@@ -27,9 +27,13 @@ block 50080000. They validate block/code hashes, fixture operations, decoders an
 signed transfer/Aave-supply paths. Both chain-specific Aave checks collect successful receipts,
 query actual balances and positions, and pass the EXECUTED_FORK oracle for their smoke-test goals.
 
-These checks are **representative, not 80 scenario-specific v0.4.0 replays**. The current-version
-per-base executed count therefore remains zero. Live evidence is kept separate from generated JSON;
-generated state rows are explicitly marked EXPECTED_FIXTURE.
+These checks remain representative smoke tests rather than the canonical 80-scenario replay. A later
+clean committed v0.4.0 candidate produced the canonical scenario-specific evidence: all 80 bases
+executed, all 80 strict authored goals passed, all 80 synthetic references were checked, and there
+were zero reference disagreements. The compact record is
+`benchmark/evidence/m2-execution-v0.4.0.json`; its content-addressed raw inputs are under
+`benchmark/evidence/raw/v0.4.0/sha256/`. Generated state rows remain explicitly marked
+EXPECTED_FIXTURE and are not substituted for those execution records.
 
 A later clean v0.3.0 collector run completed 80/80 normal executions, but reconciliation found seven
 synthetic reference disagreements in terminal allowance. ADR 0010 rejects that run and every
@@ -42,13 +46,14 @@ execution verification. Do not silently relax those authored goals to turn a fai
 
 ## Remaining acceptance work
 
-- From one clean committed v0.4.0 candidate, execute all 80 base scenarios and publish the exact raw
-  content-addressed bundles plus compact evidence.
-- Require 80 complete strict-authored executions and **zero synthetic reference disagreements**;
-  reconcile any mismatch instead of adjusting expected values silently.
-- Rerun the fixed live 20-case LLM baseline against v0.4.0; do not reuse v0.2.0 or v0.3.0 output.
+The v0.4.0 execution requirements for #21/#22 are machine-complete: 80/80 strict-authored
+executions and 80/80 synthetic reference checks passed with zero disagreements. The fixed live
+20-case LLM run and its public review packet are also complete; older v0.2.0 and rejected v0.3.0
+outputs are not reused.
+
 - Record two independent human submissions for the exact v0.4.0 packet, all required adjudications,
   contract reviews and staged mutation review.
+- Complete the independent human rationale review for the 20-case LLM packet.
 - Freeze only the exact reviewed candidate after all machine and human gates pass.
 
-Until these are complete, #21/#22 execution acceptance and M2 completion remain open.
+The human acceptance gates and M2 completion remain open until those reviews are complete.

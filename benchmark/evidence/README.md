@@ -2,10 +2,13 @@
 
 ## Current v0.4.0 status
 
-The current dataset candidate is v0.4.0. No v0.4.0 execution artifact has been published and no
-v0.4.0 human review has been completed. Current validation must therefore report `NOT_COLLECTED`,
-zero executed bases, `humanReview: PENDING`, and `m2Complete: false` until new evidence is collected
-from one exact, clean v0.4.0 commit.
+The current dataset candidate is v0.4.0. The tracked artifact
+`m2-execution-v0.4.0.json` and its content-addressed raw bundle were collected from clean source
+commit `a0cca37764d3267929f7b74404393c4a1115fc78` and published in commit
+`76c28b4419d6fc92f01c262e0c9e5574f1407451`. Independent validation reports 80 complete
+strict-authored executions, 80 final-goal passes, 80 synthetic references checked, zero synthetic
+reference disagreements, and no missing scenario. Human review has not been completed, so
+`humanReview: PENDING` and `m2Complete: false` remain mandatory.
 
 ADR 0010 corrected the generated terminal ERC-20 allowance for seven `SWAP_BATCH` cases. The
 approval is consumed by a later matching `transferFrom`, so the terminal residual is zero rather

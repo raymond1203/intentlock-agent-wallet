@@ -4,12 +4,12 @@ These generated packets remove the scenario ID, oracle, mutation metadata, and s
 The reviewer should inspect only the relevant packet before recording a decision. Do not edit generated
 packets; put answers in a separate review record or GitHub review comment.
 
-| Issue | Packet                                 | Required fields                              |
-| ----- | -------------------------------------- | -------------------------------------------- |
-| #20   | `schema-labeling-10.json`              | expected decision, all labels, validity      |
-| #21   | `contract-alignment-10.json`           | aligned, missing/widened fields, notes       |
-| #23   | `mutation-validity-20.json`            | category, semantic validity, decision, notes |
-| #26   | A new v0.4.0 live output review packet | rationale, leakage, corrected decision       |
+| Issue | Packet                               | Required fields                              |
+| ----- | ------------------------------------ | -------------------------------------------- |
+| #20   | `schema-labeling-10.json`            | expected decision, all labels, validity      |
+| #21   | `contract-alignment-10.json`         | aligned, missing/widened fields, notes       |
+| #23   | `mutation-validity-20.json`          | category, semantic validity, decision, notes |
+| #26   | `llm-verifier-20-review-v0.4.0.json` | rationale, leakage, corrected decision       |
 
 After independent review, the author reveals the oracle and records every disagreement and resolution.
 Any hidden-test oracle change follows `benchmark/LABELING.md` and requires a dataset version bump.
@@ -17,10 +17,10 @@ Any hidden-test oracle change follows `benchmark/LABELING.md` and requires a dat
 `experiments/configs/baselines/llm-verifier-20-review.json` is the historical v0.2.0 run and is not
 silently relabeled as v0.4.0. Any v0.3.0 output is also pre-ADR-0010 diagnostic history and cannot
 approve the corrected dataset. The current fixed protocol is
-`experiments/configs/baselines/reviewer-20-v0.4.0.json`; a new live run writes
-the canonical tracked result `benchmark/evidence/llm-verifier-20-v0.4.0.json`,
-`llm-verifier-20-review-v0.4.0.json`, and a separate `PENDING` rationale template. That packet and
-its independent rationale review are pending.
+`experiments/configs/baselines/reviewer-20-v0.4.0.json`. Its live run is complete and committed as
+the canonical result `benchmark/evidence/llm-verifier-20-v0.4.0.json` and public packet
+`llm-verifier-20-review-v0.4.0.json`. The separate rationale template remains `PENDING`; it is not
+human review evidence.
 The completed human rationale submission must be stored separately as
 `experiments/configs/baselines/llm-verifier-20-rationale-review-v0.4.0.json`; `m2:validate` rejects a
 missing, partial, non-human, dirty-source, wrong-commit, wrong-hash, or non-20-case binding.

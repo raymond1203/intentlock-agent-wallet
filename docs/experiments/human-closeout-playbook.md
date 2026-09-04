@@ -6,8 +6,9 @@
 
 현재 candidate는 v0.4.0이다. ADR 0010은 ordered approval 뒤 matching `transferFrom`이 소비한 양을
 차감해 일곱 `SWAP_BATCH`의 terminal residual allowance를 0으로 고쳤다. Clean v0.3.0 실행은 80/80
-normal PASS였지만 이 일곱 synthetic reference disagreement 때문에 폐기된 진단이다. v0.4.0 실행,
-live LLM, 두 사람 review는 모두 새로 해야 하며 아직 완료되지 않았다.
+normal PASS였지만 이 일곱 synthetic reference disagreement 때문에 폐기된 진단이다. v0.4.0 실행은
+80/80 PASS·80/80 reference checked·0 disagreement로, live LLM은 20/20 eligible·17 exact로 새로
+수집됐다. LLM rationale 검수와 두 사람 benchmark review는 아직 완료되지 않았다.
 
 ## 1. 완료 판정의 경계
 

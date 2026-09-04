@@ -5,15 +5,20 @@ machine-verifiable check and every explicitly human acceptance gate below has a 
 
 ## M2 — benchmark and baselines
 
-| Issue                         | Implemented evidence                                                                 | Remaining closeout gate                                                               |
-| ----------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| #20 schema, labels, split     | v0.4 schemas, labeling guide, deterministic split and case-manifest checks           | independent 10-case labeling submission                                               |
-| #21 transfer/approval/swap 40 | 40 schema-valid base scenarios and coverage checks                                   | clean fixed-fork evidence; independent 10-case contract review                        |
-| #22 bridge/lending/batch 40   | 40 schema-valid base scenarios, cross-chain and prefix/final-goal metadata           | clean fixed-fork evidence; independent 10-case review                                 |
-| #23 mutations                 | deterministic operators, semantic-validity checks, no-op/invalid distinction         | independent 20-mutation review and adjudication                                       |
-| #24 oracle                    | exact delta oracle, integer violation/exposure fields, zero-disagreement gate        | 80-case v0.4 execution evidence; two independent 20-case submissions and adjudication |
-| #25 Guard Mode emulator       | STRICT/LITERAL public-document emulator and tests                                    | source-to-rule human review; never claim production equivalence                       |
-| #26 LLM/per-call baselines    | fixed prompt/model policy, structured output, fail-closed timeout/malformed handling | 20-case API run and independent rationale review                                      |
+| Issue                         | Implemented evidence                                                         | Remaining closeout gate                                         |
+| ----------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| #20 schema, labels, split     | v0.4 schemas, labeling guide, deterministic split and case-manifest checks   | independent 10-case labeling submission                         |
+| #21 transfer/approval/swap 40 | 40 schema-valid bases, coverage checks and clean fixed-fork evidence         | independent 10-case contract review                             |
+| #22 bridge/lending/batch 40   | 40 schema-valid bases, cross-chain metadata and clean fixed-fork evidence    | independent 10-case review                                      |
+| #23 mutations                 | deterministic operators, semantic-validity checks, no-op/invalid distinction | independent 20-mutation review and adjudication                 |
+| #24 oracle                    | exact delta oracle, 80-case execution evidence and zero-disagreement gate    | two independent 20-case submissions and adjudication            |
+| #25 Guard Mode emulator       | STRICT/LITERAL public-document emulator and tests                            | source-to-rule human review; never claim production equivalence |
+| #26 LLM/per-call baselines    | fixed policy, fail-closed handling and bound 20-case API run                 | independent 20-case rationale review                            |
+
+Current machine checkpoint: source commit `a0cca37764d3267929f7b74404393c4a1115fc78`
+has 80/80 clean fork executions, 80/80 synthetic references checked with zero disagreement, and a
+20-case live LLM run with 17 exact matches. These machine facts do not satisfy any human gate;
+`experiments/configs/m2-validation.json` therefore keeps M2 incomplete.
 
 ## M3 — experiments
 
@@ -40,16 +45,15 @@ transaction or authorization was actually issued. Actual execution claims requir
 
 ## Required execution order
 
-1. Land the candidate on a clean commit and run all repository checks.
-2. Collect v0.4 fixed-fork evidence without overwriting attempts. The clean v0.3 80/80 replay is
-   rejected diagnostic provenance under ADR 0010 and cannot satisfy this gate.
-3. Complete the M2 human review packet and adjudication.
-4. Complete the 20-case experiment dry-run review, freeze config/data/code digests, and commit only
+1. Preserve the completed clean v0.4 candidate, fixed-fork evidence and LLM run. The clean v0.3
+   80/80 replay remains rejected diagnostic provenance under ADR 0010.
+2. Complete the LLM rationale review plus both M2 benchmark submissions and adjudication.
+3. Complete the 20-case experiment dry-run review, freeze config/data/code digests, and commit only
    the frozen manifest.
-5. Run the full five-system offline comparison once under the frozen retry policy.
-6. Run scripted adaptive and actual one-factor ablation suites from the same frozen source.
-7. Generate tables and figures from immutable raw runs, then replace result placeholders.
-8. Run the local identity audit with a private forbidden-term list and complete two independent
+4. Run the full five-system offline comparison once under the frozen retry policy.
+5. Run scripted adaptive and actual one-factor ablation suites from the same frozen source.
+6. Generate tables and figures from immutable raw runs, then replace result placeholders.
+7. Run the local identity audit with a private forbidden-term list and complete two independent
    Notion submission reviews.
 
 No automation may fill, approve, or impersonate a human-review artifact.

@@ -1,4 +1,4 @@
-# M2 completion plan — current v0.4.0 status (2026-09-04)
+# M2 completion plan — current v0.4.0 status (2026-09-05)
 
 ## Historical audited remote state — 2026-09-03
 
@@ -117,16 +117,15 @@ execution-count part of that statement; a clean strict-authored rerun and the hu
 - The v0.3.0 run, any v0.3.0 LLM result and every derived freeze candidate are rejected diagnostic
   provenance. They cannot contribute rows, reviews, counts or hashes to current M2 completion.
 
-## Current v0.4.0 executable work, in order
+## Current v0.4.0 machine checkpoint and remaining work
 
-Current status is zero collected v0.4.0 executions, no version-matched live LLM output, no two
-complete independent human submissions, and no valid freeze. Generated packets and an offline
-`syntheticReferenceDisagreementCount: 0` field are specifications, not proof that the executed gate
-has passed.
+Source commit `a0cca37764d3267929f7b74404393c4a1115fc78` now has 80 complete strict-authored
+v0.4.0 executions, 80 final-goal passes, 80 synthetic references checked and zero disagreements.
+The version-matched live LLM run completed 20/20 eligible requests with 17 exact matches. There are
+still no complete independent human submissions and no valid freeze; M2 remains incomplete.
 
-1. Commit one exact v0.4.0 candidate and make the source tree clean. Run the repository, contract,
-   schema and generator checks before using external RPC or model services.
-2. Collect all 80 executions into append-only directories and publish only exact v0.4.0 bytes:
+1. The exact v0.4.0 candidate and repository checks are complete at the source commit above.
+2. The following append-only execution and publication flow produced the tracked v0.4.0 evidence:
 
    ```powershell
    pnpm m2:execute --out=experiments/results/m2-v0.4.0-attempt-01
@@ -140,7 +139,7 @@ has passed.
    synthetic reference disagreements**. Any nonzero count invalidates the candidate evidence even
    if all 80 normal execution decisions are PASS.
 
-3. While the exact candidate remains clean, run the fixed current live baseline:
+3. The fixed live baseline was run while the exact candidate remained clean:
 
    ```powershell
    pnpm baseline:llm:run

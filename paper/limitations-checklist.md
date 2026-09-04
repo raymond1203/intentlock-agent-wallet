@@ -11,8 +11,8 @@
 - `N/A — 이유` 사전 등록 범위 밖인 경우만 사용
 
 이 파일은 템플릿 상태로 배포한다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline
-case)이며 M3 수치는 없다. v0.4.0 실행 evidence와 독립 인간 검수도 아직 `PENDING`이므로 모든 결과
-칸은 `RESULT_PLACEHOLDER`이고 사람 검수 완료를 주장하지 않는다.
+case)이며 M3 수치는 없다. v0.4.0 M2 실행 evidence와 live LLM run은 수집됐지만 독립 인간 검수는
+아직 `PENDING`이므로 모든 M3 결과 칸은 `RESULT_PLACEHOLDER`이고 사람 검수 완료를 주장하지 않는다.
 
 ## 1. 연구 동결과 provenance
 
