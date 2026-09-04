@@ -106,8 +106,8 @@
         {
           "chainId": 8453,
           "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-          "maxGrossOutflow": "100000000",
-          "maxAllowanceExposure": "60000000"
+          "maxGrossOutflow": "100010000",
+          "maxAllowanceExposure": "60010000"
         }
       ],
       "debtLimits": [
@@ -116,7 +116,7 @@
           "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
           "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
           "initialDebt": "0",
-          "maxDebt": "100000000"
+          "maxDebt": "100010000"
         }
       ],
       "maxGasWei": "10000000000000000",
@@ -126,18 +126,11 @@
     "finalStateGoals": [
       {
         "chainId": 8453,
-        "kind": "NO_RESIDUAL_ALLOWANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
-        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"
-      },
-      {
-        "chainId": 8453,
-        "kind": "MIN_POSITION",
+        "kind": "MIN_POSITION_DELTA",
         "asset": "0x4200000000000000000000000000000000000006",
         "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "protocol": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "minAmount": "1000000000000000000"
+        "minIncrease": "999999999999999999"
       },
       {
         "chainId": 8453,
@@ -145,6 +138,13 @@
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "maxAmount": "0"
+      },
+      {
+        "chainId": 8453,
+        "kind": "NO_RESIDUAL_ALLOWANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"
       },
       {
         "chainId": 8453,
@@ -227,7 +227,7 @@
         "chainId": 8453,
         "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "selector": "0x095ea7b3",
-        "calldata": "0x095ea7b3000000000000000000000000a238dd80c259a72e81d7e4664a9801593f98d1c50000000000000000000000000000000000000000000000000000000003938700",
+        "calldata": "0x095ea7b3000000000000000000000000a238dd80c259a72e81d7e4664a9801593f98d1c5000000000000000000000000000000000000000000000000000000000393ae10",
         "valueWei": "0"
       },
       {
@@ -236,7 +236,7 @@
         "chainId": 8453,
         "target": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "selector": "0x573ade81",
-        "calldata": "0x573ade81000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda0291300000000000000000000000000000000000000000000000000000000039387000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "calldata": "0x573ade81000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
         "valueWei": "0"
       },
       {
@@ -424,7 +424,7 @@
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "spender": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "amount": "60000000"
+        "amount": "60010000"
       },
       {
         "id": "le-13-effect-11",
@@ -477,12 +477,29 @@
     ]
   },
   "oracle": {
+    "referenceMode": "DELTA",
     "observationStage": "PRE_SIGN",
     "evidenceLevel": "EXPECTED_FIXTURE",
     "executionComplete": true,
     "expectedDecision": "ALLOW",
     "labels": ["BENIGN"],
     "preState": [
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "value": "1000000000000000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "10000",
+        "source": "EXPECTED_FIXTURE"
+      },
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -495,16 +512,9 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
-        "value": "1000000000000000000",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
+        "field": "ALLOWANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
       },
@@ -519,33 +529,8 @@
       },
       {
         "chainId": 8453,
-        "subject": "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
-        "field": "BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "DEBT",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "ALLOWANCE",
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
@@ -556,6 +541,22 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "10000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "ALLOWANCE",
         "asset": "0x4200000000000000000000000000000000000006",
         "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
@@ -565,17 +566,10 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
+        "field": "ALLOWANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
-        "value": "1000000000000000000",
         "source": "EXPECTED_FIXTURE"
       },
       {
@@ -589,28 +583,42 @@
       },
       {
         "chainId": 8453,
-        "subject": "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
-        "field": "BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "DEBT",
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "comparison": "EXACT",
+        "delta": "-1000000000000000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "comparison": "AT_LEAST",
+        "delta": "-10000",
+        "rationale": "Full-debt repayment may consume up to the authored accrued-interest buffer."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "The authored approval sequence and modeled consumption define final allowance."
       },
       {
         "chainId": 8453,
@@ -618,8 +626,29 @@
         "field": "ALLOWANCE",
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "The authored approval sequence and modeled consumption define final allowance."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "POSITION",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "comparison": "AT_LEAST",
+        "delta": "999999999999999999",
+        "rationale": "Aave position tolerance is one atomic unit per position-changing action on every chain."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "DEBT",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "comparison": "AT_MOST",
+        "delta": "0",
+        "rationale": "Semantic full-debt repayment uses uint256 max and must leave zero variable debt."
       }
     ],
     "evidence": "Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims."

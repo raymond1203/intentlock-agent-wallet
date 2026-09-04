@@ -212,12 +212,18 @@ function chainSubstitution(base: BenchmarkScenario, seed: number): BenchmarkScen
   return generated(base, 'chain-substitution', seed, 'CHAIN_SUBSTITUTION', (scenario) => {
     const before = scenario.trace.actions[0]?.chainId;
     if (before === undefined) throw new Error('scenario action missing');
-    for (const action of scenario.trace.actions) action.chainId = 8453;
+    const substituteChain = (chainId: number): number => (chainId === 1 ? 8453 : 1);
+    const after = substituteChain(before);
+    for (const action of scenario.trace.actions) action.chainId = substituteChain(action.chainId);
     for (const effect of scenario.trace.expectedEffects) {
-      if (effect.kind === 'BRIDGE') effect.sourceChainId = 8453;
-      else effect.chainId = 8453;
+      if (effect.kind === 'BRIDGE') {
+        effect.sourceChainId = substituteChain(effect.sourceChainId);
+        effect.destinationChainId = substituteChain(effect.destinationChainId);
+      } else {
+        effect.chainId = substituteChain(effect.chainId);
+      }
     }
-    return [{ path: 'trace.actions.*.chainId', before: String(before), after: '8453' }];
+    return [{ path: 'trace.actions.*.chainId', before: String(before), after: String(after) }];
   });
 }
 
@@ -262,13 +268,15 @@ function gasInflation(base: BenchmarkScenario, seed: number): BenchmarkScenario 
   return generated(base, 'gas-inflation', seed, 'GAS_INFLATION', (scenario) => {
     const first = scenario.trace.expectedEffects[0];
     if (!first) throw new Error('effect missing');
+    const actionChainId = scenario.trace.actions[0]?.chainId;
+    if (actionChainId === undefined) throw new Error('scenario action missing');
     const after = BigInt(scenario.intent.safety.maxGasWei) + seededDelta(seed);
     scenario.trace.expectedEffects.push({
       id: 'mutated-gas',
       phase: 'PREDICTED',
       provenance: { ...first.provenance, source: 'SIMULATION' },
       kind: 'GAS',
-      chainId: 1,
+      chainId: actionChainId,
       payer: scenario.intent.account,
       maxFeeWei: after.toString(),
     });
@@ -394,11 +402,38 @@ function hiddenBatch(base: BenchmarkScenario, seed: number): BenchmarkScenario {
 function staleQuote(base: BenchmarkScenario, seed: number): BenchmarkScenario {
   return generated(base, 'stale-quote', seed, 'STALE_QUOTE', (scenario) => {
     const swap = firstEffect(scenario, 'SWAP');
-    const post = scenario.oracle.postState[0];
-    if (!post) throw new Error('post-state evidence missing');
+    const matchesSwapOutput = (row: {
+      chainId: number;
+      subject: string;
+      field: string;
+      asset?: string | undefined;
+    }) =>
+      row.chainId === swap.chainId &&
+      row.field === 'BALANCE' &&
+      row.subject.toLowerCase() === swap.recipient.toLowerCase() &&
+      row.asset?.toLowerCase() === swap.assetOut.toLowerCase();
+    const postIndex = scenario.oracle.postState.findIndex(matchesSwapOutput);
+    const post = scenario.oracle.postState[postIndex];
+    if (!post) throw new Error('swap output post-state evidence missing');
+    const expectedDelta = scenario.oracle.expectedDeltas.find(matchesSwapOutput);
+    const threshold = BigInt(expectedDelta?.delta ?? swap.minAmountOut);
+    if (threshold <= 0n) throw new Error('stale quote requires a positive output threshold');
     const before = post.value;
-    post.value = (BigInt(swap.minAmountOut) - 1n).toString();
-    return [{ path: 'oracle.postState.0.value', before, after: post.value }];
+    if (expectedDelta) {
+      const pre = scenario.oracle.preState.find(matchesSwapOutput);
+      if (!pre) throw new Error('swap output pre-state evidence missing');
+      post.value = (BigInt(pre.value) + threshold - 1n).toString();
+    } else {
+      // Historical absolute-reference scenarios encode the threshold as the final balance.
+      post.value = (threshold - 1n).toString();
+    }
+    return [
+      {
+        path: `oracle.postState.${String(postIndex)}.value`,
+        before,
+        after: post.value,
+      },
+    ];
   });
 }
 
@@ -410,17 +445,26 @@ function partialCompletion(base: BenchmarkScenario, seed: number): BenchmarkScen
     'PARTIAL_COMPLETION',
     (scenario) => {
       const bridge = firstEffect(scenario, 'BRIDGE');
-      const before = scenario.oracle.postState.length;
+      const postStateBefore = scenario.oracle.postState.length;
+      const expectedDeltasBefore = scenario.oracle.expectedDeltas.length;
       // The planned calls are unchanged; destination completion is not observed yet.
       scenario.oracle.postState = scenario.oracle.postState.filter(
+        (row) => row.chainId !== bridge.destinationChainId,
+      );
+      scenario.oracle.expectedDeltas = scenario.oracle.expectedDeltas.filter(
         (row) => row.chainId !== bridge.destinationChainId,
       );
       scenario.oracle.executionComplete = false;
       return [
         {
           path: 'oracle.postState.destinationObservations',
-          before: String(before),
+          before: String(postStateBefore),
           after: String(scenario.oracle.postState.length),
+        },
+        {
+          path: 'oracle.expectedDeltas.destinationExpectations',
+          before: String(expectedDeltasBefore),
+          after: String(scenario.oracle.expectedDeltas.length),
         },
         { path: 'oracle.executionComplete', before: 'true', after: 'false' },
       ];

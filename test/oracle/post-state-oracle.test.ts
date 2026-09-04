@@ -144,6 +144,59 @@ describe('independent exact-state oracle', () => {
     value.expectedPostState = [{ ...row('10'), subject: B }];
     expect(evaluatePostState(value).disagreements[0]?.actual).toBeNull();
   });
+  it('keeps a proven contract violation terminal even when prediction also disagrees', () => {
+    const value = input();
+    value.postState = [row('9')];
+    value.expectedPostState = [row('10')];
+    expect(evaluatePostState(value)).toMatchObject({
+      status: 'VIOLATION',
+      decision: 'DENY',
+      violations: [{ amount: '1' }],
+      disagreements: [{ expected: '10', actual: '9' }],
+    });
+  });
+  it('checks signed delta references and delta-based final goals', () => {
+    const value = input();
+    value.preState = [row('5')];
+    value.postState = [row('15')];
+    value.contract.finalStateGoals = [
+      { kind: 'MIN_ASSET_BALANCE_DELTA', chainId: 1, account: A, asset: T, minIncrease: '10' },
+    ];
+    value.expectedDeltas = [
+      {
+        chainId: 1,
+        subject: A,
+        field: 'BALANCE',
+        asset: T,
+        comparison: 'EXACT',
+        delta: '10',
+        rationale: 'exact recipient increase',
+      },
+    ];
+    expect(evaluatePostState(value)).toMatchObject({
+      status: 'PASS',
+      finalGoals: [{ actual: '10', satisfied: true }],
+    });
+    value.expectedDeltas = [
+      {
+        ...required(required(value.expectedDeltas)[0]),
+        comparison: 'AT_LEAST',
+        delta: '11',
+      },
+    ];
+    expect(evaluatePostState(value)).toMatchObject({
+      status: 'DISAGREEMENT',
+      disagreements: [{ expected: 'AT_LEAST:11', actual: '10' }],
+    });
+    value.expectedDeltas = [
+      {
+        ...required(required(value.expectedDeltas)[0]),
+        comparison: 'AT_MOST',
+        delta: '10',
+      },
+    ];
+    expect(evaluatePostState(value).status).toBe('PASS');
+  });
   it('cannot call synthetic data executed evidence', () => {
     const value = input();
     value.evidenceLevel = 'EXECUTED_FORK';

@@ -8,7 +8,13 @@ import {
   type Hex,
 } from 'viem';
 import { z } from 'zod';
-import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
+import {
+  BenchmarkScenarioSchema,
+  type BenchmarkScenario,
+  type PinnedQuoteReference,
+  type StateDeltaExpectation,
+} from '../src/benchmark/scenario.js';
+import { minimumPrefixFunding } from '../src/benchmark/execution-funding.js';
 import type { EconomicEffect } from '../src/domain/action-ir.js';
 import type { IntentContract } from '../src/domain/intent-contract.js';
 import {
@@ -20,6 +26,7 @@ import {
 import { ERC20_ABI } from '../src/effects/erc20-decoder.js';
 import { ACROSS_V3_ABI, AAVE_V3_ABI, CCTP_V1_ABI } from '../src/effects/protocol-decoders.js';
 import { SWAP_ROUTER_02_ABI } from '../src/effects/swap-decoder.js';
+import { pinnedQuote } from './benchmark-quotes.js';
 
 const AddressSchema = z.custom<Address>(
   (value) => typeof value === 'string' && /^0x[a-fA-F0-9]{40}$/.test(value),
@@ -52,6 +59,13 @@ const ZERO: Address = '0x0000000000000000000000000000000000000000';
 const EXPIRY = '2026-09-05T00:00:00+09:00';
 const CALLS = parseAbiParameters('(address to,uint256 value,bytes data)[]');
 const MODE: Hex = `0x${'01000000000000000000'.padEnd(64, '0')}`;
+const UINT256_MAX = (1n << 256n) - 1n;
+
+/** A deterministic 1bp ceiling, with one atomic unit for every non-zero principal. */
+export function variableDebtInterestBuffer(principal: bigint): bigint {
+  if (principal <= 0n) return 0n;
+  return (principal + 9_999n) / 10_000n;
+}
 
 export function fixtureAddress(chainId: number, key: string): Address {
   const entry = manifest.contracts[String(chainId)]?.find((entry) => entry.key === key);
@@ -77,7 +91,13 @@ export function fixtureReference(
     }),
   };
 }
-type DraftAction = { chainId: number; target: Address; data: Hex };
+type DraftAction = {
+  chainId: number;
+  target: Address;
+  data: Hex;
+  quoteReferences?: PinnedQuoteReference[];
+  fullDebtRepay?: { asset: Address; interestBuffer: bigint };
+};
 const approve = (
   chainId: number,
   spender: Address,
@@ -94,6 +114,7 @@ const transfer = (chainId: number, amount: bigint, to = PAYEE, asset = 'usdc'): 
   data: encodeFunctionData({ abi: ERC20_ABI, functionName: 'transfer', args: [to, amount] }),
 });
 function batch(chainId: number, calls: DraftAction[]): DraftAction {
+  const quoteReferences = calls.flatMap((call) => call.quoteReferences ?? []);
   return {
     chainId,
     target: BENCHMARK_ACCOUNT,
@@ -107,9 +128,12 @@ function batch(chainId: number, calls: DraftAction[]): DraftAction {
         ]),
       ],
     }),
+    ...(quoteReferences.length ? { quoteReferences } : {}),
   };
 }
 function swap(chainId: number, amount: bigint, recipient = BENCHMARK_ACCOUNT): DraftAction {
+  const path = `0x${fixtureAddress(chainId, 'usdc').slice(2)}0001f4${fixtureAddress(chainId, 'weth').slice(2)}`;
+  const quote = pinnedQuote(chainId, path, amount);
   return {
     chainId,
     target: fixtureAddress(chainId, 'swapRouter02'),
@@ -123,11 +147,12 @@ function swap(chainId: number, amount: bigint, recipient = BENCHMARK_ACCOUNT): D
           fee: 500,
           recipient,
           amountIn: amount,
-          amountOutMinimum: 990n,
+          amountOutMinimum: BigInt(quote.minAmountOut),
           sqrtPriceLimitX96: 0n,
         },
       ],
     }),
+    quoteReferences: [quote],
   };
 }
 function bridge(kind: 'ACROSS_V3' | 'CCTP_V1', amount: bigint): DraftAction {
@@ -167,35 +192,55 @@ function bridge(kind: 'ACROSS_V3' | 'CCTP_V1', amount: bigint): DraftAction {
       };
 }
 type LendingOp = 'supply' | 'borrow' | 'repay' | 'withdraw';
-function lending(chainId: number, name: LendingOp, asset: string, amount: bigint): DraftAction {
+function lending(
+  chainId: number,
+  name: LendingOp,
+  asset: string,
+  amount: bigint,
+  fullDebtInterestBuffer?: bigint,
+): DraftAction {
   const token = fixtureAddress(chainId, asset);
+  const fullDebtRepay = fullDebtInterestBuffer !== undefined;
+  const requested = fullDebtRepay ? UINT256_MAX : amount;
   const data =
     name === 'supply'
       ? encodeFunctionData({
           abi: AAVE_V3_ABI,
           functionName: name,
-          args: [token, amount, BENCHMARK_ACCOUNT, 0],
+          args: [token, requested, BENCHMARK_ACCOUNT, 0],
         })
       : name === 'borrow'
         ? encodeFunctionData({
             abi: AAVE_V3_ABI,
             functionName: name,
-            args: [token, amount, 2n, 0, BENCHMARK_ACCOUNT],
+            args: [token, requested, 2n, 0, BENCHMARK_ACCOUNT],
           })
         : name === 'repay'
           ? encodeFunctionData({
               abi: AAVE_V3_ABI,
               functionName: name,
-              args: [token, amount, 2n, BENCHMARK_ACCOUNT],
+              args: [token, requested, 2n, BENCHMARK_ACCOUNT],
             })
           : encodeFunctionData({
               abi: AAVE_V3_ABI,
               functionName: name,
-              args: [token, amount, BENCHMARK_ACCOUNT],
+              args: [token, requested, BENCHMARK_ACCOUNT],
             });
-  return { chainId, target: fixtureAddress(chainId, 'aaveV3Pool'), data };
+  return {
+    chainId,
+    target: fixtureAddress(chainId, 'aaveV3Pool'),
+    data,
+    ...(fullDebtRepay
+      ? {
+          fullDebtRepay: {
+            asset: token,
+            interestBuffer: fullDebtInterestBuffer,
+          },
+        }
+      : {}),
+  };
 }
-export function decoderOptions(chainId: number): BatchDecoderOptions {
+export function decoderOptions(chainId: number, quotedAmountOut?: string): BatchDecoderOptions {
   const registry: Record<string, DecoderContract> = { [BENCHMARK_ACCOUNT]: { kind: 'ERC7821' } };
   const kinds = {
     usdc: 'ERC20',
@@ -210,7 +255,7 @@ export function decoderOptions(chainId: number): BatchDecoderOptions {
     registry[fixtureAddress(chainId, key)] = { kind };
   return {
     contracts: registry,
-    quotedAmountOut: '1000',
+    ...(quotedAmountOut ? { quotedAmountOut } : {}),
     bridgeRoutes: [
       {
         sourceChainId: 1,
@@ -254,6 +299,13 @@ function makeScenario(
   const effects: EconomicEffect[] = [];
   for (const [index, action] of actions.entries()) {
     const options = required(optionsByChain.get(action.chainId));
+    const actionQuotes = action.quoteReferences ?? [];
+    if (actionQuotes.length > 0) {
+      const uniqueQuotes = new Set(actionQuotes.map((quote) => quote.quotedAmountOut));
+      if (uniqueQuotes.size !== 1)
+        throw new Error(`${id}:${String(index)} batch contains incompatible pinned quotes`);
+      options.quotedAmountOut = required(actionQuotes[0]).quotedAmountOut;
+    } else delete options.quotedAmountOut;
     const decoded = decodeBatchCalldata(
       {
         chainId: action.chainId,
@@ -292,35 +344,89 @@ function makeScenario(
   }
   const pre = new Map<string, Row>();
   const post = new Map<string, Row>();
-  function set(row: Row, value: bigint, delta = true) {
+  const expectedDeltas: StateDeltaExpectation[] = [];
+  type BalanceModel = {
+    row: Row;
+    modeledDelta: bigint;
+    referenceDelta: bigint;
+    lowerBound: boolean;
+  };
+  const balances = new Map<string, BalanceModel>();
+  const allowances = new Map<string, { row: Row; amount: bigint }>();
+  const protocolStates = new Map<
+    string,
+    { row: Row; delta: bigint; operations: number; borrowedPrincipal: bigint }
+  >();
+  const trackedSubject = (subject: string) =>
+    subject.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase() ||
+    subject.toLowerCase() === PAYEE.toLowerCase();
+  function balance(
+    chainId: number,
+    subject: string,
+    asset: string,
+    modeledDelta: bigint,
+    referenceDelta = modeledDelta,
+    lowerBound = false,
+  ) {
+    if (!trackedSubject(subject)) return;
+    const row: Row = {
+      chainId,
+      subject,
+      asset,
+      field: 'BALANCE',
+      value: '0',
+      source: 'EXPECTED_FIXTURE',
+    };
     const key = keyOf(row);
-    if (!pre.has(key)) {
-      pre.set(key, { ...row, value: '0' });
-      post.set(key, { ...row, value: '0' });
-    }
-    const previous = BigInt(required(post.get(key)).value);
-    post.set(key, { ...row, value: (delta ? previous + value : value).toString() });
+    const current = balances.get(key) ?? {
+      row,
+      modeledDelta: 0n,
+      referenceDelta: 0n,
+      lowerBound: false,
+    };
+    current.modeledDelta += modeledDelta;
+    current.referenceDelta += referenceDelta;
+    current.lowerBound ||= lowerBound;
+    balances.set(key, current);
   }
-  function balance(chainId: number, subject: string, asset: string, amount: bigint) {
-    set(
-      { chainId, subject, asset, field: 'BALANCE', value: '0', source: 'EXPECTED_FIXTURE' },
-      amount,
-    );
+  function allowanceKey(chainId: number, asset: string, spender: string): string {
+    return `${String(chainId)}:${asset.toLowerCase()}:${spender.toLowerCase()}`;
+  }
+  function consumeAllowance(chainId: number, asset: string, spender: string, amount: bigint) {
+    const key = allowanceKey(chainId, asset, spender);
+    const current = allowances.get(key);
+    if (!current) return;
+    current.amount = current.amount > amount ? current.amount - amount : 0n;
   }
   for (const effect of effects) {
     if (effect.kind === 'TRANSFER') {
-      if (effect.from.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase())
+      if (effect.from.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase()) {
         budget(effect.chainId, effect.asset).gross += BigInt(effect.amount);
+        consumeAllowance(
+          effect.chainId,
+          effect.asset,
+          effect.provenance.target,
+          BigInt(effect.amount),
+        );
+      }
       balance(effect.chainId, effect.from, effect.asset, -BigInt(effect.amount));
       balance(effect.chainId, effect.to, effect.asset, BigInt(effect.amount));
     } else if (effect.kind === 'BRIDGE') {
       budget(effect.sourceChainId, effect.asset).gross += BigInt(effect.amount);
+      consumeAllowance(
+        effect.sourceChainId,
+        effect.asset,
+        effect.provenance.target,
+        BigInt(effect.amount),
+      );
       balance(effect.sourceChainId, BENCHMARK_ACCOUNT, effect.asset, -BigInt(effect.amount));
       balance(
         effect.destinationChainId,
         effect.recipient,
         required(effect.destinationAsset),
         BigInt(required(effect.minAmountOut)),
+        BigInt(required(effect.minAmountOut)),
+        true,
       );
     } else if (effect.kind === 'SWAP')
       balance(
@@ -328,44 +434,139 @@ function makeScenario(
         effect.recipient,
         effect.assetOut,
         BigInt(required(effect.quotedAmountOut)),
+        BigInt(effect.minAmountOut),
+        true,
       );
     else if (effect.kind === 'APPROVAL') {
       const b = budget(effect.chainId, effect.asset);
       b.allowance = b.allowance > BigInt(effect.amount) ? b.allowance : BigInt(effect.amount);
-      set(
-        {
-          chainId: effect.chainId,
-          subject: effect.owner,
-          field: 'ALLOWANCE',
-          asset: effect.asset,
-          counterparty: effect.spender,
-          value: '0',
-          source: 'EXPECTED_FIXTURE',
-        },
-        BigInt(effect.amount),
-        false,
-      );
-    } else if (effect.kind === 'DEBT' || effect.kind === 'POSITION')
-      set(
-        {
-          chainId: effect.chainId,
-          subject: effect.account,
-          field: effect.kind,
-          asset: effect.asset,
-          counterparty: effect.protocol,
-          value: '0',
-          source: 'EXPECTED_FIXTURE',
-        },
-        BigInt(effect.delta),
-      );
-  }
-  // Explicit synthetic starting balances fund this offline fixture. These are not chain observations.
-  for (const [key, row] of post)
-    if (row.field === 'BALANCE' && BigInt(row.value) < 0n) {
-      const funding = -BigInt(row.value);
-      pre.set(key, { ...row, value: funding.toString() });
-      post.set(key, { ...row, value: '0' });
+      const row: Row = {
+        chainId: effect.chainId,
+        subject: effect.owner,
+        field: 'ALLOWANCE',
+        asset: effect.asset,
+        counterparty: effect.spender,
+        value: '0',
+        source: 'EXPECTED_FIXTURE',
+      };
+      allowances.set(allowanceKey(effect.chainId, effect.asset, effect.spender), {
+        row,
+        amount: BigInt(effect.amount),
+      });
+    } else if (effect.kind === 'DEBT' || effect.kind === 'POSITION') {
+      const row: Row = {
+        chainId: effect.chainId,
+        subject: effect.account,
+        field: effect.kind,
+        asset: effect.asset,
+        counterparty: effect.protocol,
+        value: '0',
+        source: 'EXPECTED_FIXTURE',
+      };
+      const key = keyOf(row);
+      const current = protocolStates.get(key) ?? {
+        row,
+        delta: 0n,
+        operations: 0,
+        borrowedPrincipal: 0n,
+      };
+      current.delta += BigInt(effect.delta);
+      current.operations += 1;
+      if (effect.kind === 'DEBT' && BigInt(effect.delta) > 0n)
+        current.borrowedPrincipal += BigInt(effect.delta);
+      protocolStates.set(key, current);
     }
+  }
+  const prefixFunding = minimumPrefixFunding(BENCHMARK_ACCOUNT, effects);
+  const fullDebtBuffers = new Map<string, bigint>();
+  for (const action of actions) {
+    if (!action.fullDebtRepay) continue;
+    const key = `${String(action.chainId)}:${action.fullDebtRepay.asset.toLowerCase()}`;
+    fullDebtBuffers.set(key, action.fullDebtRepay.interestBuffer);
+    budget(action.chainId, action.fullDebtRepay.asset).gross += action.fullDebtRepay.interestBuffer;
+  }
+  for (const model of balances.values()) {
+    const accountKey = `${String(model.row.chainId)}:${required(model.row.asset).toLowerCase()}`;
+    const fullDebtBuffer =
+      model.row.subject.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase()
+        ? (fullDebtBuffers.get(accountKey) ?? 0n)
+        : 0n;
+    const initial =
+      model.row.subject.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase()
+        ? (prefixFunding.get(accountKey) ?? 0n) + fullDebtBuffer
+        : 0n;
+    const final = initial + model.modeledDelta;
+    if (final < 0n) throw new Error(`${id}: prefix funding remained negative for ${accountKey}`);
+    pre.set(keyOf(model.row), { ...model.row, value: initial.toString() });
+    post.set(keyOf(model.row), { ...model.row, value: final.toString() });
+    expectedDeltas.push({
+      chainId: model.row.chainId,
+      subject: model.row.subject,
+      field: 'BALANCE',
+      asset: required(model.row.asset),
+      comparison: model.lowerBound || fullDebtBuffer > 0n ? 'AT_LEAST' : 'EXACT',
+      delta: (model.referenceDelta - fullDebtBuffer).toString(),
+      rationale:
+        fullDebtBuffer > 0n
+          ? 'Full-debt repayment may consume up to the authored accrued-interest buffer.'
+          : model.lowerBound
+            ? 'Pinned route or bridge settlement must deliver at least the authored minimum delta.'
+            : 'Ordered authorized effects define the exact account-side balance delta.',
+    });
+  }
+  for (const allowance of allowances.values()) {
+    const key = keyOf(allowance.row);
+    pre.set(key, { ...allowance.row, value: '0' });
+    post.set(key, { ...allowance.row, value: allowance.amount.toString() });
+    expectedDeltas.push({
+      chainId: allowance.row.chainId,
+      subject: allowance.row.subject,
+      field: 'ALLOWANCE',
+      asset: required(allowance.row.asset),
+      counterparty: required(allowance.row.counterparty),
+      comparison: 'EXACT',
+      delta: allowance.amount.toString(),
+      rationale: 'The authored approval sequence and modeled consumption define final allowance.',
+    });
+  }
+  for (const state of protocolStates.values()) {
+    const key = keyOf(state.row);
+    pre.set(key, { ...state.row, value: '0' });
+    post.set(key, { ...state.row, value: state.delta.toString() });
+    if (state.row.field === 'POSITION') {
+      const minimum =
+        state.delta > BigInt(state.operations) ? state.delta - BigInt(state.operations) : 0n;
+      expectedDeltas.push({
+        chainId: state.row.chainId,
+        subject: state.row.subject,
+        field: 'POSITION',
+        asset: required(state.row.asset),
+        counterparty: required(state.row.counterparty),
+        comparison: 'AT_LEAST',
+        delta: minimum.toString(),
+        rationale:
+          'Aave position tolerance is one atomic unit per position-changing action on every chain.',
+      });
+    } else {
+      const debtKey = `${String(state.row.chainId)}:${required(state.row.asset).toLowerCase()}`;
+      const fullRepay = fullDebtBuffers.has(debtKey);
+      const maximum = fullRepay
+        ? 0n
+        : state.delta + variableDebtInterestBuffer(state.borrowedPrincipal);
+      expectedDeltas.push({
+        chainId: state.row.chainId,
+        subject: state.row.subject,
+        field: 'DEBT',
+        asset: required(state.row.asset),
+        counterparty: required(state.row.counterparty),
+        comparison: 'AT_MOST',
+        delta: maximum.toString(),
+        rationale: fullRepay
+          ? 'Semantic full-debt repayment uses uint256 max and must leave zero variable debt.'
+          : 'Principal-only or outstanding debt permits a deterministic 1bp accrued-interest buffer.',
+      });
+    }
+  }
   const scopes: IntentContract['safety']['chainScopes'] = chainIds.map((chainId) => {
     const permissions = new Map<string, Set<string>>();
     for (const action of actions.filter((a) => a.chainId === chainId))
@@ -401,45 +602,52 @@ function makeScenario(
     };
   });
   const finalGoals: IntentContract['finalStateGoals'] = [];
-  for (const row of post.values()) {
-    if (row.field === 'POSITION' && BigInt(row.value) > 0n)
+  for (const model of balances.values()) {
+    if (model.referenceDelta > 0n)
       finalGoals.push({
-        kind: 'MIN_POSITION',
-        chainId: row.chainId,
-        account: row.subject,
-        asset: required(row.asset),
-        protocol: required(row.counterparty),
-        minAmount: row.value,
-      });
-    if (row.field === 'DEBT')
-      finalGoals.push({
-        kind: 'MAX_DEBT',
-        chainId: row.chainId,
-        account: row.subject,
-        asset: required(row.asset),
-        maxAmount: row.value,
-      });
-    if (
-      row.field === 'BALANCE' &&
-      (row.subject.toLowerCase() === BENCHMARK_ACCOUNT.toLowerCase() || row.subject === PAYEE) &&
-      BigInt(row.value) > 0n
-    )
-      finalGoals.push({
-        kind: 'MIN_ASSET_BALANCE',
-        chainId: row.chainId,
-        asset: required(row.asset),
-        account: row.subject,
-        minAmount: row.value,
-      });
-    if (row.field === 'ALLOWANCE' && row.value === '0')
-      finalGoals.push({
-        kind: 'NO_RESIDUAL_ALLOWANCE',
-        chainId: row.chainId,
-        asset: required(row.asset),
-        owner: row.subject,
-        spender: required(row.counterparty),
+        kind: 'MIN_ASSET_BALANCE_DELTA',
+        chainId: model.row.chainId,
+        asset: required(model.row.asset),
+        account: model.row.subject,
+        minIncrease: model.referenceDelta.toString(),
       });
   }
+  for (const state of protocolStates.values()) {
+    if (state.row.field === 'POSITION' && state.delta > 0n) {
+      const minimum =
+        state.delta > BigInt(state.operations) ? state.delta - BigInt(state.operations) : 0n;
+      finalGoals.push({
+        kind: 'MIN_POSITION_DELTA',
+        chainId: state.row.chainId,
+        account: state.row.subject,
+        asset: required(state.row.asset),
+        protocol: required(state.row.counterparty),
+        minIncrease: minimum.toString(),
+      });
+    }
+    if (state.row.field === 'DEBT') {
+      const debtKey = `${String(state.row.chainId)}:${required(state.row.asset).toLowerCase()}`;
+      const maxDebt = fullDebtBuffers.has(debtKey)
+        ? 0n
+        : state.delta + variableDebtInterestBuffer(state.borrowedPrincipal);
+      finalGoals.push({
+        kind: 'MAX_DEBT',
+        chainId: state.row.chainId,
+        account: state.row.subject,
+        asset: required(state.row.asset),
+        maxAmount: maxDebt.toString(),
+      });
+    }
+  }
+  for (const allowance of allowances.values())
+    if (allowance.amount === 0n)
+      finalGoals.push({
+        kind: 'NO_RESIDUAL_ALLOWANCE',
+        chainId: allowance.row.chainId,
+        asset: required(allowance.row.asset),
+        owner: allowance.row.subject,
+        spender: required(allowance.row.counterparty),
+      });
   if (!finalGoals.length) throw new Error(`${id}: no explicit completion goal`);
   const debtLimits: NonNullable<IntentContract['safety']['debtLimits']> = [];
   for (const effect of effects)
@@ -467,7 +675,7 @@ function makeScenario(
         asset: effect.asset,
         account: effect.account,
         initialDebt: '0',
-        maxDebt: peak.toString(),
+        maxDebt: (peak + variableDebtInterestBuffer(peak)).toString(),
       });
     }
   return BenchmarkScenarioSchema.parse({
@@ -478,7 +686,12 @@ function makeScenario(
     workflow,
     class: 'BASE',
     split: localIndex < count * 0.6 ? 'TRAIN' : localIndex < count * 0.8 ? 'DEV' : 'HIDDEN_TEST',
-    fixture: fixtureReference(chainIds),
+    fixture: {
+      ...fixtureReference(chainIds),
+      ...(actions.flatMap((action) => action.quoteReferences ?? []).length > 0
+        ? { quoteReferences: actions.flatMap((action) => action.quoteReferences ?? []) }
+        : {}),
+    },
     provenance: {
       kind: 'CURATED',
       sources: [
@@ -526,12 +739,14 @@ function makeScenario(
       expectedEffects: effects,
     },
     oracle: {
+      referenceMode: 'DELTA',
       expectedDecision: 'ALLOW',
       observationStage: 'PRE_SIGN',
       evidenceLevel: 'EXPECTED_FIXTURE',
       labels: ['BENIGN'],
       preState: [...pre.values()],
       postState: [...post.values()],
+      expectedDeltas,
       evidence:
         'Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims.',
     },
@@ -590,7 +805,9 @@ export function buildExtendedScenarios(): BenchmarkScenario[] {
       ),
     );
   }
-  const plans: [string, [LendingOp, string, bigint][]][] = [
+  type RepaymentSemantics = 'FULL_DEBT' | 'PRINCIPAL_ONLY';
+  type LendingInstruction = [LendingOp, string, bigint, RepaymentSemantics?];
+  const plans: [string, LendingInstruction[]][] = [
     [
       'Supply one WETH on Ethereum Aave and retain the collateral position without opening debt.',
       [['supply', 'weth', 10n ** 18n]],
@@ -626,7 +843,7 @@ export function buildExtendedScenarios(): BenchmarkScenario[] {
       [
         ['supply', 'weth', 10n ** 18n],
         ['borrow', 'usdc', 100_000_000n],
-        ['repay', 'usdc', 100_000_000n],
+        ['repay', 'usdc', 100_000_000n, 'PRINCIPAL_ONLY'],
       ],
     ],
     [
@@ -676,7 +893,7 @@ export function buildExtendedScenarios(): BenchmarkScenario[] {
         ['supply', 'weth', 10n ** 18n],
         ['borrow', 'usdc', 100_000_000n],
         ['repay', 'usdc', 40_000_000n],
-        ['repay', 'usdc', 60_000_000n],
+        ['repay', 'usdc', 60_000_000n, 'FULL_DEBT'],
       ],
     ],
     [
@@ -691,7 +908,7 @@ export function buildExtendedScenarios(): BenchmarkScenario[] {
       [
         ['supply', 'weth', 10n ** 18n],
         ['borrow', 'usdc', 100_000_000n],
-        ['repay', 'usdc', 100_000_000n],
+        ['repay', 'usdc', 100_000_000n, 'PRINCIPAL_ONLY'],
         ['withdraw', 'weth', 5n * 10n ** 17n],
       ],
     ],
@@ -700,10 +917,18 @@ export function buildExtendedScenarios(): BenchmarkScenario[] {
     const chainId = i < 7 ? 1 : 8453;
     const pool = fixtureAddress(chainId, 'aaveV3Pool');
     const actions: DraftAction[] = [];
-    for (const [name, asset, amount] of ops) {
+    const borrowedPrincipal = new Map<string, bigint>();
+    for (const [name, asset, amount] of ops)
+      if (name === 'borrow')
+        borrowedPrincipal.set(asset, (borrowedPrincipal.get(asset) ?? 0n) + amount);
+    for (const [name, asset, amount, repaymentSemantics] of ops) {
+      const fullDebtBuffer =
+        repaymentSemantics === 'FULL_DEBT'
+          ? variableDebtInterestBuffer(borrowedPrincipal.get(asset) ?? amount)
+          : undefined;
       if (name === 'supply' || name === 'repay')
-        actions.push(approve(chainId, pool, amount, asset));
-      actions.push(lending(chainId, name, asset, amount));
+        actions.push(approve(chainId, pool, amount + (fullDebtBuffer ?? 0n), asset));
+      actions.push(lending(chainId, name, asset, amount, fullDebtBuffer));
       if (name === 'supply' || name === 'repay') actions.push(approve(chainId, pool, 0n, asset));
     }
     result.push(

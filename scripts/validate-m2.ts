@@ -1,18 +1,20 @@
-import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { format, resolveConfig } from 'prettier';
-import { z } from 'zod';
+import { evaluateReviewGate, reviewDigest } from '../src/benchmark/review-gate.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
 import { redactScenarioIdentity } from '../src/baselines/llm-verifier.js';
 import { evaluateGuardMode } from '../src/baselines/guard-mode-emulator.js';
 import { evaluatePerCallPolicy } from '../src/baselines/per-call-policy.js';
 import { evaluateIntent } from '../src/monitor/monitor.js';
 import { evaluatePostState } from '../src/oracle/post-state-oracle.js';
+import { deriveM2Completion } from '../src/experiments/freeze-gates.js';
 import { executionCollectorSha256 } from './m2-execution/provenance.js';
-import { classifyExecutionEvidence } from './m2-execution/evidence-validation.js';
+import { validatePublishedM2Evidence } from './m2-execution/evidence-validation.js';
+import { M2_ATTEMPT_SELECTION_POLICY } from './m2-execution/attempt-selection.js';
 
 const check = process.argv.includes('--check');
 async function load(dir: string): Promise<BenchmarkScenario[]> {
@@ -35,86 +37,8 @@ const base = (
 const mutations = await load('benchmark/scenarios/mutations');
 const byId = new Map(base.map((s) => [s.id, s]));
 
-const PublishedExecutionSchema = z.object({
-  datasetVersion: z.string(),
-  baseCount: z.number().int().nonnegative(),
-  attemptedCount: z.number().int().nonnegative(),
-  completedExecutionCount: z.number().int().nonnegative(),
-  strictAuthoredFixtureExecutionCount: z.number().int().nonnegative(),
-  finalGoalPassCount: z.number().int().nonnegative(),
-  strictAuthoredFixtureFinalGoalPassCount: z.number().int().nonnegative(),
-  humanReview: z.string(),
-  m2Complete: z.boolean(),
-  latest: z.array(
-    z.object({
-      scenarioId: z.string(),
-      run: z.string(),
-      rawFileSha256: z.string(),
-      executionComplete: z.boolean(),
-      fixtureCorrected: z.boolean(),
-      oracleStatus: z.string(),
-    }),
-  ),
-  attempts: z.array(
-    z.object({
-      scenarioId: z.string(),
-      run: z.string(),
-      rawFileSha256: z.string(),
-      sourceCommit: z.string(),
-      workingTreeDirty: z.boolean(),
-      collectorSha256: z.string().nullable(),
-      sourceScenarioSha256: z.string(),
-      executionComplete: z.boolean(),
-      fixtureCorrected: z.boolean(),
-      oracle: z.object({ status: z.string() }),
-    }),
-  ),
-});
-const publishedExecution = PublishedExecutionSchema.parse(
-  JSON.parse(await readFile('benchmark/evidence/m2-execution-diagnostic-20260904.json', 'utf8')),
-);
-if (publishedExecution.datasetVersion !== '0.2.0' || publishedExecution.baseCount !== base.length)
-  throw new Error('published execution evidence does not match the current dataset version/count');
-const latestExecution = new Map(publishedExecution.latest.map((row) => [row.scenarioId, row]));
-const latestAttempt = new Map(publishedExecution.attempts.map((row) => [row.scenarioId, row]));
-if (
-  latestExecution.size !== publishedExecution.latest.length ||
-  latestExecution.size !== publishedExecution.attemptedCount
-)
-  throw new Error('published execution evidence has duplicate or inconsistent latest rows');
-const recomputedCompleted = publishedExecution.latest.filter((row) => row.executionComplete).length;
-const recomputedPass = publishedExecution.latest.filter(
-  (row) => row.executionComplete && row.oracleStatus === 'PASS',
-).length;
-const recomputedStrict = publishedExecution.latest.filter(
-  (row) => row.executionComplete && !row.fixtureCorrected,
-).length;
-const recomputedStrictPass = publishedExecution.latest.filter(
-  (row) => row.executionComplete && !row.fixtureCorrected && row.oracleStatus === 'PASS',
-).length;
-if (
-  recomputedCompleted !== publishedExecution.completedExecutionCount ||
-  recomputedPass !== publishedExecution.finalGoalPassCount ||
-  recomputedStrict !== publishedExecution.strictAuthoredFixtureExecutionCount ||
-  recomputedStrictPass !== publishedExecution.strictAuthoredFixtureFinalGoalPassCount
-)
-  throw new Error('published execution aggregate does not match its latest rows');
-for (const scenario of base) {
-  const published = latestExecution.get(scenario.id);
-  const attempt = latestAttempt.get(scenario.id);
-  if (
-    !published ||
-    !attempt ||
-    attempt.rawFileSha256 !== published.rawFileSha256 ||
-    attempt.executionComplete !== published.executionComplete ||
-    attempt.fixtureCorrected !== published.fixtureCorrected ||
-    attempt.oracle.status !== published.oracleStatus
-  )
-    throw new Error(`missing latest published execution evidence: ${scenario.id}`);
-  const scenarioSha256 = createHash('sha256').update(JSON.stringify(scenario)).digest('hex');
-  if (attempt.sourceScenarioSha256 !== scenarioSha256)
-    throw new Error(`stale published execution evidence: ${scenario.id}`);
-}
+const currentEvidencePath = `benchmark/evidence/m2-execution-v${BENCHMARK_DATASET_VERSION}.json`;
+const rawPublishedExecution = await readFile(currentEvidencePath, 'utf8').catch(() => null);
 const currentCollectorSha256 = await executionCollectorSha256();
 const resolvableCommits = new Map<string, boolean>();
 function sourceCommitResolves(commit: string): boolean {
@@ -129,22 +53,61 @@ function sourceCommitResolves(commit: string): boolean {
     return false;
   }
 }
-const cleanCommittedExecutedBaseCount = base.filter((scenario) => {
-  const latest = latestExecution.get(scenario.id);
-  const attempt = latestAttempt.get(scenario.id);
-  return (
-    latest?.executionComplete === true &&
-    attempt?.workingTreeDirty === false &&
-    attempt.collectorSha256 === currentCollectorSha256 &&
-    sourceCommitResolves(attempt.sourceCommit)
-  );
-}).length;
-const executionEvidenceStatus = classifyExecutionEvidence({
+const ancestorCommits = new Map<string, boolean>();
+function sourceCommitIsAncestor(commit: string): boolean {
+  const cached = ancestorCommits.get(commit);
+  if (cached !== undefined) return cached;
+  try {
+    execFileSync('git', ['merge-base', '--is-ancestor', commit, 'HEAD'], { stdio: 'ignore' });
+    ancestorCommits.set(commit, true);
+    return true;
+  } catch {
+    ancestorCommits.set(commit, false);
+    return false;
+  }
+}
+function readTrackedRawEvidenceBytes(path: string): Uint8Array {
+  try {
+    return execFileSync('git', ['show', `HEAD:${path}`], { maxBuffer: 64 * 1024 * 1024 });
+  } catch (cause) {
+    throw new Error(`raw evidence is not tracked at Git HEAD: ${path}`, { cause });
+  }
+}
+const emptyPublishedExecution = {
+  datasetVersion: BENCHMARK_DATASET_VERSION,
+  purpose: 'Diagnostic evidence, not a frozen performance result',
+  selection: M2_ATTEMPT_SELECTION_POLICY,
   baseCount: base.length,
-  completedExecutionCount: publishedExecution.completedExecutionCount,
-  strictAuthoredFixtureExecutionCount: publishedExecution.strictAuthoredFixtureExecutionCount,
+  attemptedCount: 0,
+  missing: base.map((scenario) => scenario.id),
+  completedExecutionCount: 0,
+  strictAuthoredFixtureExecutionCount: 0,
+  finalGoalPassCount: 0,
+  strictAuthoredFixtureFinalGoalPassCount: 0,
+  syntheticReferenceDisagreementCount: 0,
+  humanReview: 'PENDING',
+  m2Complete: false,
+  latest: [],
+  attempts: [],
+};
+const verifiedPublishedExecution = validatePublishedM2Evidence(
+  rawPublishedExecution ? JSON.parse(rawPublishedExecution) : emptyPublishedExecution,
+  {
+    scenarios: base,
+    currentCollectorSha256,
+    sourceCommitResolves,
+    sourceCommitIsAncestor,
+    readRawEvidenceBytes: readTrackedRawEvidenceBytes,
+    rawEvidenceSource: 'GIT_HEAD_TRACKED',
+  },
+);
+const {
+  evidence: publishedExecution,
+  latestExecution,
+  selectedAttempt,
   cleanCommittedExecutedBaseCount,
-});
+  executionEvidenceStatus,
+} = verifiedPublishedExecution;
 
 const rows = [...base, ...mutations].map((s) => {
   const pre = evaluateIntent({
@@ -165,6 +128,7 @@ const rows = [...base, ...mutations].map((s) => {
     preState: s.oracle.preState,
     postState: s.oracle.postState,
     observedEffects: s.trace.expectedEffects,
+    expectedDeltas: s.oracle.expectedDeltas,
     evidenceLevel: 'EXPECTED_FIXTURE',
     executionComplete: s.oracle.executionComplete,
   });
@@ -198,47 +162,32 @@ const rows = [...base, ...mutations].map((s) => {
             status: latestExecution.get(s.id)?.executionComplete ? 'COMPLETE' : 'INCOMPLETE',
             oracleStatus: latestExecution.get(s.id)?.oracleStatus ?? null,
             run: latestExecution.get(s.id)?.run ?? null,
-            sourceCommit: latestAttempt.get(s.id)?.sourceCommit ?? null,
-            workingTreeDirty: latestAttempt.get(s.id)?.workingTreeDirty ?? null,
-            collectorSha256: latestAttempt.get(s.id)?.collectorSha256 ?? null,
+            sourceCommit: selectedAttempt.get(s.id)?.sourceCommit ?? null,
+            workingTreeDirty: selectedAttempt.get(s.id)?.workingTreeDirty ?? null,
+            collectorSha256: selectedAttempt.get(s.id)?.collectorSha256 ?? null,
             collectorMatchesCurrent:
-              latestAttempt.get(s.id)?.collectorSha256 === currentCollectorSha256,
+              selectedAttempt.get(s.id)?.collectorSha256 === currentCollectorSha256,
             fixtureCorrected: latestExecution.get(s.id)?.fixtureCorrected ?? null,
           }
         : { status: 'NOT_COLLECTED' },
   };
 });
-const validation = {
-  datasetVersion: '0.2.0',
-  purpose: 'M2 integration diagnostics, not experimental performance',
-  baseCount: base.length,
-  mutationCount: mutations.length,
-  preSignEligibleMutations: rows.filter((r) => r.class !== 'BASE' && r.preSignEligible).length,
-  baseReferencePass: rows.filter(
-    (r) => r.class === 'BASE' && r.referencePostState.status === 'PASS',
-  ).length,
-  baseMonitorAllow: rows.filter((r) => r.class === 'BASE' && r.preSign.intentLock === 'ALLOW')
-    .length,
-  executedBaseCount: publishedExecution.completedExecutionCount,
-  strictAuthoredFixtureExecutedBaseCount: publishedExecution.strictAuthoredFixtureExecutionCount,
-  cleanCommittedExecutedBaseCount,
-  executionEvidenceStatus,
-  executionFinalGoalPassCount: publishedExecution.finalGoalPassCount,
-  strictAuthoredFixtureFinalGoalPassCount:
-    publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
-  referenceLabelDisagreements: rows
-    .filter((r) => r.referencePostState.authoredLabelAgreement === false)
-    .map((r) => r.scenarioId),
-  crossStageDifferencesNotScored: rows
-    .filter(
-      (r) =>
-        r.observationStage === 'PRE_SIGN' && r.authoredDecision !== r.referencePostState.decision,
-    )
-    .map((r) => r.scenarioId),
-  independentReviewStatus: 'PENDING',
-  m2Complete: false,
-  rows,
-};
+const baseReferencePass = rows.filter(
+  (row) => row.class === 'BASE' && row.referencePostState.status === 'PASS',
+).length;
+const baseReferenceLabelDisagreements = rows
+  .filter((row) => row.class === 'BASE' && row.referencePostState.authoredLabelAgreement === false)
+  .map((row) => row.scenarioId);
+const referenceLabelDisagreements = rows
+  .filter((row) => row.referencePostState.authoredLabelAgreement === false)
+  .map((row) => row.scenarioId);
+const crossStageDifferencesNotScored = rows
+  .filter(
+    (row) =>
+      row.observationStage === 'PRE_SIGN' &&
+      row.authoredDecision !== row.referencePostState.decision,
+  )
+  .map((row) => row.scenarioId);
 const first = [
   'TR-01',
   'TR-07',
@@ -273,12 +222,13 @@ function blind(id: string) {
       evidenceLevel: 'EXPECTED_FIXTURE',
       before: s.oracle.preState,
       after: s.oracle.postState,
+      expectedDeltas: s.oracle.expectedDeltas,
     },
   };
 }
 const packet = {
   protocolVersion: '0.2',
-  datasetVersion: '0.2.0',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   status: 'PENDING_INDEPENDENT_REVIEW',
   instructions:
     'Each reviewer independently assesses natural-language alignment, intermediate safety, final-state goals and evidence limitations. Expected fixtures do not demonstrate execution. Do not open source labels or diagnostics before submitting.',
@@ -287,10 +237,91 @@ const packet = {
     input: blind(id),
   })),
 };
-const packetHash = createHash('sha256').update(JSON.stringify(packet)).digest('hex');
+const packetHash = reviewDigest(packet);
+const submissionsDirectory = 'benchmark/labels/submissions';
+const submissionFiles = (
+  await readdir(submissionsDirectory).catch((cause: unknown) => {
+    if (cause instanceof Error && 'code' in cause && cause.code === 'ENOENT') return [];
+    throw cause;
+  })
+)
+  .filter((file) => file.endsWith('.json'))
+  .sort();
+const reviewSubmissions: unknown[] = await Promise.all(
+  submissionFiles.map(
+    async (file) =>
+      JSON.parse(await readFile(`${submissionsDirectory}/${file}`, 'utf8')) as unknown,
+  ),
+);
+let reviewAdjudications: unknown;
+try {
+  reviewAdjudications = JSON.parse(
+    await readFile('benchmark/labels/adjudications.json', 'utf8'),
+  ) as unknown;
+} catch (cause) {
+  if (!(cause instanceof Error && 'code' in cause && cause.code === 'ENOENT')) throw cause;
+}
+const reviewGate = evaluateReviewGate(
+  {
+    datasetVersion: BENCHMARK_DATASET_VERSION,
+    packetSha256: packetHash,
+    reviewIds: packet.cases.map((reviewCase) => reviewCase.reviewId),
+  },
+  reviewSubmissions,
+  reviewAdjudications,
+);
+const completion = deriveM2Completion({
+  baseCount: base.length,
+  executedBaseCount: publishedExecution.completedExecutionCount,
+  strictAuthoredFixtureExecutedBaseCount: publishedExecution.strictAuthoredFixtureExecutionCount,
+  cleanCommittedExecutedBaseCount,
+  executionEvidenceStatus,
+  executionFinalGoalPassCount: publishedExecution.finalGoalPassCount,
+  strictAuthoredFixtureFinalGoalPassCount:
+    publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
+  baseReferencePass,
+  baseReferenceLabelDisagreementCount: baseReferenceLabelDisagreements.length,
+  reviewGateStatus: reviewGate.status,
+});
+const validation = {
+  datasetVersion: BENCHMARK_DATASET_VERSION,
+  purpose: 'M2 integration diagnostics, not experimental performance',
+  baseCount: base.length,
+  mutationCount: mutations.length,
+  preSignEligibleMutations: rows.filter((row) => row.class !== 'BASE' && row.preSignEligible)
+    .length,
+  baseReferencePass,
+  baseReferenceLabelDisagreements,
+  baseMonitorAllow: rows.filter((row) => row.class === 'BASE' && row.preSign.intentLock === 'ALLOW')
+    .length,
+  executedBaseCount: publishedExecution.completedExecutionCount,
+  strictAuthoredFixtureExecutedBaseCount: publishedExecution.strictAuthoredFixtureExecutionCount,
+  cleanCommittedExecutedBaseCount,
+  executionEvidenceStatus,
+  executionFinalGoalPassCount: publishedExecution.finalGoalPassCount,
+  strictAuthoredFixtureFinalGoalPassCount:
+    publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
+  referenceLabelDisagreements,
+  crossStageDifferencesNotScored,
+  independentReviewEvidence: {
+    recordStatus: reviewGate.status,
+    identityAndIndependence: reviewGate.identityAndIndependence,
+    submissionCount: reviewSubmissions.length,
+    submissionSha256s: reviewGate.submissionSha256s,
+    disagreementCount: reviewGate.disagreements.length,
+    blockers: reviewGate.blockers,
+  },
+  completionCriteria: {
+    executionComplete: completion.executionComplete,
+    referenceOracleComplete: completion.referenceOracleComplete,
+  },
+  independentReviewStatus: completion.independentReviewStatus,
+  m2Complete: completion.m2Complete,
+  rows,
+};
 const template = {
   protocolVersion: '0.2',
-  datasetVersion: '0.2.0',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   packetSha256: packetHash,
   reviewer: null,
   reviewerType: 'HUMAN',
@@ -306,14 +337,14 @@ const template = {
   })),
 };
 const status = {
-  datasetVersion: '0.2.0',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   baseCount: 80,
   requiredSampleSize: 20,
   sampleSize: packet.cases.length,
   fraction: 0.25,
   packetSha256: packetHash,
   requiredDistinctHumanReviewers: 2,
-  submissionsDirectory: 'benchmark/labels/submissions',
+  submissionsDirectory,
   adjudicationRecord: 'benchmark/labels/adjudications.json',
   status: 'REQUIREMENTS_ONLY_NOT_REVIEW_COMPLETION',
 };
@@ -335,5 +366,5 @@ await output('benchmark/reviews/double-review-20.json', packet);
 await output('benchmark/reviews/submission.template.json', template);
 await output('benchmark/labels/review-requirements.json', status);
 console.log(
-  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); human review PENDING.`,
+  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); human review ${validation.independentReviewStatus}; M2 complete ${String(validation.m2Complete)}.`,
 );

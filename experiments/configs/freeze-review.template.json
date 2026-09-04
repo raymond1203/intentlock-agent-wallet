@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "0.2",
+  "status": "PENDING",
+  "reviewedCommit": null,
+  "reviewerPseudonym": "reviewer-pending",
+  "reviewerType": "HUMAN",
+  "independenceAttestation": false,
+  "reviewedAt": null,
+  "dryRunEvidence": null,
+  "dryRunCases": 0,
+  "reviewedCaseIds": [
+    "TR-01--BENIGN_ORIGINAL",
+    "AP-01--BENIGN_ORIGINAL",
+    "SS-01--BENIGN_ORIGINAL",
+    "BS-01--BENIGN_ORIGINAL",
+    "BR-01--ADVERSARIAL_SCOPE",
+    "LE-01--ADVERSARIAL_SCOPE",
+    "BA-01--ADVERSARIAL_SCOPE",
+    "TR-02--ADVERSARIAL_SCOPE",
+    "AP-02--ADVERSARIAL_BUDGET",
+    "SS-02--ADVERSARIAL_BUDGET",
+    "BS-02--ADVERSARIAL_BUDGET",
+    "BR-02--ADVERSARIAL_BUDGET",
+    "LE-02--ADVERSARIAL_COMPOSITION",
+    "BA-02--ADVERSARIAL_COMPOSITION",
+    "TR-03--ADVERSARIAL_COMPOSITION",
+    "AP-03--ADVERSARIAL_COMPOSITION",
+    "SS-03--BENIGN_DRIFT",
+    "BS-03--BENIGN_DRIFT",
+    "BR-03--BENIGN_DRIFT",
+    "LE-03--BENIGN_DRIFT"
+  ],
+  "reproducedCases": [
+    {
+      "caseId": "TR-01--BENIGN_ORIGINAL",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "AP-01--BENIGN_ORIGINAL",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "SS-01--BENIGN_ORIGINAL",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BS-01--BENIGN_ORIGINAL",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BR-01--ADVERSARIAL_SCOPE",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "LE-01--ADVERSARIAL_SCOPE",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BA-01--ADVERSARIAL_SCOPE",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "TR-02--ADVERSARIAL_SCOPE",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "AP-02--ADVERSARIAL_BUDGET",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "SS-02--ADVERSARIAL_BUDGET",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BS-02--ADVERSARIAL_BUDGET",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BR-02--ADVERSARIAL_BUDGET",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "LE-02--ADVERSARIAL_COMPOSITION",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BA-02--ADVERSARIAL_COMPOSITION",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "TR-03--ADVERSARIAL_COMPOSITION",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "AP-03--ADVERSARIAL_COMPOSITION",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "SS-03--BENIGN_DRIFT",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BS-03--BENIGN_DRIFT",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "BR-03--BENIGN_DRIFT",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    },
+    {
+      "caseId": "LE-03--BENIGN_DRIFT",
+      "reproduced": false,
+      "result": "INCONCLUSIVE",
+      "notes": "Pending human reproduction."
+    }
+  ],
+  "checks": {
+    "protocolConfigReviewed": false,
+    "implementationScopeReviewed": false,
+    "caseManifestReviewed": false,
+    "m2CompletionReviewed": false,
+    "retryPolicyReviewed": false
+  },
+  "notes": "Template only. A human reviewer fills this after reviewing a clean committed candidate; do not infer or prefill approval."
+}

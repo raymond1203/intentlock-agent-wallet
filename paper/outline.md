@@ -139,11 +139,11 @@
 
 ### 7.5 지표와 통계
 
-- 주 지표: Unsafe Execution Rate
+- 주 offline 지표: counterfactual unsafe-authorization rate (실제 UER과 분리)
 - 효용: Benign Task Completion
 - 위해 규모: unauthorized value, excess allowance exposure
-- 탐지: pre-sign detection, detection step
-- 사용성: false deny, escalation, confirmation burden
+- 탐지: pre-sign detection, first-detection ordinal (`0`, `1..N`, `N+1`, `null`)
+- 사용성: false deny, escalation, episode당 실제 confirmation request `0/1`
 - 비용: latency, token cost
 - compiler: critical-field precision/recall
 - exact fork/post-state oracle를 주 평가자로 사용하고 LLM judge는 정성 분석에만 사용

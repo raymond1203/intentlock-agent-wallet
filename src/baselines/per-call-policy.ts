@@ -23,30 +23,48 @@ export function evaluatePerCallPolicy(
   scenario: BenchmarkScenario,
   evaluatedAt = '2026-08-30T00:00:00Z',
 ): BaselineVerdict {
+  const orderedActions = [...scenario.trace.actions].sort(
+    (left, right) => left.executionIndex - right.executionIndex,
+  );
   if (
     scenario.mutation?.validity === 'INVALID_CALLDATA' ||
     scenario.trace.expectedEffects.some((effect) => effect.kind === 'UNKNOWN')
   ) {
+    const unknownExecutionIndex = scenario.trace.expectedEffects.find(
+      (effect) => effect.kind === 'UNKNOWN',
+    )?.provenance.callPath[0];
+    const detectedIndex = orderedActions.findIndex(
+      (action) => action.executionIndex === unknownExecutionIndex,
+    );
+    const firstDetectionActionOrdinal = detectedIndex >= 0 ? detectedIndex + 1 : 1;
     return {
       baseline: 'PER_CALL_POLICY',
       decision: 'ABSTAIN',
       rationale: 'At least one isolated call could not be completely interpreted.',
       reasonCodes: ['UNKNOWN_EFFECT'],
-      checkedUnits: scenario.trace.actions.length,
+      checkedUnits: orderedActions.length,
       attempts: 1,
+      firstDetectionActionOrdinal,
     };
   }
   const reasonCodes: string[] = [];
   let sawAbstention = false;
   let sawDenial = false;
+  let firstDetectionActionOrdinal: number | undefined;
 
-  for (const action of scenario.trace.actions) {
+  const markDetection = (ordinal: number): void => {
+    firstDetectionActionOrdinal ??= ordinal;
+  };
+
+  for (const [index, action] of orderedActions.entries()) {
+    const ordinal = index + 1;
     const scope = scenario.intent.safety.chainScopes.find(
       (candidate) => candidate.chainId === action.chainId,
     );
     if (!scope) {
       sawDenial = true;
       reasonCodes.push('CHAIN_OUT_OF_SCOPE');
+      markDetection(ordinal);
       continue;
     }
     const permission = scope.allowedTargets.find(
@@ -55,6 +73,7 @@ export function evaluatePerCallPolicy(
     if (!permission) {
       sawDenial = true;
       reasonCodes.push('TARGET_NOT_ALLOWED');
+      markDetection(ordinal);
       continue;
     }
     if (
@@ -62,6 +81,7 @@ export function evaluatePerCallPolicy(
     ) {
       sawDenial = true;
       reasonCodes.push('SELECTOR_NOT_ALLOWED');
+      markDetection(ordinal);
       continue;
     }
 
@@ -72,6 +92,7 @@ export function evaluatePerCallPolicy(
     if (valueWei > 0n && (!nativeBudget || valueWei > BigInt(nativeBudget.maxGrossOutflow))) {
       sawDenial = true;
       reasonCodes.push('VALUE_CEILING_EXCEEDED');
+      markDetection(ordinal);
       continue;
     }
 
@@ -79,6 +100,7 @@ export function evaluatePerCallPolicy(
     if (effects.length === 0) {
       sawAbstention = true;
       reasonCodes.push('MISSING_ACTION_EFFECTS');
+      markDetection(ordinal);
       continue;
     }
     const result = evaluateIntent({
@@ -94,10 +116,12 @@ export function evaluatePerCallPolicy(
     if (result.kind === 'DENY') {
       sawDenial = true;
       reasonCodes.push(result.code);
+      markDetection(ordinal);
     }
     if (result.kind === 'ESCALATE') {
       sawAbstention = true;
       reasonCodes.push(result.code);
+      markDetection(ordinal);
     }
   }
 
@@ -109,8 +133,9 @@ export function evaluatePerCallPolicy(
       rationale:
         'At least one isolated call violates its local target, selector, value, or effect rule.',
       reasonCodes: uniqueCodes,
-      checkedUnits: scenario.trace.actions.length,
+      checkedUnits: orderedActions.length,
       attempts: 1,
+      ...(firstDetectionActionOrdinal === undefined ? {} : { firstDetectionActionOrdinal }),
     };
   }
   if (sawAbstention) {
@@ -119,8 +144,9 @@ export function evaluatePerCallPolicy(
       decision: 'ABSTAIN',
       rationale: 'At least one isolated call could not be completely interpreted.',
       reasonCodes: uniqueCodes,
-      checkedUnits: scenario.trace.actions.length,
+      checkedUnits: orderedActions.length,
       attempts: 1,
+      ...(firstDetectionActionOrdinal === undefined ? {} : { firstDetectionActionOrdinal }),
     };
   }
   return {
@@ -129,7 +155,7 @@ export function evaluatePerCallPolicy(
     rationale:
       'Every call independently satisfies its local policy; cumulative state was not checked.',
     reasonCodes: [],
-    checkedUnits: scenario.trace.actions.length,
+    checkedUnits: orderedActions.length,
     attempts: 1,
   };
 }

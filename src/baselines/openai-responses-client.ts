@@ -5,6 +5,20 @@ import type { LlmClient, LlmRequest } from './llm-verifier.js';
 const OpenAiResponseSchema = z
   .object({
     status: z.string().optional(),
+    usage: z
+      .object({
+        input_tokens: z.number().int().nonnegative(),
+        input_tokens_details: z
+          .object({
+            cached_tokens: z.number().int().nonnegative().optional(),
+          })
+          .loose()
+          .optional(),
+        output_tokens: z.number().int().nonnegative(),
+        total_tokens: z.number().int().nonnegative(),
+      })
+      .loose()
+      .optional(),
     output: z.array(
       z
         .object({
@@ -30,10 +44,23 @@ type FetchLike = (
   init?: globalThis.RequestInit,
 ) => Promise<globalThis.Response>;
 
+export interface OpenAiTokenUsage {
+  inputTokens: number;
+  cachedInputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+}
+
 export class OpenAiResponsesClient implements LlmClient {
   readonly #apiKey: string;
   readonly #endpoint: string;
   readonly #fetch: FetchLike;
+  #usage: OpenAiTokenUsage = {
+    inputTokens: 0,
+    cachedInputTokens: 0,
+    outputTokens: 0,
+    totalTokens: 0,
+  };
 
   constructor(apiKey: string, options: { endpoint?: string; fetch?: FetchLike } = {}) {
     if (!apiKey.trim()) throw new Error('OPENAI_API_KEY is empty');
@@ -79,6 +106,17 @@ export class OpenAiResponsesClient implements LlmClient {
       .flatMap((item) => item.content ?? [])
       .flatMap((content) => (content.type === 'output_text' && content.text ? [content.text] : []));
     if (outputText.length === 0) throw new Error('OpenAI response contained no output_text');
+    if (parsed.usage) {
+      this.#usage.inputTokens += parsed.usage.input_tokens;
+      this.#usage.cachedInputTokens += parsed.usage.input_tokens_details?.cached_tokens ?? 0;
+      this.#usage.outputTokens += parsed.usage.output_tokens;
+      this.#usage.totalTokens += parsed.usage.total_tokens;
+    }
     return outputText.join('');
+  }
+
+  /** Aggregated over retries made through this client instance. */
+  usage(): OpenAiTokenUsage {
+    return { ...this.#usage };
   }
 }

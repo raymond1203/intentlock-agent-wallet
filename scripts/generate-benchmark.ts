@@ -19,14 +19,19 @@ import {
   BenchmarkDatasetSchema,
   BenchmarkScenarioSchema,
   type BenchmarkScenario,
+  type PinnedQuoteReference,
+  type StateDeltaExpectation,
 } from '../src/benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import type { EconomicEffect } from '../src/domain/action-ir.js';
 import type { IntentContract } from '../src/domain/intent-contract.js';
+import { required } from '../src/domain/required.js';
 import { decodeBatchCalldata, ERC7821_ABI } from '../src/effects/batch-decoder.js';
 import { ERC20_ABI } from '../src/effects/erc20-decoder.js';
 import { PERMIT2_ABI } from '../src/effects/permit2-decoder.js';
 import { SWAP_ROUTER_02_ABI } from '../src/effects/swap-decoder.js';
 import { buildExtendedScenarios, fixtureReference } from './extended-benchmark.js';
+import { pinnedQuote } from './benchmark-quotes.js';
 
 const ACCOUNT: Address = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const RECIPIENT: Address = '0x2222222222222222222222222222222222222222';
@@ -51,6 +56,7 @@ interface ActionDraft {
   data: Hex;
   caller?: Address;
   valueWei?: bigint;
+  quoteReferences?: PinnedQuoteReference[];
 }
 
 interface ScenarioDraft {
@@ -61,7 +67,6 @@ interface ScenarioDraft {
   ambiguity: BenchmarkScenario['naturalLanguage']['ambiguity'];
   criticalFields: BenchmarkScenario['naturalLanguage']['criticalFieldsPresent'];
   actions: ActionDraft[];
-  quotedAmountOut?: string;
   goalRecipient?: Address;
   sourceDirectory: 'transfer' | 'swap';
 }
@@ -130,11 +135,20 @@ function exactInputSingle(
   });
 }
 
-function v3Path(...tokens: readonly Address[]): Hex {
+function v3PathWithFees(tokens: readonly Address[], fees: readonly number[]): Hex {
   if (tokens.length < 2) throw new Error('a v3 path requires at least two tokens');
+  if (fees.length !== tokens.length - 1) throw new Error('every v3 hop requires one fee');
   let result = tokens[0]?.slice(2) ?? '';
-  for (const token of tokens.slice(1)) result += `0001f4${token.slice(2)}`;
+  for (const [index, token] of tokens.slice(1).entries())
+    result += `${(fees[index] ?? 0).toString(16).padStart(6, '0')}${token.slice(2)}`;
   return `0x${result}`;
+}
+
+function v3Path(...tokens: readonly Address[]): Hex {
+  return v3PathWithFees(
+    tokens,
+    tokens.slice(1).map(() => 500),
+  );
 }
 
 function exactInput(
@@ -191,7 +205,9 @@ function decodeActions(draft: ScenarioDraft): EconomicEffect[] {
       },
       {
         contracts: registry,
-        ...(draft.quotedAmountOut ? { quotedAmountOut: draft.quotedAmountOut } : {}),
+        ...(action.quoteReferences?.length === 1
+          ? { quotedAmountOut: required(action.quoteReferences[0]).quotedAmountOut }
+          : {}),
       },
     );
     if (result.status !== 'COMPLETE') {
@@ -253,11 +269,11 @@ function intentFor(draft: ScenarioDraft, effects: readonly EconomicEffect[]): In
   const finalStateGoals: IntentContract['finalStateGoals'] = swap
     ? [
         {
-          kind: 'MIN_ASSET_BALANCE',
+          kind: 'MIN_ASSET_BALANCE_DELTA',
           chainId: 1,
           asset: WETH,
           account: swap.recipient,
-          minAmount: swap.minAmountOut,
+          minIncrease: swap.minAmountOut,
         },
       ]
     : approval && approval.amount === '0'
@@ -272,14 +288,14 @@ function intentFor(draft: ScenarioDraft, effects: readonly EconomicEffect[]): In
         ]
       : [
           {
-            kind: 'MIN_ASSET_BALANCE',
+            kind: 'MIN_ASSET_BALANCE_DELTA',
             chainId: 1,
             asset: USDC,
             account:
               transferEffect && transferEffect.kind === 'TRANSFER'
                 ? transferEffect.to
                 : (draft.goalRecipient ?? ACCOUNT),
-            minAmount:
+            minIncrease:
               transferEffect && transferEffect.kind === 'TRANSFER' ? transferEffect.amount : '0',
           },
         ];
@@ -328,15 +344,26 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
     0n,
   );
   const postState: BenchmarkScenario['oracle']['postState'] = [];
+  const expectedDeltas: StateDeltaExpectation[] = [];
   const swap = effects.find((effect) => effect.kind === 'SWAP');
   if (swap) {
+    const delivered = swap.quotedAmountOut ?? swap.minAmountOut;
+    expectedDeltas.push({
+      chainId: swap.chainId,
+      subject: swap.recipient,
+      field: 'BALANCE',
+      asset: swap.assetOut,
+      comparison: 'AT_LEAST',
+      delta: swap.minAmountOut,
+      rationale: 'Pinned QuoterV2 output must satisfy the authored 100bps minimum.',
+    });
     postState.push({
       chainId: swap.chainId,
       subject: swap.recipient,
       field: 'BALANCE',
       asset: swap.assetOut,
-      value: swap.quotedAmountOut ?? swap.minAmountOut,
-      source: 'POST_STATE',
+      value: delivered,
+      source: 'EXPECTED_FIXTURE',
     });
   } else {
     const outgoing = effects.filter(
@@ -352,18 +379,51 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
         (sum, effect) => sum + (effect.kind === 'TRANSFER' ? BigInt(effect.amount) : 0n),
         0n,
       );
+      expectedDeltas.push({
+        chainId: first.chainId,
+        subject: first.to,
+        field: 'BALANCE',
+        asset: first.asset,
+        comparison: 'EXACT',
+        delta: amount.toString(),
+        rationale: 'The authorized recipient must receive exactly the requested transfer total.',
+      });
       postState.push({
         chainId: first.chainId,
         subject: first.to,
         field: 'BALANCE',
         asset: first.asset,
         value: amount.toString(),
-        source: 'POST_STATE',
+        source: 'EXPECTED_FIXTURE',
+      });
+    } else {
+      expectedDeltas.push({
+        chainId: 1,
+        subject: ACCOUNT,
+        field: 'BALANCE',
+        asset: USDC,
+        comparison: 'EXACT',
+        delta: '0',
+        rationale: 'A pure approval operation must not transfer the approved asset.',
+      });
+      postState.push({
+        chainId: 1,
+        subject: ACCOUNT,
+        field: 'BALANCE',
+        asset: USDC,
+        value: '1000000000',
+        source: 'EXPECTED_FIXTURE',
       });
     }
   }
   const lastApproval = [...effects].reverse().find((effect) => effect.kind === 'APPROVAL');
-  if (lastApproval) {
+  const signatureTransfer = effects.some(
+    (effect) =>
+      effect.kind === 'APPROVAL' &&
+      effect.signatureDeadline !== undefined &&
+      effect.expiration === undefined,
+  );
+  if (lastApproval && !signatureTransfer) {
     postState.push({
       chainId: lastApproval.chainId,
       subject: lastApproval.owner,
@@ -371,7 +431,7 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
       asset: lastApproval.asset,
       counterparty: lastApproval.spender,
       value: lastApproval.amount,
-      source: 'POST_STATE',
+      source: 'EXPECTED_FIXTURE',
     });
   }
   if (postState.length === 0) throw new Error(`${draft.id} has no expected post-state`);
@@ -384,7 +444,12 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
     class: 'BASE',
     split: splitFor(localIndex),
     provenance: { kind: 'CURATED', sources: SOURCE_URLS },
-    fixture: fixtureReference([1]),
+    fixture: {
+      ...fixtureReference([1]),
+      ...(draft.actions.flatMap((action) => action.quoteReferences ?? []).length > 0
+        ? { quoteReferences: draft.actions.flatMap((action) => action.quoteReferences ?? []) }
+        : {}),
+    },
     naturalLanguage: {
       text: draft.text,
       ambiguity: draft.ambiguity,
@@ -405,6 +470,7 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
       expectedEffects: effects,
     },
     oracle: {
+      referenceMode: 'DELTA',
       expectedDecision: 'ALLOW',
       labels: ['BENIGN'],
       violationAmount: '0',
@@ -420,6 +486,7 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
         },
       ],
       postState,
+      expectedDeltas,
       evidence:
         'ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results.',
     },
@@ -516,7 +583,6 @@ function approvalDrafts(): ScenarioDraft[] {
     else if ([3, 7].includes(index)) {
       action = {
         target: PERMIT2,
-        caller: ROUTER,
         data: permitTransfer(amount, index === 3 ? 800_000n : 450_000n, BigInt(index)),
       };
     } else action = { target: USDC, data: approve(amount) };
@@ -570,9 +636,9 @@ function singleSwapDrafts(): ScenarioDraft[] {
         1_300_000n,
         2_200_000n,
       ][index] ?? 1_000_000n;
-    const quote =
-      [1000n, 2100n, 730n, 3300n, 1900n, 1800n, 950n, 4200n, 1400n, 2300n][index] ?? 1000n;
-    const minimum = (quote * 99n + 99n) / 100n;
+    const fee = index === 1 ? 500 : 3000;
+    const quote = pinnedQuote(1, v3PathWithFees([USDC, WETH], [fee]), amount);
+    const minimum = BigInt(quote.minAmountOut);
     const recipient = index === 2 ? ACCOUNT : RECIPIENT;
     return {
       id: `SS-${String(index + 1).padStart(2, '0')}`,
@@ -594,10 +660,10 @@ function singleSwapDrafts(): ScenarioDraft[] {
       actions: [
         {
           target: ROUTER,
-          data: exactInputSingle(amount, minimum, recipient, index === 1 ? 500 : 3000),
+          data: exactInputSingle(amount, minimum, recipient, fee),
+          quoteReferences: [quote],
         },
       ],
-      quotedAmountOut: quote.toString(),
       goalRecipient: recipient,
       sourceDirectory: 'swap',
     } satisfies ScenarioDraft;
@@ -631,11 +697,12 @@ function batchSwapDrafts(): ScenarioDraft[] {
         1_100_000n,
         1_900_000n,
       ][index] ?? 1_000_000n;
-    const quote =
-      [1000n, 1600n, 2150n, 850n, 1300n, 2500n, 980n, 1800n, 1200n, 2000n][index] ?? 1000n;
-    const minimum = (quote * 99n + 99n) / 100n;
+    const multiHop = [1, 2, 5, 8].includes(index);
+    const path = multiHop ? v3Path(USDC, USDT, WETH) : v3Path(USDC, WETH);
+    const quote = pinnedQuote(1, path, amount);
+    const minimum = BigInt(quote.minAmountOut);
     const recipient = index === 3 ? ACCOUNT : RECIPIENT;
-    const swapData = exactInput(amount, minimum, recipient, [1, 2, 5, 8].includes(index));
+    const swapData = exactInput(amount, minimum, recipient, multiHop);
     const calls: ActionDraft[] = [
       { target: USDC, data: approve(amount) },
       { target: ROUTER, data: swapData },
@@ -660,8 +727,7 @@ function batchSwapDrafts(): ScenarioDraft[] {
         'deadline',
         'finalGoal',
       ],
-      actions: [{ target: ACCOUNT, data: execute(calls) }],
-      quotedAmountOut: quote.toString(),
+      actions: [{ target: ACCOUNT, data: execute(calls), quoteReferences: [quote] }],
       goalRecipient: recipient,
       sourceDirectory: 'swap',
     } satisfies ScenarioDraft;
@@ -786,7 +852,7 @@ function mutation(operator: MutationOperatorId): BenchmarkScenario {
 
 const golden = BenchmarkDatasetSchema.parse({
   schemaVersion: '0.1',
-  datasetVersion: '0.2.0',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   scenarios: [
     scenario('TR-01'),
     scenario('AP-01'),
@@ -856,6 +922,7 @@ const mutationReviewCases = [...mutations, ...extraReviewMutations].slice(0, 20)
 
 const schemaReviewPacket = {
   protocolVersion: '0.1',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   status: 'PENDING_INDEPENDENT_REVIEW',
   instructions:
     'Without opening source scenarios, assign expected decision, every applicable label, and mutation validity. Record answers separately.',
@@ -866,6 +933,7 @@ const schemaReviewPacket = {
 };
 const contractReviewPacket = {
   protocolVersion: '0.1',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   status: 'PENDING_INDEPENDENT_REVIEW',
   instructions:
     'Compare natural language with the canonical Intent Contract and trace. Record alignment, missing or widened fields, and notes separately.',
@@ -876,6 +944,7 @@ const contractReviewPacket = {
 };
 const mutationReviewPacket = {
   protocolVersion: '0.1',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   status: 'PENDING_INDEPENDENT_REVIEW',
   instructions:
     'Compare base and candidate, then record operator category, semantic validity, expected decision, and notes separately.',
@@ -888,6 +957,7 @@ const mutationReviewPacket = {
 
 const terminalReviewPacket = {
   protocolVersion: '0.2',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   status: 'PENDING_INDEPENDENT_REVIEW',
   instructions:
     'Open only after recording pre-sign judgments for mutation-validity-20.json. Evaluate final-state evidence separately. These are expected fixtures, not executed observations; no author decision or cause label is provided.',
@@ -934,7 +1004,7 @@ for (const scenario of scenarios) {
 const assignments = Object.fromEntries(scenarios.map((scenario) => [scenario.id, scenario.split]));
 const splitManifest = {
   schemaVersion: '0.1',
-  datasetVersion: '0.2.0',
+  datasetVersion: BENCHMARK_DATASET_VERSION,
   strategy: 'grouped-stratified-60-20-20',
   salt: 'intentlock-m2-v0-2026',
   assignments,
@@ -955,6 +1025,12 @@ const splitManifest = {
       version: '0.2.0',
       reason:
         'Blinding correction and stage separation; exposed holdouts are not claimed secret; independent re-freeze pending',
+      pullRequest: '#46',
+    },
+    {
+      version: BENCHMARK_DATASET_VERSION,
+      reason:
+        'Pinned QuoterV2 references, delta-based completion semantics, Permit2 corrections, and lending prefix-funding/interest policy',
       pullRequest: '#46',
     },
   ],

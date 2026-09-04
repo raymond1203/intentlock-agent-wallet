@@ -110,8 +110,8 @@ async function withTimeout<T>(
       operation(controller.signal),
       new Promise<never>((_resolve, reject) => {
         timer = setTimeout(() => {
-          controller.abort();
           reject(new Error(`LLM verifier timed out after ${String(timeoutMs)} ms`));
+          controller.abort();
         }, timeoutMs);
       }),
     ]);

@@ -7,6 +7,7 @@ import {
   type Hex,
 } from 'viem';
 import { SWAP_ROUTER_02_ABI } from '../../src/effects/swap-decoder.js';
+import type { PinnedQuoteReference } from '../../src/benchmark/scenario.js';
 import { fixtureAddress } from '../extended-benchmark.js';
 import type { ForkRuntime } from './runtime.js';
 
@@ -19,6 +20,54 @@ const ABI = parseAbi([
   'function quoteExactInput(bytes path,uint256 amountIn) returns (uint256 amountOut,uint160[] sqrtPriceX96AfterList,uint32[] initializedTicksCrossedList,uint256 gasEstimate)',
   'function getPool(address tokenA,address tokenB,uint24 fee) view returns (address)',
 ]);
+
+export interface ObservedPinnedQuote {
+  chainId: number;
+  blockNumber: string;
+  blockHash: string;
+  quoter: { address: string; codehash: string };
+  pools: { address: string; codehash: string; fee: number }[];
+  path: string;
+  amountIn: string;
+  authoredMinimum: string;
+  quotedAmountOut: string;
+}
+
+export function assertPinnedQuote(
+  observed: ObservedPinnedQuote,
+  references: readonly PinnedQuoteReference[],
+): PinnedQuoteReference {
+  const reference = references.find(
+    (candidate) =>
+      candidate.chainId === observed.chainId &&
+      candidate.path.toLowerCase() === observed.path.toLowerCase() &&
+      candidate.amountIn === observed.amountIn,
+  );
+  if (!reference) throw new Error('swap is missing its authored pinned quote reference');
+  const samePools =
+    reference.pools.length === observed.pools.length &&
+    reference.pools.every((pool, index) => {
+      const actual = observed.pools[index];
+      return (
+        actual !== undefined &&
+        pool.address.toLowerCase() === actual.address.toLowerCase() &&
+        pool.codehash.toLowerCase() === actual.codehash.toLowerCase() &&
+        pool.fee === actual.fee
+      );
+    });
+  if (
+    reference.blockNumber.toString() !== observed.blockNumber ||
+    reference.blockHash.toLowerCase() !== observed.blockHash.toLowerCase() ||
+    reference.quoter.address.toLowerCase() !== observed.quoter.address.toLowerCase() ||
+    reference.quoter.codehash.toLowerCase() !== observed.quoter.codehash.toLowerCase() ||
+    reference.quotedAmountOut !== observed.quotedAmountOut ||
+    reference.minAmountOut !== observed.authoredMinimum ||
+    !samePools
+  )
+    throw new Error('runtime QuoterV2 observation disagrees with the authored pinned quote');
+  return reference;
+}
+
 export async function readPinnedQuote(runtime: ForkRuntime, data: Hex) {
   const chainId = runtime.fork.config.chainId;
   const address = QUOTER[chainId];

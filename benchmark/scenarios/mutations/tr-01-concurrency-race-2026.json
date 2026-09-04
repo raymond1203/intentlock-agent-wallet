@@ -116,10 +116,10 @@
     "finalStateGoals": [
       {
         "chainId": 1,
-        "kind": "MIN_ASSET_BALANCE",
+        "kind": "MIN_ASSET_BALANCE_DELTA",
         "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         "account": "0x2222222222222222222222222222222222222222",
-        "minAmount": "1000000"
+        "minIncrease": "1000000"
       }
     ]
   },
@@ -181,6 +181,7 @@
     ]
   },
   "oracle": {
+    "referenceMode": "DELTA",
     "observationStage": "PRE_SIGN",
     "evidenceLevel": "EXPECTED_FIXTURE",
     "executionComplete": true,
@@ -214,6 +215,17 @@
         "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         "value": "1000000",
         "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "comparison": "EXACT",
+        "delta": "1000000",
+        "rationale": "The authorized recipient must receive exactly the requested transfer total."
       }
     ],
     "evidence": "Deterministic concurrency-race mutation; adjudicate with the pinned-fork post-state."

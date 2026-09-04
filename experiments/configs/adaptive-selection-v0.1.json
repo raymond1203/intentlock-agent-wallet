@@ -1,0 +1,294 @@
+{
+  "schemaVersion": "0.1",
+  "protocolVersion": "0.1",
+  "datasetVersion": "0.3.0",
+  "rootSeed": 2026,
+  "evaluatedAt": "2026-09-04T00:00:00.000Z",
+  "maxReplans": 3,
+  "executionEnvironment": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_FAKE_EXECUTOR",
+  "claimScope": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY",
+  "attackerMode": "DETERMINISTIC_SCRIPTED_NO_MODEL",
+  "postStateObservation": "NOT_OBSERVED",
+  "observationBoundary": [
+    "PUBLIC_GUARD_DECISION_AND_REASON_CODE",
+    "PUBLIC_GUARD_REASON",
+    "ORDINARY_REDACTED_TOOL_RESULT"
+  ],
+  "families": [
+    {
+      "family": "ASSET_AUTHORIZATION",
+      "workflows": ["TRANSFER", "APPROVAL_PERMIT2"],
+      "chainBalance": "Four transfer and four approval/Permit2 cases; the frozen dataset exposes only Ethereum cases for this family.",
+      "episodes": [
+        {
+          "baseScenarioId": "TR-01",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026001,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "TR-02",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026002,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "TR-03",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026003,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "TR-04",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026004,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "AP-01",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026005,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "AP-02",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026006,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "AP-03",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026007,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "AP-04",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026008,
+          "humanReview": false
+        }
+      ]
+    },
+    {
+      "family": "ROUTED_SWAP",
+      "workflows": ["SWAP_SINGLE", "SWAP_BATCH"],
+      "chainBalance": "Four single-route and four batch-route cases; the frozen dataset exposes only Ethereum cases for this family.",
+      "episodes": [
+        {
+          "baseScenarioId": "SS-01",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026009,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "SS-02",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026010,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "SS-03",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026011,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "SS-04",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026012,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BS-01",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026013,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "BS-02",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026014,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BS-03",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026015,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BS-04",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026016,
+          "humanReview": false
+        }
+      ]
+    },
+    {
+      "family": "CROSS_CHAIN",
+      "workflows": ["BRIDGE_SWAP"],
+      "chainBalance": "Every selected bridge episode contains both Ethereum source and Base destination actions.",
+      "episodes": [
+        {
+          "baseScenarioId": "BR-01",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026017,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "BR-02",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026018,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BR-03",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026019,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BR-04",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026020,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BR-05",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026021,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "BR-06",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026022,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BR-07",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026023,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BR-08",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026024,
+          "humanReview": false
+        }
+      ]
+    },
+    {
+      "family": "LENDING",
+      "workflows": ["LENDING"],
+      "chainBalance": "Four Ethereum cases (LE-01..04) and four Base cases (LE-08..11).",
+      "episodes": [
+        {
+          "baseScenarioId": "LE-01",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026025,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "LE-02",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026026,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "LE-03",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026027,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "LE-04",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026028,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "LE-08",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026029,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "LE-09",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026030,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "LE-10",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026031,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "LE-11",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026032,
+          "humanReview": false
+        }
+      ]
+    },
+    {
+      "family": "BATCH_RECOVERY",
+      "workflows": ["BATCH_RECOVERY"],
+      "chainBalance": "Four Ethereum-only cases and four cases containing Base actions, including two Base-only cases.",
+      "episodes": [
+        {
+          "baseScenarioId": "BA-01",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026033,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "BA-02",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026034,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BA-03",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026035,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BA-04",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026036,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BA-06",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026037,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BA-07",
+          "attackType": "TOOL_OUTPUT_POISONING",
+          "seed": 2026038,
+          "humanReview": true
+        },
+        {
+          "baseScenarioId": "BA-08",
+          "attackType": "MEMORY_POISONING",
+          "seed": 2026039,
+          "humanReview": false
+        },
+        {
+          "baseScenarioId": "BA-09",
+          "attackType": "PLAN_POISONING",
+          "seed": 2026040,
+          "humanReview": false
+        }
+      ]
+    }
+  ]
+}

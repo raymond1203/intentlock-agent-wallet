@@ -53,6 +53,7 @@ describe('complete M2 base inventory', () => {
           preState: s.oracle.preState,
           postState: s.oracle.postState,
           observedEffects: s.trace.expectedEffects,
+          expectedDeltas: s.oracle.expectedDeltas,
           evidenceLevel: 'EXPECTED_FIXTURE',
           executionComplete: true,
         }).status,

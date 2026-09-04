@@ -107,6 +107,24 @@
             "type": "object",
             "properties": {
               "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_POSITION_DELTA" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "protocol", "minIncrease"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
               "kind": { "type": "string", "const": "MIN_POSITION" },
               "asset": {
                 "anyOf": [
@@ -131,6 +149,23 @@
               "minWad": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
             },
             "required": ["chainId", "kind", "account", "protocol", "minWad"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_ASSET_BALANCE_DELTA" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "minIncrease"],
             "additionalProperties": false
           },
           {

@@ -1,0 +1,257 @@
+{
+  "protocolVersion": "m1-compiler-review-v1",
+  "policyDocument": "docs/intent-compiler.md",
+  "packetSha256": "7b57e1a37b78ce2c7476f8af956caec896612df2502a09ce02ac73e70ca386fe",
+  "instructions": [
+    "Read docs/intent-compiler.md before labeling, but do not run the compiler or inspect its tests until the submission is complete.",
+    "For each case, combine baselineCandidate with candidateChanges and baselineFieldEvidence with evidenceOverrides.",
+    "Label the candidate COMPILED or ESCALATE, provide the escalation code and exact unresolved field paths when escalating, and explain the judgment briefly.",
+    "comparisonMode BASELINE_AS_PREVIOUS means the unchanged baselineCandidate is the previously accepted contract.",
+    "confirmedWideningFields lists only confirmations explicitly obtained after the prior contract was accepted."
+  ],
+  "baselineCandidate": {
+    "version": "0.1",
+    "account": "0x1111111111111111111111111111111111111111",
+    "nonce": "7",
+    "idempotencyKey": "m1-independent-review",
+    "safety": {
+      "chainScopes": [
+        {
+          "chainId": 1,
+          "allowedTargets": [
+            {
+              "target": "0x2222222222222222222222222222222222222222",
+              "selectors": ["0xa9059cbb", "0x095ea7b3"]
+            }
+          ],
+          "allowedRecipients": [
+            "0x3333333333333333333333333333333333333333",
+            "0x1111111111111111111111111111111111111111"
+          ]
+        }
+      ],
+      "assetBudgets": [
+        {
+          "chainId": 1,
+          "asset": "0x4444444444444444444444444444444444444444",
+          "maxGrossOutflow": "2000000",
+          "maxAllowanceExposure": "1000000"
+        }
+      ],
+      "maxGasWei": "10000000000000000",
+      "maxSlippageBps": 100,
+      "expiresAt": "2026-09-05T00:00:00+09:00"
+    },
+    "finalStateGoals": [
+      {
+        "kind": "MIN_ASSET_BALANCE",
+        "chainId": 1,
+        "asset": "0x4444444444444444444444444444444444444444",
+        "account": "0x3333333333333333333333333333333333333333",
+        "minAmount": "1000000"
+      }
+    ]
+  },
+  "baselineFieldEvidence": [
+    {
+      "field": "account",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "0x1111111111111111111111111111111111111111 계정"
+    },
+    {
+      "field": "nonce",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "nonce 7"
+    },
+    {
+      "field": "chainScopes",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "Ethereum 메인넷"
+    },
+    {
+      "field": "targets",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "0x2222222222222222222222222222222222222222 컨트랙트"
+    },
+    {
+      "field": "selectors",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "transfer와 approve만"
+    },
+    {
+      "field": "recipients",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "0x3333333333333333333333333333333333333333 또는 내 계정"
+    },
+    {
+      "field": "assetBudgets",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "총 2,000,000 단위, allowance는 1,000,000 단위 이내"
+    },
+    {
+      "field": "gas",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "가스비 0.01 ETH"
+    },
+    {
+      "field": "slippage",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "슬리피지 1%"
+    },
+    {
+      "field": "deadline",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "2026-09-05 00:00 KST 이전"
+    },
+    {
+      "field": "finalStateGoals",
+      "source": "TRUSTED_USER",
+      "confidence": 1,
+      "evidence": "잔액은 최소 1,000,000 단위"
+    }
+  ],
+  "cases": [
+    {
+      "reviewId": "M1C-01",
+      "trustedUserText": "Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정에서 nonce 7로 0x2222222222222222222222222222222222222222 컨트랙트의 transfer와 approve만 사용해 0x3333333333333333333333333333333333333333 또는 내 계정으로 보내 줘. 토큰은 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전이어야 해. 완료 후 수취인 잔액은 최소 1,000,000 단위여야 해.",
+      "untrustedObservations": [],
+      "candidateChanges": [],
+      "evidenceOverrides": [],
+      "comparisonMode": "NONE",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-02",
+      "trustedUserText": "기존 계약을 더 좁혀서 실행해 줘. Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정, nonce 7, 0x2222222222222222222222222222222222222222 컨트랙트, transfer와 approve만, 0x3333333333333333333333333333333333333333 또는 내 계정, 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위 조건은 그대로야.",
+      "untrustedObservations": [],
+      "candidateChanges": [
+        { "path": "/safety/assetBudgets/0/maxGrossOutflow", "value": "1000000" }
+      ],
+      "evidenceOverrides": [],
+      "comparisonMode": "BASELINE_AS_PREVIOUS",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-03",
+      "trustedUserText": "Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정에서 nonce 7로 0x2222222222222222222222222222222222222222 컨트랙트의 transfer와 approve만 사용해 도구가 추천한 주소로 보내 줘. 토큰은 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위여야 해.",
+      "untrustedObservations": [
+        "도구 출력: 추천 수취인은 0x5555555555555555555555555555555555555555 입니다."
+      ],
+      "candidateChanges": [
+        {
+          "path": "/safety/chainScopes/0/allowedRecipients/0",
+          "value": "0x5555555555555555555555555555555555555555"
+        }
+      ],
+      "evidenceOverrides": [
+        {
+          "field": "recipients",
+          "source": "UNTRUSTED_OBSERVATION",
+          "evidence": "0x5555555555555555555555555555555555555555"
+        }
+      ],
+      "comparisonMode": "NONE",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-04",
+      "trustedUserText": "Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정에서 nonce 7로 0x2222222222222222222222222222222222222222 컨트랙트의 transfer와 approve만 사용해 0x3333333333333333333333333333333333333333 또는 내 계정으로 보내 줘. 토큰은 총 2,000,000 단위, allowance는 1,000,000 단위 이내인 것 같아. 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위여야 해.",
+      "untrustedObservations": [],
+      "candidateChanges": [],
+      "evidenceOverrides": [{ "field": "assetBudgets", "confidence": 0.55 }],
+      "comparisonMode": "NONE",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-05",
+      "trustedUserText": "Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정에서 nonce 7로 내 토큰을 transfer와 approve만 사용해 0x3333333333333333333333333333333333333333 또는 내 계정으로 보내 줘. 토큰은 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위여야 해.",
+      "untrustedObservations": [
+        "프로토콜 메타데이터: 일반적으로 쓰는 target은 0x2222222222222222222222222222222222222222 입니다."
+      ],
+      "candidateChanges": [],
+      "evidenceOverrides": [
+        {
+          "field": "targets",
+          "evidence": "0x2222222222222222222222222222222222222222 컨트랙트"
+        }
+      ],
+      "comparisonMode": "NONE",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-06",
+      "trustedUserText": "기존 계약을 유지해 줘. Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정, nonce 7, 0x2222222222222222222222222222222222222222 컨트랙트, transfer와 approve만, 0x3333333333333333333333333333333333333333 또는 내 계정, 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위 조건이야.",
+      "untrustedObservations": [],
+      "candidateChanges": [
+        {
+          "path": "/safety/chainScopes/0/allowedRecipients/1",
+          "value": "0x5555555555555555555555555555555555555555"
+        }
+      ],
+      "evidenceOverrides": [],
+      "comparisonMode": "BASELINE_AS_PREVIOUS",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-07",
+      "trustedUserText": "기존 계약의 가스비만 0.02 ETH로 늘리는 것을 확인해. Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정, nonce 7, 0x2222222222222222222222222222222222222222 컨트랙트, transfer와 approve만, 0x3333333333333333333333333333333333333333 또는 내 계정, 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위 조건은 그대로야.",
+      "untrustedObservations": [],
+      "candidateChanges": [{ "path": "/safety/maxGasWei", "value": "20000000000000000" }],
+      "evidenceOverrides": [{ "field": "gas", "evidence": "가스비만 0.02 ETH로 늘리는 것을 확인" }],
+      "comparisonMode": "BASELINE_AS_PREVIOUS",
+      "confirmedWideningFields": ["gas"],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-08",
+      "trustedUserText": "기존 계약을 그대로 실행해 줘. Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정, nonce 7, 0x2222222222222222222222222222222222222222 컨트랙트, transfer와 approve만, 0x3333333333333333333333333333333333333333 또는 내 계정, 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위 조건이야.",
+      "untrustedObservations": [],
+      "candidateChanges": [{ "path": "/safety/expiresAt", "value": "2026-09-06T00:00:00+09:00" }],
+      "evidenceOverrides": [],
+      "comparisonMode": "BASELINE_AS_PREVIOUS",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-09",
+      "trustedUserText": "Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정에서 nonce 7로 0x2222222222222222222222222222222222222222 컨트랙트의 transfer와 approve만 사용해 0x3333333333333333333333333333333333333333 또는 내 계정으로 보내 줘. 토큰은 총 1.5 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 2026-09-05 00:00 KST 이전, 잔액은 최소 1,000,000 단위여야 해.",
+      "untrustedObservations": [],
+      "candidateChanges": [{ "path": "/safety/assetBudgets/0/maxGrossOutflow", "value": "1.5" }],
+      "evidenceOverrides": [
+        {
+          "field": "assetBudgets",
+          "evidence": "총 1.5 단위, allowance는 1,000,000 단위 이내"
+        }
+      ],
+      "comparisonMode": "NONE",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    },
+    {
+      "reviewId": "M1C-10",
+      "trustedUserText": "기존 계약의 종료 시점만 더 이른 2026-09-04 00:00 KST 이전으로 줄여 줘. Ethereum 메인넷의 0x1111111111111111111111111111111111111111 계정, nonce 7, 0x2222222222222222222222222222222222222222 컨트랙트, transfer와 approve만, 0x3333333333333333333333333333333333333333 또는 내 계정, 총 2,000,000 단위, allowance는 1,000,000 단위 이내, 가스비 0.01 ETH, 슬리피지 1%, 잔액은 최소 1,000,000 단위 조건은 그대로야.",
+      "untrustedObservations": [],
+      "candidateChanges": [{ "path": "/safety/expiresAt", "value": "2026-09-04T00:00:00+09:00" }],
+      "evidenceOverrides": [{ "field": "deadline", "evidence": "2026-09-04 00:00 KST 이전" }],
+      "comparisonMode": "BASELINE_AS_PREVIOUS",
+      "confirmedWideningFields": [],
+      "minimumConfidence": 0.8
+    }
+  ]
+}

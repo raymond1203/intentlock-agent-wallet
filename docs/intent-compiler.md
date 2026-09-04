@@ -37,6 +37,9 @@ widening이며 해당 필드의 명시적 확인 없이는 `WIDENING_REQUIRES_CO
   정답 field 수
 - false widening acceptance = 확인 없는 widening을 `COMPILED`한 수
 
-Reviewer는 `benchmark/scenarios/compiler-review-template.csv`의 10개 stratified case를 구현자의
-결과를 보지 않고 먼저 라벨링한다. 불일치는 사용자 원문과 이 문서의 widening 규칙으로 합의하고,
-reviewer 이름 대신 GitHub 계정과 PR review 기록으로 남긴다.
+독립 reviewer는 `benchmark/reviews/m1/compiler-labeling.packet.json`의 10개 blind case를 구현
+결과를 보지 않고 먼저 라벨링한다. 실명이나 GitHub 계정 대신 연구용 가명을 사용하고, 완성 전에는
+compiler·테스트·정답 파일을 열지 않는다. 불일치는 사용자 원문과 이 문서의 widening 규칙으로
+합의한다. 패킷 검증, submission 작성과 사후 비교 절차는
+[`m1-independent-validation.md`](./m1-independent-validation.md)에 고정한다. 기존 CSV는 초기 작업용
+초안이며 M1 종료 증거로 사용하지 않는다.

@@ -256,6 +256,7 @@
     ]
   },
   "oracle": {
+    "referenceMode": "DELTA",
     "observationStage": "PRE_SIGN",
     "evidenceLevel": "EXPECTED_FIXTURE",
     "executionComplete": true,
@@ -265,25 +266,17 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "ALLOWANCE",
+        "field": "BALANCE",
         "asset": "0x4200000000000000000000000000000000000006",
-        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "value": "0",
+        "value": "1000000000000000000",
         "source": "EXPECTED_FIXTURE"
       },
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
+        "field": "ALLOWANCE",
         "asset": "0x4200000000000000000000000000000000000006",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
       },
@@ -301,25 +294,17 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "ALLOWANCE",
+        "field": "BALANCE",
         "asset": "0x4200000000000000000000000000000000000006",
-        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
-        "value": "0",
+        "value": "1000000000000000000",
         "source": "EXPECTED_FIXTURE"
       },
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "BALANCE",
+        "field": "ALLOWANCE",
         "asset": "0x4200000000000000000000000000000000000006",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
-        "field": "BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
       },
@@ -331,6 +316,37 @@
         "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "The authored approval sequence and modeled consumption define final allowance."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "POSITION",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "counterparty": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+        "comparison": "AT_LEAST",
+        "delta": "0",
+        "rationale": "Aave position tolerance is one atomic unit per position-changing action on every chain."
       }
     ],
     "evidence": "Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims."

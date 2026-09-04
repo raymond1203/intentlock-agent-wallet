@@ -1,6 +1,6 @@
 # 0008 — M2 integration, observability and evidence gates
 
-- Status: proposed, independent re-freeze pending
+- Status: superseded by 0009 for the data contract; historical integration gates remain informative
 - Date: 2026-09-03
 - Dataset candidate: 0.2.0; supersedes the 40-case v0.1.0 candidate in 0007
 - Related: #20–#26, #46, Billy's #47/#48 and review comments on #46

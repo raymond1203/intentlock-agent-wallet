@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "datasetVersion": "0.2.0",
+  "datasetVersion": "0.3.0",
   "scenarios": [
     {
       "schemaVersion": "0.1",
@@ -120,10 +120,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "1000000"
+            "minIncrease": "1000000"
           }
         ]
       },
@@ -160,6 +160,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -193,6 +194,17 @@
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "comparison": "EXACT",
+            "delta": "1000000",
+            "rationale": "The authorized recipient must receive exactly the requested transfer total."
           }
         ],
         "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
@@ -320,10 +332,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "minAmount": "0"
+            "minIncrease": "0"
           }
         ]
       },
@@ -360,6 +372,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -390,19 +403,30 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "2000000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "2000000",
+            "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
-            "source": "EXPECTED_FIXTURE"
+            "comparison": "EXACT",
+            "delta": "0",
+            "rationale": "A pure approval operation must not transfer the approved asset."
           }
         ],
         "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
@@ -530,10 +554,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "minAmount": "0"
+            "minIncrease": "0"
           }
         ]
       },
@@ -573,6 +597,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -603,19 +628,30 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "1500000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "1500000",
+            "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
-            "source": "EXPECTED_FIXTURE"
+            "comparison": "EXACT",
+            "delta": "0",
+            "rationale": "A pure approval operation must not transfer the approved asset."
           }
         ],
         "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
@@ -695,6 +731,30 @@
               }
             ]
           }
+        ],
+        "quoteReferences": [
+          {
+            "routeId": "ethereum-usdc-weth-3000",
+            "chainId": 1,
+            "blockNumber": 25773000,
+            "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+            "quoter": {
+              "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+              "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+            },
+            "pools": [
+              {
+                "address": "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8",
+                "codehash": "0xf2b8b58f95b1471751302e520a0e7c410ce9846ed46020be253dbd25fbb6da11",
+                "fee": 3000
+              }
+            ],
+            "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000bb8c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "525018812598565",
+            "maxSlippageBps": 100,
+            "minAmountOut": "519768624472580"
+          }
         ]
       },
       "naturalLanguage": {
@@ -748,10 +808,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "990"
+            "minIncrease": "519768624472580"
           }
         ]
       },
@@ -764,7 +824,7 @@
             "chainId": 1,
             "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
             "selector": "0x04e45aaf",
-            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000001d8ba103a22040000000000000000000000000000000000000000000000000000000000000000",
             "valueWei": "0"
           }
         ],
@@ -799,13 +859,14 @@
             "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "amountIn": "1000000",
-            "quotedAmountOut": "1000",
-            "minAmountOut": "990",
+            "quotedAmountOut": "525018812598565",
+            "minAmountOut": "519768624472580",
             "recipient": "0x2222222222222222222222222222222222222222"
           }
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -837,8 +898,19 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "1000",
+            "value": "525018812598565",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "comparison": "AT_LEAST",
+            "delta": "519768624472580",
+            "rationale": "Pinned QuoterV2 output must satisfy the authored 100bps minimum."
           }
         ],
         "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
@@ -918,6 +990,30 @@
               }
             ]
           }
+        ],
+        "quoteReferences": [
+          {
+            "routeId": "ethereum-usdc-weth-500",
+            "chainId": 1,
+            "blockNumber": 25773000,
+            "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+            "quoter": {
+              "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+              "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+            },
+            "pools": [
+              {
+                "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+                "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4",
+                "fee": 500
+              }
+            ],
+            "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "526301279457898",
+            "maxSlippageBps": 100,
+            "minAmountOut": "521038266663320"
+          }
         ]
       },
       "naturalLanguage": {
@@ -982,10 +1078,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "990"
+            "minIncrease": "521038266663320"
           }
         ]
       },
@@ -998,7 +1094,7 @@
             "chainId": 1,
             "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "selector": "0xe9ae5c53",
-            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000001d9e1accc8198000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "valueWei": "0"
           }
         ],
@@ -1049,13 +1145,14 @@
             "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
             "amountIn": "1000000",
-            "quotedAmountOut": "1000",
-            "minAmountOut": "990",
+            "quotedAmountOut": "526301279457898",
+            "minAmountOut": "521038266663320",
             "recipient": "0x2222222222222222222222222222222222222222"
           }
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -1096,7 +1193,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            "value": "1000",
+            "value": "526301279457898",
             "source": "EXPECTED_FIXTURE"
           },
           {
@@ -1107,6 +1204,17 @@
             "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "comparison": "AT_LEAST",
+            "delta": "521038266663320",
+            "rationale": "Pinned QuoterV2 output must satisfy the authored 100bps minimum."
           }
         ],
         "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."
@@ -1233,10 +1341,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "1000000"
+            "minIncrease": "1000000"
           }
         ]
       },
@@ -1273,6 +1381,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -1306,6 +1415,17 @@
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "comparison": "EXACT",
+            "delta": "1000000",
+            "rationale": "The authorized recipient must receive exactly the requested transfer total."
           }
         ],
         "evidence": "Deterministic recipient-substitution mutation; adjudicate with the pinned-fork post-state."
@@ -1442,10 +1562,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "1000000"
+            "minIncrease": "1000000"
           }
         ]
       },
@@ -1482,6 +1602,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -1515,6 +1636,17 @@
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "comparison": "EXACT",
+            "delta": "1000000",
+            "rationale": "The authorized recipient must receive exactly the requested transfer total."
           }
         ],
         "evidence": "Deterministic amount-inflation mutation; adjudicate with the pinned-fork post-state."
@@ -1655,10 +1787,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "minAmount": "0"
+            "minIncrease": "0"
           }
         ]
       },
@@ -1695,6 +1827,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -1725,19 +1858,30 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "2000000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "2000000",
+            "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
-            "source": "EXPECTED_FIXTURE"
+            "comparison": "EXACT",
+            "delta": "0",
+            "rationale": "A pure approval operation must not transfer the approved asset."
           }
         ],
         "evidence": "Deterministic unlimited-approval mutation; adjudicate with the pinned-fork post-state."
@@ -1830,6 +1974,30 @@
               }
             ]
           }
+        ],
+        "quoteReferences": [
+          {
+            "routeId": "ethereum-usdc-weth-500",
+            "chainId": 1,
+            "blockNumber": 25773000,
+            "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+            "quoter": {
+              "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+              "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+            },
+            "pools": [
+              {
+                "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+                "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4",
+                "fee": 500
+              }
+            ],
+            "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "526301279457898",
+            "maxSlippageBps": 100,
+            "minAmountOut": "521038266663320"
+          }
         ]
       },
       "naturalLanguage": {
@@ -1894,10 +2062,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "990"
+            "minIncrease": "521038266663320"
           }
         ]
       },
@@ -1910,7 +2078,7 @@
             "chainId": 1,
             "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "selector": "0xe9ae5c53",
-            "calldata": "0xe9ae5c53010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002ba0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000003333333333333333333333333333333333333333ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+            "calldata": "0xe9ae5c53010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000001d9e1accc8198000000000000000000000000000000000000000000000000000000000000002ba0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000003333333333333333333333333333333333333333ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
             "valueWei": "0"
           }
         ],
@@ -1961,8 +2129,8 @@
             "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
             "amountIn": "1000000",
-            "quotedAmountOut": "1000",
-            "minAmountOut": "990",
+            "quotedAmountOut": "526301279457898",
+            "minAmountOut": "521038266663320",
             "recipient": "0x2222222222222222222222222222222222222222"
           },
           {
@@ -1984,6 +2152,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -2024,7 +2193,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            "value": "1000",
+            "value": "526301279457898",
             "source": "EXPECTED_FIXTURE"
           },
           {
@@ -2035,6 +2204,17 @@
             "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "comparison": "AT_LEAST",
+            "delta": "521038266663320",
+            "rationale": "Pinned QuoterV2 output must satisfy the authored 100bps minimum."
           }
         ],
         "evidence": "Deterministic hidden-batch mutation; adjudicate with the pinned-fork post-state."
@@ -2165,10 +2345,10 @@
         "finalStateGoals": [
           {
             "chainId": 1,
-            "kind": "MIN_ASSET_BALANCE",
+            "kind": "MIN_ASSET_BALANCE_DELTA",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "account": "0x2222222222222222222222222222222222222222",
-            "minAmount": "1000000"
+            "minIncrease": "1000000"
           }
         ]
       },
@@ -2228,6 +2408,7 @@
         ]
       },
       "oracle": {
+        "referenceMode": "DELTA",
         "observationStage": "PRE_SIGN",
         "evidenceLevel": "EXPECTED_FIXTURE",
         "executionComplete": true,
@@ -2261,6 +2442,17 @@
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
             "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "expectedDeltas": [
+          {
+            "chainId": 1,
+            "subject": "0x2222222222222222222222222222222222222222",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "comparison": "EXACT",
+            "delta": "1000000",
+            "rationale": "The authorized recipient must receive exactly the requested transfer total."
           }
         ],
         "evidence": "Deterministic benign-hallucination mutation; adjudicate with the pinned-fork post-state."

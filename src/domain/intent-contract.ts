@@ -10,6 +10,10 @@ export const UnsignedIntegerStringSchema = z
   .string()
   .regex(/^(0|[1-9]\d*)$/, 'expected a canonical unsigned integer string');
 
+export const SignedIntegerStringSchema = z
+  .string()
+  .regex(/^(0|-?[1-9]\d*)$/, 'expected a canonical signed integer string');
+
 export const AssetIdSchema = EvmAddressSchema.or(z.literal('native'));
 
 export const TargetPermissionSchema = z
@@ -65,6 +69,13 @@ const GoalBaseSchema = z.object({
 
 export const FinalStateGoalSchema = z.discriminatedUnion('kind', [
   GoalBaseSchema.extend({
+    kind: z.literal('MIN_POSITION_DELTA'),
+    asset: AssetIdSchema,
+    account: EvmAddressSchema,
+    protocol: EvmAddressSchema,
+    minIncrease: UnsignedIntegerStringSchema,
+  }).strict(),
+  GoalBaseSchema.extend({
     kind: z.literal('MIN_POSITION'),
     asset: AssetIdSchema,
     account: EvmAddressSchema,
@@ -76,6 +87,12 @@ export const FinalStateGoalSchema = z.discriminatedUnion('kind', [
     account: EvmAddressSchema,
     protocol: EvmAddressSchema,
     minWad: UnsignedIntegerStringSchema,
+  }).strict(),
+  GoalBaseSchema.extend({
+    kind: z.literal('MIN_ASSET_BALANCE_DELTA'),
+    asset: AssetIdSchema,
+    account: EvmAddressSchema,
+    minIncrease: UnsignedIntegerStringSchema,
   }).strict(),
   GoalBaseSchema.extend({
     kind: z.literal('MIN_ASSET_BALANCE'),

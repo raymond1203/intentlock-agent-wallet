@@ -16,6 +16,21 @@ v0.2.0 defect analysis rather than a frozen performance result. See
 `docs/experiments/m2-execution-findings-20260904.md` for interpretation and the proposed v0.3.0
 correction policy.
 
+The current dataset is v0.3.0. No v0.3.0 execution artifact is published yet, so current-version
+validation reports `NOT_COLLECTED` and zero executed bases. A future artifact must be produced from
+the exact v0.3.0 scenario hashes; the validator never carries these v0.2.0 counts forward.
+For v0.3.0 publishing, attempts remain chronological: the first complete attempt per scenario is
+selected and cannot be overwritten by a later failure; if no attempt completes, the latest failure
+is selected. Every earlier and later attempt is still retained in the public attempt history.
+
+Unlike the historical v0.2.0 diagnostic, every v0.3.0 attempt must also retain its exact collector
+JSON bytes below `benchmark/evidence/raw/v0.3.0/sha256/`. The published attempt records both the
+repository-relative content-addressed path and SHA-256. `validate-m2` reads those bytes from Git
+`HEAD` (not from an ignored run directory or the mutable worktree), checks the hash and strict raw
+schema, and independently recomputes completion plus both post-state oracle views. A summary whose
+receipts, observations, effects, provenance, oracle, selection, or aggregates differ from the
+tracked raw bundle is rejected.
+
 `fixtureCorrections` and `fixtureCorrected` distinguish diagnostic executions that increased the
 isolated account's starting balance from runs that used authored prefix funding unchanged. The
 top-level strict counts exclude corrected fixtures rather than silently treating them as normal.

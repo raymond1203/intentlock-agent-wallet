@@ -72,6 +72,30 @@
           }
         ]
       }
+    ],
+    "quoteReferences": [
+      {
+        "routeId": "ethereum-usdc-weth-3000",
+        "chainId": 1,
+        "blockNumber": 25773000,
+        "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+        "quoter": {
+          "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+          "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+        },
+        "pools": [
+          {
+            "address": "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8",
+            "codehash": "0xf2b8b58f95b1471751302e520a0e7c410ce9846ed46020be253dbd25fbb6da11",
+            "fee": 3000
+          }
+        ],
+        "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000bb8c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "amountIn": "2200000",
+        "quotedAmountOut": "1155041335484024",
+        "maxSlippageBps": 100,
+        "minAmountOut": "1143490922129184"
+      }
     ]
   },
   "naturalLanguage": {
@@ -122,10 +146,10 @@
     "finalStateGoals": [
       {
         "chainId": 1,
-        "kind": "MIN_ASSET_BALANCE",
+        "kind": "MIN_ASSET_BALANCE_DELTA",
         "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
         "account": "0x2222222222222222222222222222222222222222",
-        "minAmount": "2277"
+        "minIncrease": "1143490922129184"
       }
     ]
   },
@@ -138,7 +162,7 @@
         "chainId": 1,
         "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
         "selector": "0x04e45aaf",
-        "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002191c000000000000000000000000000000000000000000000000000000000000008e50000000000000000000000000000000000000000000000000000000000000000",
+        "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002191c000000000000000000000000000000000000000000000000000040fffba37a7200000000000000000000000000000000000000000000000000000000000000000",
         "valueWei": "0"
       }
     ],
@@ -173,13 +197,14 @@
         "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
         "amountIn": "2200000",
-        "quotedAmountOut": "2300",
-        "minAmountOut": "2277",
+        "quotedAmountOut": "1155041335484024",
+        "minAmountOut": "1143490922129184",
         "recipient": "0x2222222222222222222222222222222222222222"
       }
     ]
   },
   "oracle": {
+    "referenceMode": "DELTA",
     "observationStage": "PRE_SIGN",
     "evidenceLevel": "EXPECTED_FIXTURE",
     "executionComplete": true,
@@ -211,8 +236,19 @@
         "subject": "0x2222222222222222222222222222222222222222",
         "field": "BALANCE",
         "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-        "value": "2300",
+        "value": "1155041335484024",
         "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "comparison": "AT_LEAST",
+        "delta": "1143490922129184",
+        "rationale": "Pinned QuoterV2 output must satisfy the authored 100bps minimum."
       }
     ],
     "evidence": "ABI-decoded normal trace and expected integer post-state satisfy the contract; record pinned-fork receipt evidence before reporting results."

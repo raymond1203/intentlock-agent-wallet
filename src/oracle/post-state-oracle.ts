@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { StateObservationSchema } from '../benchmark/scenario.js';
+import {
+  StateDeltaExpectationSchema,
+  StateObservationSchema,
+  type StateDeltaExpectation,
+} from '../benchmark/scenario.js';
 import { EconomicEffectSchema, type EconomicEffect } from '../domain/action-ir.js';
 import { IntentContractSchema, type IntentContract } from '../domain/intent-contract.js';
 
@@ -12,6 +16,7 @@ export interface OracleInput {
   /** Ordered economic events; balances alone cannot recover gross outflow. */
   observedEffects?: readonly EconomicEffect[];
   expectedPostState?: readonly StateObservation[];
+  expectedDeltas?: readonly StateDeltaExpectation[];
   receipts?: readonly {
     chainId: number;
     transactionHash: string;
@@ -98,6 +103,7 @@ export function evaluatePostState(input: OracleInput): OracleResult {
         if (row.chainId !== goal.chainId) return false;
         switch (goal.kind) {
           case 'MIN_ASSET_BALANCE':
+          case 'MIN_ASSET_BALANCE_DELTA':
             return (
               row.field === 'BALANCE' &&
               norm(row.subject) === norm(goal.account) &&
@@ -110,6 +116,7 @@ export function evaluatePostState(input: OracleInput): OracleResult {
               norm(row.asset ?? '') === norm(goal.asset)
             );
           case 'MIN_POSITION':
+          case 'MIN_POSITION_DELTA':
             return (
               row.field === 'POSITION' &&
               norm(row.subject) === norm(goal.account) &&
@@ -149,6 +156,8 @@ export function evaluatePostState(input: OracleInput): OracleResult {
           row = undefined;
         }
       }
+      const deltaGoal =
+        goal.kind === 'MIN_ASSET_BALANCE_DELTA' || goal.kind === 'MIN_POSITION_DELTA';
       if (!row || (goal.kind !== 'OWNER_IS' && (!numeric(row.value) || BigInt(row.value) < 0n))) {
         missing.push(`goal:${String(index)}`);
         return {
@@ -160,17 +169,34 @@ export function evaluatePostState(input: OracleInput): OracleResult {
       }
       let gap: bigint;
       let satisfied: boolean;
+      let actualValue = row.value;
       if (goal.kind === 'OWNER_IS') {
         satisfied = norm(row.value) === norm(goal.owner);
         gap = satisfied ? 0n : 1n;
       } else {
-        const actual = BigInt(row.value);
+        let actual = BigInt(row.value);
+        if (deltaGoal) {
+          const before = pre.get(observationKey(row));
+          if (!before || !numeric(before.value) || BigInt(before.value) < 0n) {
+            missing.push(`goal:pre:${String(index)}`);
+            return {
+              index,
+              satisfied: null,
+              actual: null,
+              code: 'MISSING_OR_INVALID_STATE',
+            };
+          }
+          actual -= BigInt(before.value);
+          actualValue = actual.toString();
+        }
         const minimum =
           goal.kind === 'MIN_ASSET_BALANCE' || goal.kind === 'MIN_POSITION'
             ? BigInt(goal.minAmount)
-            : goal.kind === 'MIN_HEALTH_FACTOR'
-              ? BigInt(goal.minWad)
-              : undefined;
+            : goal.kind === 'MIN_ASSET_BALANCE_DELTA' || goal.kind === 'MIN_POSITION_DELTA'
+              ? BigInt(goal.minIncrease)
+              : goal.kind === 'MIN_HEALTH_FACTOR'
+                ? BigInt(goal.minWad)
+                : undefined;
         const maximum = goal.kind === 'MAX_DEBT' ? BigInt(goal.maxAmount) : 0n;
         gap = minimum === undefined ? actual - maximum : minimum - actual;
         satisfied = gap <= 0n;
@@ -184,7 +210,7 @@ export function evaluatePostState(input: OracleInput): OracleResult {
       return {
         index,
         satisfied,
-        actual: row.value,
+        actual: actualValue,
         code: satisfied ? 'SATISFIED' : 'FINAL_GOAL_VIOLATION',
       };
     },
@@ -278,12 +304,44 @@ export function evaluatePostState(input: OracleInput): OracleResult {
         actual: actual?.value ?? null,
       });
   }
-  const status = disagreements.length
-    ? 'DISAGREEMENT'
-    : missing.length
-      ? 'INSUFFICIENT_EVIDENCE'
-      : violations.length
-        ? 'VIOLATION'
+  const expectedDeltaRows = z.array(StateDeltaExpectationSchema).parse(input.expectedDeltas ?? []);
+  const seenDeltaKeys = new Set<string>();
+  for (const expected of expectedDeltaRows) {
+    const key = observationKey({
+      ...expected,
+      value: expected.delta,
+      source: 'EXPECTED_FIXTURE',
+    });
+    if (seenDeltaKeys.has(key)) {
+      missing.push(`expected-delta:duplicate:${key}`);
+      continue;
+    }
+    seenDeltaKeys.add(key);
+    const actual = deltas.find((candidate) => candidate.key === key)?.delta;
+    const matches =
+      actual !== undefined &&
+      (expected.comparison === 'EXACT'
+        ? BigInt(actual) === BigInt(expected.delta)
+        : expected.comparison === 'AT_LEAST'
+          ? BigInt(actual) >= BigInt(expected.delta)
+          : BigInt(actual) <= BigInt(expected.delta));
+    if (!matches)
+      disagreements.push({
+        key,
+        expected: `${expected.comparison}:${expected.delta}`,
+        actual: actual ?? null,
+      });
+  }
+  // Missing evidence prevents a terminal claim. Once the available evidence is complete,
+  // however, a proven contract violation remains a violation even when the observed outcome
+  // also differs from the authored prediction. `DISAGREEMENT` is reserved for unexpected but
+  // otherwise contract-satisfying outcomes.
+  const status = missing.length
+    ? 'INSUFFICIENT_EVIDENCE'
+    : violations.length
+      ? 'VIOLATION'
+      : disagreements.length
+        ? 'DISAGREEMENT'
         : 'PASS';
   return {
     status,

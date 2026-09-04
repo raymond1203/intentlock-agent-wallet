@@ -1,5 +1,6 @@
 {
   "protocolVersion": "0.2",
+  "datasetVersion": "0.3.0",
   "status": "PENDING_INDEPENDENT_REVIEW",
   "instructions": "Open only after recording pre-sign judgments for mutation-validity-20.json. Evaluate final-state evidence separately. These are expected fixtures, not executed observations; no author decision or cause label is provided.",
   "cases": [
@@ -300,7 +301,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "1000",
+            "value": "525018812598565",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -332,7 +333,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "1000",
+            "value": "525018812598565",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -433,18 +434,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "1500000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "1500000",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -475,18 +476,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "1500000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "1500000",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -520,18 +521,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "2000000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "2000000",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -562,18 +563,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "2000000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "2000000",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -617,7 +618,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            "value": "1000",
+            "value": "526301279457898",
             "source": "EXPECTED_FIXTURE"
           },
           {
@@ -667,7 +668,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-            "value": "1000",
+            "value": "526301279457898",
             "source": "EXPECTED_FIXTURE"
           },
           {
@@ -711,7 +712,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "1000",
+            "value": "525018812598565",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -743,7 +744,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "989",
+            "value": "519768624472579",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -758,15 +759,6 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
-            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
-            "value": "0",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 1,
-            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
@@ -783,25 +775,26 @@
           {
             "chainId": 8453,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
-            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-            "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "field": "BALANCE",
+            "asset": "0x4200000000000000000000000000000000000006",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
           },
           {
-            "chainId": 8453,
-            "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
-            "field": "BALANCE",
-            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 8453,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
-            "asset": "0x4200000000000000000000000000000000000006",
+            "field": "ALLOWANCE",
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
           }
@@ -810,15 +803,6 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
-            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
-            "value": "1000000",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 1,
-            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "0",
@@ -829,6 +813,23 @@
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "value": "0",
+            "source": "EXPECTED_FIXTURE"
+          },
+          {
+            "chainId": 8453,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "BALANCE",
+            "asset": "0x4200000000000000000000000000000000000006",
+            "value": "523026105686492",
+            "source": "EXPECTED_FIXTURE"
+          },
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
           },
@@ -838,23 +839,7 @@
             "field": "ALLOWANCE",
             "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
             "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
-            "value": "999000",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 8453,
-            "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
-            "field": "BALANCE",
-            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-            "value": "999000",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 8453,
-            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
-            "asset": "0x4200000000000000000000000000000000000006",
-            "value": "1000",
+            "value": "0",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -866,15 +851,6 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
-            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
-            "value": "0",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 1,
-            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "value": "1000000",
@@ -883,23 +859,6 @@
           {
             "chainId": 8453,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
-            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-            "value": "0",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 8453,
-            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
-            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-            "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
-            "value": "0",
-            "source": "EXPECTED_FIXTURE"
-          },
-          {
-            "chainId": 8453,
-            "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
             "field": "BALANCE",
             "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
             "value": "0",
@@ -912,23 +871,41 @@
             "asset": "0x4200000000000000000000000000000000000006",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
-          }
-        ],
-        "postState": [
+          },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
-            "value": "1000000",
+            "value": "0",
             "source": "EXPECTED_FIXTURE"
           },
+          {
+            "chainId": 8453,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "value": "0",
+            "source": "EXPECTED_FIXTURE"
+          }
+        ],
+        "postState": [
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "value": "0",
+            "source": "EXPECTED_FIXTURE"
+          },
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "ALLOWANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
             "value": "0",
             "source": "EXPECTED_FIXTURE"
           }
@@ -1366,7 +1343,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "2100",
+            "value": "1052602557562478",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -1398,7 +1375,7 @@
             "subject": "0x2222222222222222222222222222222222222222",
             "field": "BALANCE",
             "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "value": "2100",
+            "value": "1052602557562478",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -1432,6 +1409,14 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "value": "1000000000",
+            "source": "EXPECTED_FIXTURE"
+          },
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
@@ -1463,6 +1448,14 @@
           }
         ],
         "postState": [
+          {
+            "chainId": 1,
+            "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "field": "BALANCE",
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "value": "1000000000",
+            "source": "EXPECTED_FIXTURE"
+          },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -1503,18 +1496,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "400000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "400000",
             "source": "EXPECTED_FIXTURE"
           }
         ]
@@ -1545,18 +1538,18 @@
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "ALLOWANCE",
+            "field": "BALANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-            "value": "400000",
+            "value": "1000000000",
             "source": "EXPECTED_FIXTURE"
           },
           {
             "chainId": 1,
             "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-            "field": "BALANCE",
+            "field": "ALLOWANCE",
             "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-            "value": "1000000000",
+            "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "value": "400000",
             "source": "EXPECTED_FIXTURE"
           }
         ]

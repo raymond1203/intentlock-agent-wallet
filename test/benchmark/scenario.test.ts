@@ -129,16 +129,16 @@ describe('benchmark scenario schema and split freeze', () => {
         .reverse()
         .find((effect) => effect.kind === 'APPROVAL');
       if (lastApproval) {
-        expect(
-          scenario.oracle.postState.some(
-            (state) =>
-              state.field === 'ALLOWANCE' &&
-              state.subject.toLowerCase() === lastApproval.owner.toLowerCase() &&
-              state.counterparty?.toLowerCase() === lastApproval.spender.toLowerCase() &&
-              state.value === lastApproval.amount,
-          ),
-          scenario.id,
-        ).toBe(true);
+        const hasStoredAllowance = scenario.oracle.postState.some(
+          (state) =>
+            state.field === 'ALLOWANCE' &&
+            state.subject.toLowerCase() === lastApproval.owner.toLowerCase() &&
+            state.counterparty?.toLowerCase() === lastApproval.spender.toLowerCase() &&
+            state.value === lastApproval.amount,
+        );
+        const oneUseSignatureTransfer =
+          lastApproval.signatureDeadline !== undefined && lastApproval.expiration === undefined;
+        expect(hasStoredAllowance, scenario.id).toBe(!oneUseSignatureTransfer);
       }
     }
   });

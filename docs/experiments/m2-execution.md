@@ -1,8 +1,9 @@
 # M2 scenario-specific execution evidence
 
-This collector is a diagnostic on the published v0.2.0 candidate. It does not turn an authored
+The current collector targets the corrected v0.3.0 candidate. It does not turn an authored
 `EXPECTED_FIXTURE` into an executed fact, silently change intent limits, or approve human review.
 Normal-call success, final economic goals, and agreement with the synthetic reference are separate.
+The published v0.2.0 run remains historical defect-discovery evidence and is not counted here.
 
 ## Reproduction
 
@@ -10,7 +11,7 @@ Use the Node/pnpm/Foundry versions in the repository and set `FORK_RPC_URL_1` an
 `FORK_RPC_URL_8453` to archive-capable endpoints. Do not commit their values. Then run:
 
 ```text
-pnpm m2:execute --quotes --out=experiments/results/m2-execution-unique-run
+pnpm m2:execute --out=experiments/results/m2-execution-unique-run
 pnpm m2:reviews
 ```
 
@@ -22,7 +23,10 @@ No production wallet, private funding account, OpenAI key, or signing service is
 The runner refuses to write into a non-empty output directory. `pnpm m2:execute` enables strict mode
 and returns a non-zero status unless every selected scenario has the required successful receipts and
 complete oracle evidence; a semantic `VIOLATION` can still be a complete execution. Use
-`pnpm m2:execute:diagnostic` only when intentionally collecting incomplete failure evidence.
+`pnpm m2:execute:diagnostic` only when intentionally collecting incomplete failure evidence. The
+strict command also fails before opening a fork when the source tree is dirty and rejects a source
+commit or worktree change during execution. The diagnostic command deliberately retains dirty-run
+support and records `workingTreeDirty: true`.
 
 Each variable may contain a comma-separated Anvil upstream pool. Every listed endpoint must support
 historical account and storage reads at the pinned block; a provider that can return the block header
@@ -40,14 +44,14 @@ an endpoint-specific archive error, so retain each failed attempt and retry in a
 - Required account funding is calculated over every action prefix, including borrow credits and
   destination bridge credits. A supply followed by a withdrawal must be funded before the supply,
   even if the final net debit is smaller. Any increase over the authored synthetic pre-balance is
-  explicitly recorded as a fixture correction, not silently equated to the old pre-state.
+  a v0.3.0 authored pre-balance is still insufficient, the run is explicitly marked as a fixture
+  correction and cannot satisfy the strict-authored evidence count.
 - Batches install `M2FixtureAccount` runtime at the test account. Its self-call restriction,
   supported mode, order and atomic rollback have Solidity tests. This is an execution fixture,
   **not** a full MetaMask wallet, authorization implementation, or deployed product-equivalent.
 - Permit2 signatures are real EIP-712 signatures from the public test mnemonic. Required nonce
   invalidation and underlying-token approval are recorded as setup. SignatureTransfer's spender
-  is the actual caller; the collector does not impersonate a router to hide the candidate's
-  incorrect caller annotation.
+  is the actual caller; AP-04 and AP-08 encode that caller in the v0.3.0 authored effects.
 - Single-swap prior approval is explicit setup, not a hidden user action. Actual token allowance
   is observed after execution, including the underlying Permit2 allowance for one-use signatures.
 - Across fills use an independently funded local relayer and the **actual source deposit event**.
@@ -70,14 +74,23 @@ fingerprints, setup notes, resolved signatures, globally ordered setup/user/rela
 pre/post observations, token-flow evidence, independent oracle decision, reference disagreements,
 and any error. Partial/reverted/timed-out traces cannot be reported as successful normal runs.
 Per-case failures are not silently replaced with a successful retry; each run retains its own files.
+When several run directories are published in chronological order, the first complete attempt for
+each scenario is selected. Later failures or alternate successes cannot overwrite it; if no attempt
+completes, the latest failure is selected. The full attempt history remains in the artifact.
+Publishing copies every exact raw JSON file into the repository's content-addressed
+`benchmark/evidence/raw/v0.3.0/sha256/` bundle and records its path and digest on the attempt. After
+that bundle and summary are committed, `validate-m2` reloads the raw bytes from Git `HEAD`, verifies
+the scenario/collector/source lineage, and recomputes receipt completeness and post-state oracle
+results independently. The compact published fields and top-level counts are assertions rather than
+trust roots.
 The receipt collector allows up to 120 seconds for complex Aave calls whose local mining can trigger
 many lazy archive reads. Transport requests retain a short timeout so an unavailable upstream still
 fails visibly.
 
-With `--quotes`, the collector additionally calls QuoterV2 at the original pinned block and records
-the quoter, every route pool and their code hashes, quote inputs/output, and authored slippage.
-This does not modify the scenario's min-output. A tiny authored minimum can pass execution while
-failing natural-language alignment; a human must approve the revised data contract before re-freeze.
+Before any user action can move a pool, the collector calls QuoterV2 for every swap and compares the
+block/hash, quoter/codehash, route pools/codehashes, path, amount, quote and authored minimum with
+the v0.3.0 reference. Any mismatch aborts the scenario. The observation is always recorded and does
+not modify calldata or authorize a different minimum.
 
 ## Primary references
 

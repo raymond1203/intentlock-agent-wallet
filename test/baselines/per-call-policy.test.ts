@@ -20,6 +20,7 @@ function load(relativePath: string): BenchmarkScenario {
 }
 
 const transfer = load('transfer/tr-01.json');
+const twoStepTransfer = load('transfer/tr-06.json');
 
 describe('per-call policy baseline', () => {
   it('allows a compliant base trace', () => {
@@ -51,6 +52,20 @@ describe('per-call policy baseline', () => {
     expect(
       evaluatePerCallPolicy(applyMutation(transfer, 'benign-hallucination', 2026)),
     ).toMatchObject({ decision: 'ABSTAIN', reasonCodes: ['UNKNOWN_EFFECT'] });
+  });
+
+  it('reports the true signer ordinal of the first locally visible intervention', () => {
+    const secondActionOutOfScope = structuredClone(twoStepTransfer);
+    const second = [...secondActionOutOfScope.trace.actions].sort(
+      (left, right) => left.executionIndex - right.executionIndex,
+    )[1];
+    if (!second) throw new Error('two-step fixture is missing its second action');
+    second.target = '0x9999999999999999999999999999999999999999';
+    expect(evaluatePerCallPolicy(secondActionOutOfScope)).toMatchObject({
+      decision: 'DENY',
+      checkedUnits: 2,
+      firstDetectionActionOrdinal: 2,
+    });
   });
 
   it('returns a schema-valid result', () => {

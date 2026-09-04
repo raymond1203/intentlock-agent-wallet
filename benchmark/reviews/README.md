@@ -4,17 +4,22 @@ These generated packets remove the scenario ID, oracle, mutation metadata, and s
 The reviewer should inspect only the relevant packet before recording a decision. Do not edit generated
 packets; put answers in a separate review record or GitHub review comment.
 
-| Issue | Packet                                                      | Required fields                              |
-| ----- | ----------------------------------------------------------- | -------------------------------------------- |
-| #20   | `schema-labeling-10.json`                                   | expected decision, all labels, validity      |
-| #21   | `contract-alignment-10.json`                                | aligned, missing/widened fields, notes       |
-| #23   | `mutation-validity-20.json`                                 | category, semantic validity, decision, notes |
-| #26   | `experiments/configs/baselines/llm-verifier-20-review.json` | rationale, leakage, corrected decision       |
+| Issue | Packet                                 | Required fields                              |
+| ----- | -------------------------------------- | -------------------------------------------- |
+| #20   | `schema-labeling-10.json`              | expected decision, all labels, validity      |
+| #21   | `contract-alignment-10.json`           | aligned, missing/widened fields, notes       |
+| #23   | `mutation-validity-20.json`            | category, semantic validity, decision, notes |
+| #26   | A new v0.3.0 live output review packet | rationale, leakage, corrected decision       |
 
 After independent review, the author reveals the oracle and records every disagreement and resolution.
 Any hidden-test oracle change follows `benchmark/LABELING.md` and requires a dataset version bump.
 
-v0.2.0 also removes `trace.kind` (a stored class label) and normalizes nested identifiers. The
+`experiments/configs/baselines/llm-verifier-20-review.json` is the historical v0.2.0 run and is not
+silently relabeled as v0.3.0. The fixed live baseline writes
+`llm-verifier-20-review-v0.3.0.json`; it is absent until that external run actually completes.
+
+The current v0.3.0 packets retain the v0.2.0 blinding correction, remove `trace.kind` (a stored class
+label), normalize nested identifiers, and bind every generated packet to its dataset version. The
 20-case `double-review-20.json` packet covers 25% of all 80 base cases. D11–D20 cover the additional
 bridge/lending/batch cases for #22. Each person copies `submission.template.json` into a separate
 submission and fills it independently, referencing the packet SHA-256. Do not edit generated

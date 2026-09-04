@@ -5,6 +5,7 @@ import {
   EvmAddressSchema,
   FunctionSelectorSchema,
   IntentContractSchema,
+  SignedIntegerStringSchema,
   UnsignedIntegerStringSchema,
 } from '../domain/intent-contract.js';
 
@@ -112,6 +113,50 @@ export const StateObservationSchema = z
   })
   .strict();
 
+export const StateDeltaExpectationSchema = z
+  .object({
+    chainId: z.number().int().positive(),
+    subject: EvmAddressSchema,
+    field: z.enum(['BALANCE', 'ALLOWANCE', 'DEBT', 'POSITION']),
+    asset: EvmAddressSchema.or(z.literal('native')),
+    counterparty: EvmAddressSchema.optional(),
+    comparison: z.enum(['EXACT', 'AT_LEAST', 'AT_MOST']),
+    delta: SignedIntegerStringSchema,
+    rationale: z.string().min(3),
+  })
+  .strict();
+
+export const PinnedQuoteReferenceSchema = z
+  .object({
+    routeId: z.string().min(1),
+    chainId: z.number().int().positive(),
+    blockNumber: z.number().int().positive(),
+    blockHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+    quoter: z
+      .object({
+        address: EvmAddressSchema,
+        codehash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+      })
+      .strict(),
+    pools: z
+      .array(
+        z
+          .object({
+            address: EvmAddressSchema,
+            codehash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+            fee: z.number().int().nonnegative(),
+          })
+          .strict(),
+      )
+      .min(1),
+    path: z.string().regex(/^0x[a-fA-F0-9]+$/),
+    amountIn: UnsignedIntegerStringSchema,
+    quotedAmountOut: UnsignedIntegerStringSchema,
+    maxSlippageBps: z.number().int().min(0).max(10_000),
+    minAmountOut: UnsignedIntegerStringSchema,
+  })
+  .strict();
+
 export const MutationChangeSchema = z
   .object({
     path: z.string().min(1),
@@ -152,6 +197,7 @@ export const BenchmarkScenarioSchema = z
               .strict(),
           )
           .min(1),
+        quoteReferences: z.array(PinnedQuoteReferenceSchema).optional(),
       })
       .strict()
       .optional(),
@@ -172,6 +218,7 @@ export const BenchmarkScenarioSchema = z
       .strict(),
     oracle: z
       .object({
+        referenceMode: z.enum(['ABSOLUTE', 'DELTA']).default('ABSOLUTE'),
         observationStage: z.enum(['PRE_SIGN', 'POST_STATE']).default('PRE_SIGN'),
         evidenceLevel: z.enum(['EXPECTED_FIXTURE', 'EXECUTED_FORK']).default('EXPECTED_FIXTURE'),
         executionComplete: z.boolean().default(true),
@@ -181,6 +228,7 @@ export const BenchmarkScenarioSchema = z
         allowanceExposure: UnsignedIntegerStringSchema.optional(),
         preState: z.array(StateObservationSchema),
         postState: z.array(StateObservationSchema).min(1),
+        expectedDeltas: z.array(StateDeltaExpectationSchema).default([]),
         evidence: z.string().min(3),
       })
       .strict(),
@@ -280,6 +328,47 @@ export const BenchmarkScenarioSchema = z
         path: ['trace', 'expectedEffects'],
       });
     }
+    if (scenario.class === 'BASE') {
+      for (const [index, effect] of scenario.trace.expectedEffects.entries()) {
+        if (effect.kind !== 'SWAP') continue;
+        const quote = effect.quotedAmountOut;
+        if (!quote) {
+          context.addIssue({
+            code: 'custom',
+            message: 'base swap effects require a pinned quote',
+            path: ['trace', 'expectedEffects', index, 'quotedAmountOut'],
+          });
+          continue;
+        }
+        const reference = scenario.fixture?.quoteReferences?.find(
+          (candidate) =>
+            candidate.chainId === effect.chainId &&
+            candidate.amountIn === effect.amountIn &&
+            candidate.quotedAmountOut === quote &&
+            candidate.minAmountOut === effect.minAmountOut,
+        );
+        if (!reference) {
+          context.addIssue({
+            code: 'custom',
+            message: `${scenario.id} base swap effect does not match a pinned quote reference (${effect.amountIn}/${quote}/${effect.minAmountOut})`,
+            path: ['fixture', 'quoteReferences'],
+          });
+          continue;
+        }
+        const requiredMinimum =
+          (BigInt(quote) * BigInt(10_000 - scenario.intent.safety.maxSlippageBps) + 9_999n) /
+          10_000n;
+        if (
+          reference.maxSlippageBps !== scenario.intent.safety.maxSlippageBps ||
+          BigInt(effect.minAmountOut) !== requiredMinimum
+        )
+          context.addIssue({
+            code: 'custom',
+            message: 'base swap minimum must exactly implement the declared slippage bound',
+            path: ['trace', 'expectedEffects', index, 'minAmountOut'],
+          });
+      }
+    }
   });
 
 export const BenchmarkDatasetSchema = z
@@ -331,6 +420,8 @@ export type BenchmarkScenario = z.infer<typeof BenchmarkScenarioSchema>;
 export type BenchmarkDataset = z.infer<typeof BenchmarkDatasetSchema>;
 export type ViolationLabel = z.infer<typeof ViolationLabelSchema>;
 export type ScenarioSplit = z.infer<typeof ScenarioSplitSchema>;
+export type StateDeltaExpectation = z.infer<typeof StateDeltaExpectationSchema>;
+export type PinnedQuoteReference = z.infer<typeof PinnedQuoteReferenceSchema>;
 
 export function createBenchmarkScenarioJsonSchema(): Record<string, unknown> {
   return z.toJSONSchema(BenchmarkScenarioSchema, {

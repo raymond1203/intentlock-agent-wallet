@@ -18,6 +18,13 @@ contracts/broadcast/
 # Experiment output
 experiments/results/*
 !experiments/results/.gitkeep
+!experiments/results/freeze-dry-runs/
+experiments/results/freeze-dry-runs/*
+!experiments/results/freeze-dry-runs/*/
+experiments/results/freeze-dry-runs/*/*
+!experiments/results/freeze-dry-runs/*/manifest.json
+!experiments/results/freeze-dry-runs/*/cases.jsonl
+!experiments/results/freeze-dry-runs/*/summary.json
 
 # Editors and operating systems
 .idea/

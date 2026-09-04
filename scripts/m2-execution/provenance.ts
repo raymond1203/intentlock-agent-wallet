@@ -22,6 +22,7 @@ export const EXECUTION_COLLECTOR_PATHS = [
   'scripts/m2-execution/receipt-requirements.ts',
   'scripts/m2-execution/runtime.ts',
   'scripts/run-m2-execution.ts',
+  'scripts/source-integrity.ts',
   'src/benchmark/execution-funding.ts',
   'src/benchmark/scenario.ts',
   'src/domain/action-ir.ts',

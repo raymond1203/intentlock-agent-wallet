@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "0.1",
+  "status": "CANDIDATE_UNFROZEN",
+  "primaryRunRequired": true,
+  "seed": 2026,
+  "cases": 400,
+  "arms": [
+    {
+      "id": "INTENTLOCK_FULL",
+      "kind": "reference",
+      "changedFactor": "reference configuration",
+      "hypothesis": "Reference security and utility for a fresh full symbolic replay with cumulative state and post-state reconciliation."
+    },
+    {
+      "id": "SEMANTIC_ONLY",
+      "kind": "stage-comparison",
+      "changedFactor": "non-causal primary LLM stage comparator",
+      "hypothesis": "The frozen primary LLM result provides a semantic-stage comparator, not a causal component ablation."
+    },
+    {
+      "id": "SYMBOLIC_ONLY",
+      "kind": "stage-comparison",
+      "changedFactor": "symbolic runtime starting from the confirmed contract",
+      "hypothesis": "A fresh symbolic replay scores the runtime stage after intent confirmation and is not interpreted as a semantic-stage ablation."
+    },
+    {
+      "id": "HYBRID_CONJUNCTION",
+      "kind": "stage-comparison",
+      "changedFactor": "non-causal conjunction with the frozen primary LLM decision",
+      "hypothesis": "Conjoining a fresh symbolic replay with the frozen primary LLM decision may improve detection at a utility cost, without supporting a causal claim."
+    },
+    {
+      "id": "STATELESS_LEDGER",
+      "kind": "one-factor-ablation",
+      "changedFactor": "acceptedEffectHistory",
+      "hypothesis": "Checking each step with no accepted-effect history increases unsafe authorization under composition attacks."
+    },
+    {
+      "id": "SHALLOW_DECODER",
+      "kind": "one-factor-ablation",
+      "changedFactor": "recursiveDecoder",
+      "hypothesis": "Treating effects below callPath depth one as partial decoding increases safe abstention on nested calls."
+    },
+    {
+      "id": "NO_POST_STATE_VERIFIER",
+      "kind": "one-factor-ablation",
+      "changedFactor": "postStateReconciliation",
+      "hypothesis": "Removing only post-state reconciliation loses post-state detection while preserving the full arm's pre-sign decision."
+    },
+    {
+      "id": "CONFIRMATION_ALWAYS",
+      "kind": "one-factor-policy-variant",
+      "changedFactor": "confirmationPolicy",
+      "hypothesis": "Always confirming is reported as a separate interaction policy that minimizes autonomous authorization and autonomous completion."
+    }
+  ],
+  "interpretation": "Semantic-only, symbolic-only, and hybrid rows are non-causal stage comparisons. Only stateless-ledger, shallow-decoder, and no-post-state-verifier are one-factor causal ablations; confirmation-always is a separate policy variant. All fresh arms must replay the same frozen 400-case matrix.",
+  "freeze": {
+    "gitCommit": null,
+    "frozenAt": null,
+    "humanReviewer": null
+  }
+}

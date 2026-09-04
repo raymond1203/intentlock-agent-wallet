@@ -1,17 +1,18 @@
 {
-  "datasetVersion": "0.2.0",
+  "datasetVersion": "0.3.0",
   "purpose": "M2 integration diagnostics, not experimental performance",
   "baseCount": 80,
   "mutationCount": 15,
   "preSignEligibleMutations": 13,
   "baseReferencePass": 80,
+  "baseReferenceLabelDisagreements": [],
   "baseMonitorAllow": 80,
-  "executedBaseCount": 80,
-  "strictAuthoredFixtureExecutedBaseCount": 77,
+  "executedBaseCount": 0,
+  "strictAuthoredFixtureExecutedBaseCount": 0,
   "cleanCommittedExecutedBaseCount": 0,
-  "executionEvidenceStatus": "DIAGNOSTIC_DIRTY",
-  "executionFinalGoalPassCount": 69,
-  "strictAuthoredFixtureFinalGoalPassCount": 68,
+  "executionEvidenceStatus": "NOT_COLLECTED",
+  "executionFinalGoalPassCount": 0,
+  "strictAuthoredFixtureFinalGoalPassCount": 0,
   "referenceLabelDisagreements": [],
   "crossStageDifferencesNotScored": [
     "AP-01-UNLIMITED-APPROVAL-2026",
@@ -20,6 +21,15 @@
     "SS-01-SLIPPAGE-WIDENING-2026",
     "TR-01-RECIPIENT-SUBSTITUTION-2026"
   ],
+  "independentReviewEvidence": {
+    "recordStatus": "PENDING",
+    "identityAndIndependence": "SELF_ATTESTED_NOT_MACHINE_VERIFIED",
+    "submissionCount": 0,
+    "submissionSha256s": [],
+    "disagreementCount": 0,
+    "blockers": ["exactly-two-complete-human-submissions-required"]
+  },
+  "completionCriteria": { "executionComplete": false, "referenceOracleComplete": true },
   "independentReviewStatus": "PENDING",
   "m2Complete": false,
   "rows": [
@@ -44,14 +54,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -75,14 +85,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -106,14 +116,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -137,14 +147,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -168,14 +178,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -199,14 +209,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-ethereum-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -230,14 +240,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -261,14 +271,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -292,14 +302,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -323,14 +333,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-ethereum-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -354,14 +364,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -385,14 +395,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -416,14 +426,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -447,14 +457,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -478,14 +488,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -509,14 +519,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -540,14 +550,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -571,14 +581,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -602,14 +612,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -633,14 +643,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -664,14 +674,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -695,14 +705,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -726,14 +736,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -757,14 +767,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -788,14 +798,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -819,14 +829,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -850,14 +860,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -881,14 +891,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -912,14 +922,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -943,14 +953,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -974,14 +984,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-ethereum-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1005,14 +1015,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1036,14 +1046,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1067,14 +1077,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1098,14 +1108,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1129,14 +1139,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-ethereum-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1160,14 +1170,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1191,14 +1201,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1222,14 +1232,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1253,14 +1263,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1284,14 +1294,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1315,14 +1325,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1346,14 +1356,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1377,14 +1387,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1408,14 +1418,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1439,14 +1449,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1470,14 +1480,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1501,14 +1511,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1532,14 +1542,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1563,14 +1573,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1594,14 +1604,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1625,14 +1635,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1656,14 +1666,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1687,14 +1697,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1718,14 +1728,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1749,14 +1759,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1780,14 +1790,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1811,14 +1821,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1842,14 +1852,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1873,14 +1883,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1904,14 +1914,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1935,14 +1945,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1966,14 +1976,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -1997,14 +2007,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-retry-base-20260904-v2",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": true
+        "fixtureCorrected": null
       }
     },
     {
@@ -2028,14 +2038,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": true
+        "fixtureCorrected": null
       }
     },
     {
@@ -2059,14 +2069,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2090,14 +2100,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2121,14 +2131,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-retry-le13-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2152,14 +2162,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2183,14 +2193,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "VIOLATION",
-        "run": "m2-execution-retry-base-20260904-v2",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": true
+        "fixtureCorrected": null
       }
     },
     {
@@ -2214,14 +2224,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2245,14 +2255,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2276,14 +2286,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2307,14 +2317,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2338,14 +2348,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2369,14 +2379,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2400,14 +2410,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2431,14 +2441,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-full-20260904",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2462,14 +2472,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-base-20260904-v2",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2493,14 +2503,14 @@
         "violations": []
       },
       "executionEvidence": {
-        "status": "COMPLETE",
-        "oracleStatus": "PASS",
-        "run": "m2-execution-retry-base-20260904-v2",
-        "sourceCommit": "b6aa53e0ce79b0b05365e6ef957cd8738941d352",
-        "workingTreeDirty": true,
+        "status": "INCOMPLETE",
+        "oracleStatus": null,
+        "run": null,
+        "sourceCommit": null,
+        "workingTreeDirty": null,
         "collectorSha256": null,
         "collectorMatchesCurrent": false,
-        "fixtureCorrected": false
+        "fixtureCorrected": null
       }
     },
     {
@@ -2564,7 +2574,7 @@
         "status": "INSUFFICIENT_EVIDENCE",
         "decision": "ESCALATE",
         "authoredLabelAgreement": true,
-        "missing": ["execution:partial", "goal:0"],
+        "missing": ["execution:partial", "goal:0", "goal:2"],
         "violations": []
       },
       "executionEvidence": { "status": "NOT_COLLECTED" }
@@ -2633,7 +2643,7 @@
         "missing": [],
         "violations": [
           {
-            "code": "FINAL_MIN_ASSET_BALANCE",
+            "code": "FINAL_MIN_ASSET_BALANCE_DELTA",
             "key": "1:0x2222222222222222222222222222222222222222:BALANCE:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2::",
             "amount": "1"
           }

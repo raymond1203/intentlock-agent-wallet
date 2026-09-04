@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -8,6 +7,7 @@ import { z } from 'zod';
 
 import { applyMutation, type MutationOperatorId } from '../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
 import {
   createLlmVerifierUserPrompt,
@@ -16,10 +16,17 @@ import {
   LLM_VERIFIER_SYSTEM_PROMPT,
 } from '../src/baselines/llm-verifier.js';
 import { OpenAiResponsesClient } from '../src/baselines/openai-responses-client.js';
+import {
+  assertCleanSourceAtStart,
+  assertCleanSourceUnchanged,
+  readGitSourceState,
+} from './source-integrity.js';
 
 const ReviewProtocolSchema = z
   .object({
     protocolVersion: z.literal('0.1'),
+    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
+    status: z.literal('PENDING_MODEL_RUN'),
     selection: z
       .object({
         base: z.array(z.string()).length(10),
@@ -85,10 +92,6 @@ const mutationBaseIds: Record<MutationOperatorId, string> = {
   'benign-hallucination': 'TR-01',
 };
 
-function gitCommit(): string {
-  return execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-}
-
 async function formattedJson(value: unknown): Promise<string> {
   const prettierConfig = (await resolveConfig(resolve('package.json'))) ?? {};
   return format(JSON.stringify(value), { ...prettierConfig, parser: 'json' });
@@ -99,7 +102,12 @@ async function main(): Promise<void> {
     JSON.parse(await readFile(resolve('experiments/configs/baselines/llm-verifier.json'), 'utf8')),
   );
   const protocol = ReviewProtocolSchema.parse(
-    JSON.parse(await readFile(resolve('experiments/configs/baselines/reviewer-20.json'), 'utf8')),
+    JSON.parse(
+      await readFile(
+        resolve(`experiments/configs/baselines/reviewer-20-v${BENCHMARK_DATASET_VERSION}.json`),
+        'utf8',
+      ),
+    ),
   );
   const baseScenarios = await Promise.all(protocol.selection.base.map(loadScenario));
   const mutationScenarios = await Promise.all(
@@ -114,9 +122,11 @@ async function main(): Promise<void> {
   if (sample.some((scenario) => scenario.split === 'HIDDEN_TEST')) {
     throw new Error('Development validation cannot use held-out scenarios');
   }
-  const codeCommit = gitCommit();
-  const workingTreeDirty =
-    execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0;
+  const requireCleanSource = process.argv.includes('--require-clean-source');
+  const sourceAtStart = readGitSourceState();
+  if (requireCleanSource) assertCleanSourceAtStart(sourceAtStart, 'live LLM baseline');
+  const codeCommit = sourceAtStart.commitSha;
+  const workingTreeDirty = sourceAtStart.workingTreeDirty;
   const inputSha256 = createHash('sha256')
     .update(
       JSON.stringify({
@@ -150,9 +160,11 @@ async function main(): Promise<void> {
     );
     outputs.push(...results);
   }
+  if (requireCleanSource)
+    assertCleanSourceUnchanged(sourceAtStart, readGitSourceState(), 'live LLM baseline');
   const result = {
     schemaVersion: '0.1',
-    datasetVersion: '0.2.0',
+    datasetVersion: BENCHMARK_DATASET_VERSION,
     codeCommit,
     workingTreeDirty,
     inputSha256,
@@ -170,7 +182,9 @@ async function main(): Promise<void> {
   const reviewPacket = {
     protocolVersion: '0.1',
     status: 'PENDING_INDEPENDENT_REVIEW',
-    datasetVersion: '0.2.0',
+    datasetVersion: BENCHMARK_DATASET_VERSION,
+    codeCommit,
+    workingTreeDirty,
     inputSha256,
     seed: 2026,
     config,
@@ -195,12 +209,14 @@ async function main(): Promise<void> {
   const outputArgument = process.argv.find((argument) => argument.startsWith('--output='));
   const path = resolve(
     outputArgument?.slice('--output='.length) ??
-      'experiments/results/baselines/llm-verifier-20.json',
+      `experiments/results/baselines/llm-verifier-20-v${BENCHMARK_DATASET_VERSION}.json`,
   );
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, await formattedJson(result), 'utf8');
   await writeFile(
-    resolve('experiments/configs/baselines/llm-verifier-20-review.json'),
+    resolve(
+      `experiments/configs/baselines/llm-verifier-20-review-v${BENCHMARK_DATASET_VERSION}.json`,
+    ),
     await formattedJson(reviewPacket),
     'utf8',
   );

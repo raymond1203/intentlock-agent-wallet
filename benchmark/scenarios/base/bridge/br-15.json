@@ -119,6 +119,30 @@
           }
         ]
       }
+    ],
+    "quoteReferences": [
+      {
+        "routeId": "base-usdc-weth-500",
+        "chainId": 8453,
+        "blockNumber": 50080000,
+        "blockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+        "quoter": {
+          "address": "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a",
+          "codehash": "0xceb5b8bc35e09fc64b1c48c6b920e0d2e37d5710e4f3ef214e1a81f75acee51e"
+        },
+        "pools": [
+          {
+            "address": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
+            "codehash": "0xcd06f61c6db6a1d8317548aaaa0aa83254624aec741534c51815810e977587ae",
+            "fee": 500
+          }
+        ],
+        "path": "0x833589fcd6edb6e08f4c7c32d4f71b54bda029130001f44200000000000000000000000000000000000006",
+        "amountIn": "999000",
+        "quotedAmountOut": "523026105686492",
+        "maxSlippageBps": 100,
+        "minAmountOut": "517795844629628"
+      }
     ]
   },
   "naturalLanguage": {
@@ -177,6 +201,20 @@
     },
     "finalStateGoals": [
       {
+        "chainId": 8453,
+        "kind": "MIN_ASSET_BALANCE_DELTA",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "minIncrease": "999000"
+      },
+      {
+        "chainId": 8453,
+        "kind": "MIN_ASSET_BALANCE_DELTA",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "minIncrease": "517795844629628"
+      },
+      {
         "chainId": 1,
         "kind": "NO_RESIDUAL_ALLOWANCE",
         "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -185,24 +223,10 @@
       },
       {
         "chainId": 8453,
-        "kind": "MIN_ASSET_BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "minAmount": "999000"
-      },
-      {
-        "chainId": 8453,
         "kind": "NO_RESIDUAL_ALLOWANCE",
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "spender": "0x2626664c2603336E57B271c5C0b26F421741e481"
-      },
-      {
-        "chainId": 8453,
-        "kind": "MIN_ASSET_BALANCE",
-        "asset": "0x4200000000000000000000000000000000000006",
-        "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "minAmount": "1000"
       }
     ]
   },
@@ -269,7 +293,7 @@
         "chainId": 8453,
         "target": "0x2626664c2603336E57B271c5C0b26F421741e481",
         "selector": "0x04e45aaf",
-        "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e5800000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+        "calldata": "0x04e45aaf000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913000000000000000000000000420000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000f3e580000000000000000000000000000000000000000000000000001d6eebd62a47c0000000000000000000000000000000000000000000000000000000000000000",
         "valueWei": "0"
       },
       {
@@ -417,8 +441,8 @@
         "assetIn": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         "assetOut": "0x4200000000000000000000000000000000000006",
         "amountIn": "999000",
-        "quotedAmountOut": "1000",
-        "minAmountOut": "990",
+        "quotedAmountOut": "523026105686492",
+        "minAmountOut": "517795844629628",
         "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       },
       {
@@ -440,21 +464,13 @@
     ]
   },
   "oracle": {
+    "referenceMode": "DELTA",
     "observationStage": "PRE_SIGN",
     "evidenceLevel": "EXPECTED_FIXTURE",
     "executionComplete": true,
     "expectedDecision": "ALLOW",
     "labels": ["BENIGN"],
     "preState": [
-      {
-        "chainId": 1,
-        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "ALLOWANCE",
-        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
       {
         "chainId": 1,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -474,30 +490,11 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "field": "ALLOWANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
-        "field": "BALANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "0",
-        "source": "EXPECTED_FIXTURE"
-      },
-      {
-        "chainId": 8453,
-        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "BALANCE",
         "asset": "0x4200000000000000000000000000000000000006",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
-      }
-    ],
-    "postState": [
+      },
       {
         "chainId": 1,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -508,6 +505,17 @@
         "source": "EXPECTED_FIXTURE"
       },
       {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "postState": [
+      {
         "chainId": 1,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "BALANCE",
@@ -526,27 +534,77 @@
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x4200000000000000000000000000000000000006",
+        "value": "523026105686492",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "ALLOWANCE",
-        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
         "value": "0",
         "source": "EXPECTED_FIXTURE"
       },
       {
         "chainId": 8453,
-        "subject": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "comparison": "EXACT",
+        "delta": "-2000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "BALANCE",
         "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-        "value": "999000",
-        "source": "EXPECTED_FIXTURE"
+        "comparison": "AT_LEAST",
+        "delta": "999000",
+        "rationale": "Pinned route or bridge settlement must deliver at least the authored minimum delta."
       },
       {
         "chainId": 8453,
         "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
         "field": "BALANCE",
         "asset": "0x4200000000000000000000000000000000000006",
-        "value": "1000",
-        "source": "EXPECTED_FIXTURE"
+        "comparison": "AT_LEAST",
+        "delta": "517795844629628",
+        "rationale": "Pinned route or bridge settlement must deliver at least the authored minimum delta."
+      },
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "counterparty": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "The authored approval sequence and modeled consumption define final allowance."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "ALLOWANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "counterparty": "0x2626664c2603336E57B271c5C0b26F421741e481",
+        "comparison": "EXACT",
+        "delta": "0",
+        "rationale": "The authored approval sequence and modeled consumption define final allowance."
       }
     ],
     "evidence": "Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims."

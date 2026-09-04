@@ -30,6 +30,7 @@ const bases = {
   swap: load('swap/ss-01.json'),
   batch: load('swap/bs-01.json'),
   bridge: load('bridge/br-01.json'),
+  baseOnly: load('batch/ba-07.json'),
 };
 
 const baseByOperator: Record<MutationOperatorId, BenchmarkScenario> = {
@@ -101,6 +102,147 @@ describe('deterministic benchmark mutation operators', () => {
     const first = applyMutation(bases.transfer, 'amount-inflation', 1);
     const second = applyMutation(bases.transfer, 'amount-inflation', 2);
     expect(first.trace.expectedEffects).not.toEqual(second.trace.expectedEffects);
+  });
+
+  it('always substitutes a different supported chain, including from Base', () => {
+    const ethereumMutation = applyMutation(bases.transfer, 'chain-substitution', 2026);
+    expect(ethereumMutation.trace.actions.every((action) => action.chainId === 8453)).toBe(true);
+
+    const baseScenario = structuredClone(bases.transfer);
+    for (const action of baseScenario.trace.actions) action.chainId = 8453;
+    for (const effect of baseScenario.trace.expectedEffects) {
+      if (effect.kind === 'BRIDGE') effect.sourceChainId = 8453;
+      else effect.chainId = 8453;
+    }
+    const baseMutation = applyMutation(baseScenario, 'chain-substitution', 2026);
+    expect(baseMutation.trace.actions.every((action) => action.chainId === 1)).toBe(true);
+    expect(baseMutation.mutation?.changes[0]).toMatchObject({ before: '8453', after: '1' });
+  });
+
+  it('preserves cross-chain bridge topology for every curated bridge scenario', () => {
+    for (let index = 1; index <= 15; index += 1) {
+      const original = load(`bridge/br-${String(index).padStart(2, '0')}.json`);
+      const mutated = applyMutation(original, 'chain-substitution', 2026);
+      expect(mutated.trace.actions, original.id).toHaveLength(original.trace.actions.length);
+      mutated.trace.actions.forEach((action, actionIndex) => {
+        const originalAction = original.trace.actions[actionIndex];
+        if (!originalAction) throw new Error(`${original.id} action fixture missing`);
+        expect(action.chainId, `${original.id} action ${String(actionIndex)}`).toBe(
+          originalAction.chainId === 1 ? 8453 : 1,
+        );
+      });
+      const bridges = mutated.trace.expectedEffects.filter((effect) => effect.kind === 'BRIDGE');
+      expect(bridges.length, original.id).toBeGreaterThan(0);
+      for (const bridge of bridges) {
+        expect(bridge.sourceChainId, original.id).not.toBe(bridge.destinationChainId);
+      }
+    }
+  });
+
+  it('keeps gas inflation on the scenario action chain for Base-only cases', () => {
+    expect(bases.baseOnly.trace.actions.every((action) => action.chainId === 8453)).toBe(true);
+    const mutated = applyMutation(bases.baseOnly, 'gas-inflation', 2026);
+    const gas = mutated.trace.expectedEffects.find((effect) => effect.kind === 'GAS');
+    expect(gas).toMatchObject({ kind: 'GAS', chainId: 8453 });
+  });
+
+  it('models stale quotes against the matching output delta, not the first post-state row', () => {
+    const scenario = structuredClone(bases.swap);
+    const swap = scenario.trace.expectedEffects.find((effect) => effect.kind === 'SWAP');
+    if (!swap) throw new Error('swap fixture missing');
+    const matchesOutput = (row: (typeof scenario.oracle.postState)[number]) =>
+      row.chainId === swap.chainId &&
+      row.field === 'BALANCE' &&
+      row.subject.toLowerCase() === swap.recipient.toLowerCase() &&
+      row.asset?.toLowerCase() === swap.assetOut.toLowerCase();
+    const pre = scenario.oracle.preState.find(matchesOutput);
+    const post = scenario.oracle.postState.find(matchesOutput);
+    if (!pre || !post) throw new Error('swap output state fixture missing');
+    pre.value = '37';
+    post.value = (37n + BigInt(swap.quotedAmountOut ?? swap.minAmountOut)).toString();
+    scenario.oracle.referenceMode = 'DELTA';
+    scenario.oracle.expectedDeltas = [
+      {
+        chainId: swap.chainId,
+        subject: swap.recipient,
+        field: 'BALANCE',
+        asset: swap.assetOut,
+        comparison: 'AT_LEAST',
+        delta: swap.minAmountOut,
+        rationale: 'Pinned swap minimum output.',
+      },
+    ];
+    scenario.intent.finalStateGoals = [
+      {
+        chainId: swap.chainId,
+        kind: 'MIN_ASSET_BALANCE_DELTA',
+        asset: swap.assetOut,
+        account: swap.recipient,
+        minIncrease: swap.minAmountOut,
+      },
+    ];
+
+    const mutated = applyMutation(scenario, 'stale-quote', 2026);
+    const actual = mutated.oracle.postState.find(matchesOutput);
+    expect(actual).toBeDefined();
+    expect(BigInt(actual?.value ?? '0') - 37n).toBe(BigInt(swap.minAmountOut) - 1n);
+    expect(mutated.oracle.expectedDeltas).toEqual(scenario.oracle.expectedDeltas);
+    expect(
+      evaluatePostState({
+        contract: mutated.intent,
+        preState: mutated.oracle.preState,
+        postState: mutated.oracle.postState,
+        observedEffects: mutated.trace.expectedEffects,
+        expectedDeltas: mutated.oracle.expectedDeltas,
+        evidenceLevel: 'EXPECTED_FIXTURE',
+        executionComplete: true,
+      }).status,
+    ).toBe('VIOLATION');
+  });
+
+  it('removes destination delta references when bridge completion is partial', () => {
+    const scenario = structuredClone(bases.bridge);
+    const bridge = scenario.trace.expectedEffects.find((effect) => effect.kind === 'BRIDGE');
+    if (!bridge) throw new Error('bridge fixture missing');
+    const sourceRow = scenario.oracle.preState.find(
+      (row) => row.chainId === bridge.sourceChainId && row.field === 'BALANCE' && row.asset,
+    );
+    const destinationRow = scenario.oracle.postState.find(
+      (row) => row.chainId === bridge.destinationChainId && row.field === 'BALANCE' && row.asset,
+    );
+    if (!sourceRow?.asset || !destinationRow?.asset)
+      throw new Error('bridge state fixture missing');
+    scenario.oracle.referenceMode = 'DELTA';
+    scenario.oracle.expectedDeltas = [
+      {
+        chainId: bridge.sourceChainId,
+        subject: sourceRow.subject,
+        field: 'BALANCE',
+        asset: sourceRow.asset,
+        comparison: 'EXACT',
+        delta: '-1',
+        rationale: 'Source debit remains observable.',
+      },
+      {
+        chainId: bridge.destinationChainId,
+        subject: destinationRow.subject,
+        field: 'BALANCE',
+        asset: destinationRow.asset,
+        comparison: 'AT_LEAST',
+        delta: '1',
+        rationale: 'Destination credit requires relay completion.',
+      },
+    ];
+
+    const mutated = applyMutation(scenario, 'partial-completion', 2026);
+    expect(mutated.oracle.postState.every((row) => row.chainId !== bridge.destinationChainId)).toBe(
+      true,
+    );
+    expect(
+      mutated.oracle.expectedDeltas.every((row) => row.chainId !== bridge.destinationChainId),
+    ).toBe(true);
+    expect(mutated.oracle.expectedDeltas).toHaveLength(1);
+    expect(mutated.oracle.executionComplete).toBe(false);
   });
 
   it.each(

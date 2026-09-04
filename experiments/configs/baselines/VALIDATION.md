@@ -1,5 +1,9 @@
 # M2 baseline validation — 2026-09-03
 
+This is a historical v0.2.0 validation record. It is not a v0.3.0 result and must not be carried
+into current comparative metrics. The corrected dataset requires a new live run and rationale review.
+The pending current protocol is `reviewer-20-v0.3.0.json`; its output files do not exist yet.
+
 ## Result and scope
 
 The identity-redacted v2 adapter run completed all 20 requests: 17 exact decision matches,
@@ -13,7 +17,7 @@ the shortcut; do not assume a lower rerun score or rehabilitate the confounded v
 
 ## Reproducibility
 
-- Dataset candidate: 0.2.0, seed 2026; public holdout exposed, re-freeze pending.
+- Historical dataset candidate: 0.2.0, seed 2026; public holdout exposed, re-freeze pending.
 - Code commit: `c5e521b1c4e9e6301f199139f79061c8ef508760`; working tree clean at run start.
 - Model: `gpt-5.4-mini-2026-03-17`.
 - Prompt: `intentlock-llm-baseline-v2`; temperature 0.

@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { decodeFunctionData, keccak256, type Address, type Hex } from 'viem';
 import { z } from 'zod';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { decodeErc20Log } from '../src/effects/erc20-decoder.js';
 import { SWAP_ROUTER_02_ABI } from '../src/effects/swap-decoder.js';
 import {
@@ -17,7 +17,7 @@ import { fixtureAddress } from './extended-benchmark.js';
 import { ForkRuntime, owner, json, resetExecutionSequence } from './m2-execution/runtime.js';
 import { PERMIT_READ, resolvePermit } from './m2-execution/permit.js';
 import { prepareRelay, relaySourceReceipt } from './m2-execution/bridge.js';
-import { readPinnedQuote } from './m2-execution/quotes.js';
+import { assertPinnedQuote, readPinnedQuote } from './m2-execution/quotes.js';
 import { classifyReceiptEffects } from '../src/oracle/receipt-accounting.js';
 import { minimumPrefixFunding } from '../src/benchmark/execution-funding.js';
 import { executionCollectorSha256 } from './m2-execution/provenance.js';
@@ -26,6 +26,11 @@ import {
   executionLeaves,
   requiredReceiptCount as requiredReceiptCountFor,
 } from './m2-execution/receipt-requirements.js';
+import {
+  assertCleanSourceAtStart,
+  assertCleanSourceUnchanged,
+  readGitSourceState,
+} from './source-integrity.js';
 
 const numericAddress = z.custom<Address>(
   (v) => typeof v === 'string' && /^0x[\da-fA-F]{40}$/.test(v),
@@ -75,10 +80,11 @@ const scenarios = (
   .flat()
   .filter((s) => !filter || filter.some((prefix) => s.id.startsWith(prefix)));
 const runtimes = new Map<number, ForkRuntime>();
-const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-const workingTreeDirty = Boolean(
-  execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim(),
-);
+const requireCleanSource = process.argv.includes('--require-clean-source');
+const sourceAtStart = readGitSourceState();
+if (requireCleanSource) assertCleanSourceAtStart(sourceAtStart, 'M2 execution evidence');
+const sourceCommit = sourceAtStart.commitSha;
+const workingTreeDirty = sourceAtStart.workingTreeDirty;
 const collectorSha256 = await executionCollectorSha256();
 const sensitiveRpcValues = ['FORK_RPC_URL_1', 'FORK_RPC_URL_8453'].flatMap((name) => {
   const value = process.env[name];
@@ -105,10 +111,25 @@ function executionFailure(cause: unknown): string {
   return sanitizeExecutionFailure(message, sensitiveRpcValues);
 }
 
+function deltaObservation(
+  delta: BenchmarkScenario['oracle']['expectedDeltas'][number],
+): StateObservation {
+  return {
+    chainId: delta.chainId,
+    subject: delta.subject,
+    field: delta.field,
+    asset: delta.asset,
+    ...(delta.counterparty ? { counterparty: delta.counterparty } : {}),
+    value: '0',
+    source: 'EXPECTED_FIXTURE',
+  };
+}
+
 function stateQueries(s: BenchmarkScenario): StateObservation[] {
   const rows = new Map<string, StateObservation>();
   const add = (r: StateObservation) => rows.set(observationKey(r), r);
   for (const row of [...s.oracle.preState, ...s.oracle.postState]) add(row);
+  for (const delta of s.oracle.expectedDeltas) add(deltaObservation(delta));
   for (const e of s.trace.expectedEffects)
     if (e.kind === 'APPROVAL' && e.signatureDeadline !== undefined && e.expiration === undefined)
       add({
@@ -284,6 +305,8 @@ async function run(s: BenchmarkScenario) {
     }
     pre = await observe(s, queries, 'FIXED_FORK');
     if (s.workflow === 'BRIDGE_SWAP') await prepareRelay(required(runtimes.get(8453)), setupNotes);
+    // Verify every authored quote against the pristine pinned pool state before any user action
+    // can move the pool. Sequential swaps intentionally share this planning-time reference point.
     for (const action of resolvedActions) {
       const rt = required(runtimes.get(action.chainId));
       for (const leaf of executionLeaves(
@@ -293,12 +316,17 @@ async function run(s: BenchmarkScenario) {
         action.calldata as Hex,
       )) {
         if (
-          leaf.target.toLowerCase() === fixtureAddress(leaf.chainId, 'swapRouter02').toLowerCase()
-        ) {
-          decodeFunctionData({ abi: SWAP_ROUTER_02_ABI, data: leaf.data });
-          if (process.argv.includes('--quotes')) quotes.push(await readPinnedQuote(rt, leaf.data));
-        }
+          leaf.target.toLowerCase() !== fixtureAddress(leaf.chainId, 'swapRouter02').toLowerCase()
+        )
+          continue;
+        decodeFunctionData({ abi: SWAP_ROUTER_02_ABI, data: leaf.data });
+        const observed = await readPinnedQuote(rt, leaf.data);
+        assertPinnedQuote(observed, s.fixture?.quoteReferences ?? []);
+        quotes.push(observed);
       }
+    }
+    for (const action of resolvedActions) {
+      const rt = required(runtimes.get(action.chainId));
       const transaction = await rt.send(
         action.target as Address,
         action.calldata as Hex,
@@ -350,12 +378,19 @@ async function run(s: BenchmarkScenario) {
     receipts: user,
     requiredReceiptCount,
   });
+  const deltaReferenceKeys = new Set(
+    s.oracle.expectedDeltas.map((delta) => observationKey(deltaObservation(delta))),
+  );
+  const absoluteReferenceRows = s.oracle.postState.filter(
+    (row) => !deltaReferenceKeys.has(observationKey(row)),
+  );
   const reconciliation = post.length
     ? evaluatePostState({
         contract: s.intent,
         preState: pre,
         postState: post,
-        expectedPostState: s.oracle.postState,
+        expectedPostState: absoluteReferenceRows,
+        expectedDeltas: s.oracle.expectedDeltas,
         evidenceLevel: 'EXECUTED_FORK',
         executionComplete: error === null,
         observedEffects: flows,
@@ -370,6 +405,7 @@ async function run(s: BenchmarkScenario) {
     oracle.missing.length === 0 &&
     oracle.status !== 'INSUFFICIENT_EVIDENCE';
   const result = {
+    datasetVersion: BENCHMARK_DATASET_VERSION,
     scenarioId: s.id,
     sourceCommit,
     workingTreeDirty,
@@ -424,6 +460,7 @@ async function recordSetupFailure(s: BenchmarkScenario, cause: unknown): Promise
     requiredReceiptCount,
   });
   const result = {
+    datasetVersion: BENCHMARK_DATASET_VERSION,
     scenarioId: s.id,
     sourceCommit,
     workingTreeDirty,
@@ -496,10 +533,18 @@ try {
 } finally {
   await writeFile(
     `${outDir}/summary.json`,
-    json({ sourceCommit, workingTreeDirty, count: results.length, results }),
+    json({
+      datasetVersion: BENCHMARK_DATASET_VERSION,
+      sourceCommit,
+      workingTreeDirty,
+      count: results.length,
+      results,
+    }),
   );
   await Promise.all([...runtimes.values()].map((r) => r.fork.stop()));
 }
+if (requireCleanSource)
+  assertCleanSourceUnchanged(sourceAtStart, readGitSourceState(), 'M2 execution evidence');
 if (
   process.argv.includes('--require-all-executed') &&
   (results.length !== scenarios.length || results.some((result) => !result.executionComplete))

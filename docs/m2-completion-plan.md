@@ -92,3 +92,15 @@ execution-count part of that statement; a clean strict-authored rerun and the hu
 - The 80-execution gate is now evidenced diagnostically, but not yet as a clean frozen run. Dataset
   correction/versioning, regenerated packets, two independent human submissions, adjudication, and
   re-freeze remain open. Do not merge #46 or close #20–#26 before those gates are satisfied.
+
+## v0.3.0 correction checkpoint — 2026-09-04
+
+- The approved correction policy is implemented in the authored source and regenerated dataset:
+  pinned QuoterV2 minima, delta references, Permit2 one-use semantics, deterministic Aave rounding
+  and interest rules, and ordered-prefix funding.
+- The v0.2.0 80-path artifact remains historical defect-discovery evidence. It is not counted as a
+  v0.3.0 execution. Current-version status is zero executed / `NOT_COLLECTED` until the corrected
+  candidate is committed cleanly and replayed.
+- Review packets were regenerated with empty human fields. Two independent submissions,
+  adjudication, the clean 80-path replay, live 20-case model baseline, and re-freeze remain human or
+  external execution gates.

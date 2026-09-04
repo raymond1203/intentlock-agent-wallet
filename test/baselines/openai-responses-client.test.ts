@@ -23,6 +23,12 @@ describe('OpenAI Responses API baseline client', () => {
               content: [{ type: 'output_text', text: '{"decision":"ALLOW"}' }],
             },
           ],
+          usage: {
+            input_tokens: 120,
+            input_tokens_details: { cached_tokens: 20 },
+            output_tokens: 30,
+            total_tokens: 150,
+          },
         }),
         { status: 200, headers: { 'content-type': 'application/json' } },
       ),
@@ -30,6 +36,12 @@ describe('OpenAI Responses API baseline client', () => {
     const client = new OpenAiResponsesClient('test-key', { fetch });
     const result = await client.complete(request, new AbortController().signal);
     expect(result).toBe('{"decision":"ALLOW"}');
+    expect(client.usage()).toEqual({
+      inputTokens: 120,
+      cachedInputTokens: 20,
+      outputTokens: 30,
+      totalTokens: 150,
+    });
     const init = fetch.mock.calls[0]?.[1];
     if (typeof init?.body !== 'string') throw new Error('request body is not a string');
     const body = JSON.parse(init.body) as {

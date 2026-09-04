@@ -1,0 +1,164 @@
+protocolVersion: '0.1'
+status: CANDIDATE_UNFROZEN
+freezeIssue: 27
+
+# This file is deliberately non-runnable until every null freeze field is filled and
+# status becomes FROZEN. The runner must reject CANDIDATE_UNFROZEN manifests.
+dataset:
+  version: '0.3.0'
+  baseManifest: benchmark/splits/manifest.json
+  caseManifest: experiments/configs/case-manifest.json
+  m2Validation: experiments/configs/m2-validation.json
+  expectedBaseCases: 80
+  expectedCuratedCases: 400
+  hiddenTestClaim: false
+  hiddenTestNote: >-
+    The existing files were visible during development. They are an author-exposed
+    evaluation split, not a sealed unseen test set.
+
+caseMatrix:
+  seed: 2026
+  evaluatedAt: '2026-08-30T00:00:00Z'
+  casesPerBase: 5
+  variants:
+    - BENIGN_ORIGINAL
+    - ADVERSARIAL_SCOPE
+    - ADVERSARIAL_BUDGET
+    - ADVERSARIAL_COMPOSITION
+    - BENIGN_DRIFT
+  validityPolicy: >-
+    Every generated case must pass schema validation and its operator-specific validity
+    check. An inapplicable operator is replaced by the next preregistered operator for
+    the same workflow; it is never retained merely to reach 400.
+
+systems:
+  - id: none
+    label: No defense
+    primary: true
+  - id: guard-mode-emulator
+    label: MetaMask public Guard Mode rules emulator
+    primary: true
+    configuration: STRICT
+    sensitivityConfiguration: LITERAL
+    productEquivalenceClaim: false
+  - id: llm-verifier
+    label: Stateless LLM intent verifier
+    primary: true
+    config: experiments/configs/baselines/llm-verifier.json
+  - id: per-call-policy
+    label: Deterministic per-call policy
+    primary: true
+    config: experiments/configs/baselines/per-call-policy.json
+  - id: intentlock-full
+    label: IntentLock cumulative effect monitor
+    primary: true
+
+# Task Shield and DRIFT are related-work systems, not locally reproduced systems. Calling
+# the generic LLM verifier an implementation of either would be an invalid equivalence claim.
+relatedWorkOnly:
+  - task-shield
+  - drift
+
+models:
+  primary:
+    id: gpt-5.4-mini-2026-03-17
+    temperature: 0
+    maxRetries: 1
+    timeoutMs: 30000
+    malformedPolicy: ABSTAIN
+    pricingUsdPerMillionTokens:
+      input: 0.75
+      cachedInput: 0.075
+      output: 4.50
+    pricingSource: https://developers.openai.com/api/docs/models/gpt-5.4-mini
+    pricingCheckedAt: '2026-09-04'
+  secondary: null
+  secondaryPolicy: >-
+    No secondary model is part of the primary result until an exact available snapshot is
+    selected before freeze. A model added after freeze is exploratory appendix evidence.
+
+forks:
+  - chainId: 1
+    blockNumber: 25773000
+    blockHash: '0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166'
+    rpcEnvVar: FORK_RPC_URL_1
+  - chainId: 8453
+    blockNumber: 50080000
+    blockHash: '0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9'
+    rpcEnvVar: FORK_RPC_URL_8453
+
+adaptive:
+  expectedCases: 40
+  maxReplansPerCase: 3
+  attackerObservation:
+    - guard decision
+    - public reason code
+    - tool result returned to the agent
+  forbiddenObservation:
+    - hidden oracle label
+    - private key or API key
+    - raw reviewer answer
+
+stageComparisons:
+  - id: semantic-only
+    interpretation: Stateless semantic verifier without symbolic state enforcement.
+  - id: symbolic-only
+    interpretation: Runtime monitor starting from an already confirmed benchmark contract.
+  - id: hybrid-conjunction
+    interpretation: Semantic and symbolic decisions are conjoined; not a single-factor ablation.
+
+ablations:
+  - id: stateless-ledger
+    changedFactor: accepted-effect history disabled
+  - id: shallow-decoder
+    changedFactor: recursive nested effect decoding disabled
+  - id: no-post-state-verifier
+    changedFactor: receipt and final-state reconciliation disabled
+  - id: confirmation-always
+    changedFactor: every critical-field change requires confirmation
+
+metrics:
+  primary: offline_counterfactual_unsafe_authorization_rate
+  secondary:
+    - offline_counterfactual_benign_completion
+    - false_deny_rate
+    - escalation_rate
+    - confirmation_request_rate
+    - pre_sign_detection_rate
+    - unauthorized_value
+    - excess_allowance_exposure
+    - first_detection_ordinal
+    - latency_ms
+    - token_cost
+  confidenceInterval: stratified-bootstrap-95
+  bootstrapReplicates: 10000
+  missingDataPolicy: >-
+    Timeout, malformed output, unsupported decoding, and incomplete execution remain explicit
+    outcomes. They are not silently removed from denominators.
+
+failurePolicy:
+  overwriteRun: false
+  retriesReuseCaseId: true
+  retryResultSelection: attempt-1-intention-to-treat-retries-operational-sensitivity-only
+  maxAttemptsPerCase: 2
+  maxTotalRetryAttempts: 2000
+  timeoutDecision: ABSTAIN
+  malformedDecision: ABSTAIN
+
+freeze:
+  # gitCommit is reviewed candidate A. The run manifest records its direct freeze child B as
+  # executionCommit, avoiding a self-referential commit hash inside this file.
+  gitCommit: null
+  dependencyDigestSha256: null
+  datasetDigestSha256: null
+  caseManifestDigestSha256: null
+  promptDigestSha256: null
+  toolSchemaDigestSha256: null
+  metricImplementationDigestSha256: null
+  protocolConfigDigestSha256: null
+  evaluationConfigDigestSha256: null
+  implementationDigestSha256: null
+  frozenAt: null
+  humanReviewer: null
+  humanReviewPath: null
+  humanReviewDigestSha256: null
