@@ -1,5 +1,5 @@
 protocolVersion: '0.1'
-status: CANDIDATE_UNFROZEN
+status: FROZEN
 freezeIssue: 27
 reviewProtocol:
   schemaVersion: '0.1'
@@ -18,8 +18,8 @@ dataset:
   expectedCuratedCases: 400
   hiddenTestClaim: false
   hiddenTestNote: >-
-    The existing files were visible during development. They are an author-exposed
-    evaluation split, not a sealed unseen test set.
+    The existing files were visible during development. They are an author-exposed evaluation split,
+    not a sealed unseen test set.
 
 caseMatrix:
   seed: 2026
@@ -32,9 +32,9 @@ caseMatrix:
     - ADVERSARIAL_COMPOSITION
     - BENIGN_DRIFT
   validityPolicy: >-
-    Every generated case must pass schema validation and its operator-specific validity
-    check. An inapplicable operator is replaced by the next preregistered operator for
-    the same workflow; it is never retained merely to reach 400.
+    Every generated case must pass schema validation and its operator-specific validity check. An
+    inapplicable operator is replaced by the next preregistered operator for the same workflow; it
+    is never retained merely to reach 400.
 
 systems:
   - id: none
@@ -79,8 +79,8 @@ models:
     pricingCheckedAt: '2026-09-04'
   secondary: null
   secondaryPolicy: >-
-    No secondary model is part of the primary result until an exact available snapshot is
-    selected before freeze. A model added after freeze is exploratory appendix evidence.
+    No secondary model is part of the primary result until an exact available snapshot is selected
+    before freeze. A model added after freeze is exploratory appendix evidence.
 
 forks:
   - chainId: 1
@@ -153,17 +153,21 @@ failurePolicy:
 freeze:
   # gitCommit is reviewed candidate A. The run manifest records its direct freeze child B as
   # executionCommit, avoiding a self-referential commit hash inside this file.
-  gitCommit: null
-  dependencyDigestSha256: null
-  datasetDigestSha256: null
-  caseManifestDigestSha256: null
-  promptDigestSha256: null
-  toolSchemaDigestSha256: null
-  metricImplementationDigestSha256: null
-  protocolConfigDigestSha256: null
-  evaluationConfigDigestSha256: null
-  implementationDigestSha256: null
-  frozenAt: null
+  gitCommit: 89c742e953c8251ba4de78939648b5c7d566b9f3
+  dependencyDigestSha256: 937ea5e8d6c5a86d1a9c47f83fc517074007ad571284f091b17746aaefc5d536
+  datasetDigestSha256: 16c0de0b9bfc2e54dd5ef8eb606da210944e41c95d2f304e2348e7f00b325869
+  caseManifestDigestSha256: 373b9fc819f013f9fb3affea0c9388b6d81c16ae1abbc7f967ecabfe9bf51c48
+  promptDigestSha256: ebca441c2178f7300045b7b338e7a6f839dff8ac01096ee44469cb845bdd0113
+  toolSchemaDigestSha256: 6567f5277bbfc0a16ecc6a96efe1fb132a42a16a4c12140f2feca64e975ea42a
+  metricImplementationDigestSha256: 6f3131261db5ec064670ef76e02c5e84d6aa20cfd60f11a183bb96ed1e7331e1
+  protocolConfigDigestSha256: d06139264d6c17f472b4fbbc3bdb901c3e91903d1244b4bc73c846b11321479b
+  evaluationConfigDigestSha256: 7404593dd1a2f2c13f52a2f27c0baca2bf4b9a8ccf8e74e9a26528d6ea9e29c6
+  implementationDigestSha256: b90bb0a548a50cce492da6d4c70bfe845d22e50009df0e6edfcd7d1fb3fd3ef6
+  frozenAt: 2026-09-04T23:52:48.871Z
   humanReviewer: null
   humanReviewPath: null
   humanReviewDigestSha256: null
+  aiReview:
+    reviewerPseudonym: codex-ai-freeze-review
+    reviewPath: experiments/reviews/freeze-review.ai-v0.4.0.json
+    reviewDigestSha256: cd615b5a620db789315d5544591307664d86d7e24f9ba766ae1ababe0adffa3c

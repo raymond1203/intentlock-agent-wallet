@@ -6,7 +6,7 @@
     "independentHumanReviewClaim": false,
     "finalAuthorApproval": "PENDING"
   },
-  "status": "CANDIDATE_UNFROZEN",
+  "status": "FROZEN",
   "primaryRunRequired": true,
   "seed": 2026,
   "cases": 400,
@@ -62,8 +62,9 @@
   ],
   "interpretation": "Semantic-only, symbolic-only, and hybrid rows are non-causal stage comparisons. Only stateless-ledger, shallow-decoder, and no-post-state-verifier are one-factor causal ablations; confirmation-always is a separate policy variant. All fresh arms must replay the same frozen 400-case matrix.",
   "freeze": {
-    "gitCommit": null,
-    "frozenAt": null,
-    "humanReviewer": null
+    "gitCommit": "89c742e953c8251ba4de78939648b5c7d566b9f3",
+    "frozenAt": "2026-09-04T23:52:48.871Z",
+    "humanReviewer": null,
+    "aiReviewer": "codex-ai-freeze-review"
   }
 }
