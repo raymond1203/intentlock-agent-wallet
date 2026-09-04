@@ -94,6 +94,9 @@ export function sanitizeExecutionFailure(
   sensitiveValues: readonly string[] = [],
 ): string {
   const redacted = redactSensitiveText(message, sensitiveValues);
+  // Missing local configuration is actionable and contains no provider response data.
+  // Preserve it before the broad RPC/provider heuristic classifies the explanatory text.
+  if (/^[A-Z][A-Z0-9_]* is not set\./.test(redacted)) return redacted.slice(0, 500);
   if (
     /429|rate.?limit|1015|timed? ?out|timeout|archive|pruned|historical state|https?:|<html|<!doctype|transport\(|api.?key|bearer|authorization|cloudflare|provider|\brpc\b/i.test(
       redacted,

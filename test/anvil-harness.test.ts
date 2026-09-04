@@ -53,6 +53,13 @@ describe('redactSensitiveText', () => {
       sanitizeExecutionFailure('Unauthorized api key project-secret', ['project-secret']),
     ).toBe('upstream RPC failure (details withheld)');
     expect(sanitizeExecutionFailure('unsupported fixture chain')).toBe('unsupported fixture chain');
+    expect(
+      sanitizeExecutionFailure(
+        'FORK_RPC_URL_1 is not set. An archive-capable RPC is required; see docs/decisions/0004-fixed-fork-harness.md',
+      ),
+    ).toBe(
+      'FORK_RPC_URL_1 is not set. An archive-capable RPC is required; see docs/decisions/0004-fixed-fork-harness.md',
+    );
   });
   it('removes the exact upstream value from child diagnostics', () => {
     const secret = 'https://rpc.example.test/project-secret';

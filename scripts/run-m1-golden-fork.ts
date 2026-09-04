@@ -52,6 +52,17 @@ type ScenarioEvidence = M1GoldenEvidence['scenarios'][number];
 type StateAssertion = ScenarioEvidence['stateAssertions'][number];
 type TokenFlow = ScenarioEvidence['rawTokenFlows'][number];
 
+let activeRunStage = 'startup';
+
+function setRunStage(stage: string): void {
+  activeRunStage = stage;
+}
+
+function scenarioStage(scenario: M1GoldenScenario, phase: string): string {
+  const safeId = /^[A-Za-z0-9_-]{1,64}$/.test(scenario.id) ? scenario.id : 'invalid-scenario-id';
+  return `scenario:${safeId}:${phase}`;
+}
+
 interface StateSnapshot {
   ownerUsdc: bigint;
   recipientUsdc: bigint;
@@ -597,9 +608,14 @@ async function blockedScenarioEvidence(
 ): Promise<ScenarioEvidence> {
   const usdc = fixture.addresses.usdc as Address;
   let mutation: ScenarioEvidence['fixtureMutation'] = null;
+  setRunStage(scenarioStage(scenario, 'blocked-pre-state'));
+  const pre = await snapshotState(runtime, fixture);
+  setRunStage(scenarioStage(scenario, 'blocked-original-codehash'));
   const originalHash = await runtimeCodehash(runtime, usdc);
   if (scenario.codehashDrift) {
+    setRunStage(scenarioStage(scenario, 'blocked-code-mutation'));
     await runtime.test.setCode({ address: usdc, bytecode: '0x00' });
+    setRunStage(scenarioStage(scenario, 'blocked-mutated-codehash'));
     const mutatedHash = await runtimeCodehash(runtime, usdc);
     mutation = {
       kind: 'ANVIL_SET_CODE',
@@ -608,9 +624,9 @@ async function blockedScenarioEvidence(
       mutatedCodehash: mutatedHash,
     };
   }
+  setRunStage(scenarioStage(scenario, 'blocked-current-codehash'));
   const currentHash = await runtimeCodehash(runtime, usdc);
   const decoder = decoderFor(fixture, scenario, currentHash);
-  const pre = await snapshotState(runtime, fixture);
   let signerCallCount = 0;
   const trapExecutor: MetaMaskWalletExecutor = {
     sendTransaction(): Promise<MetaMaskExecutionReceipt> {
@@ -618,6 +634,7 @@ async function blockedScenarioEvidence(
       return Promise.reject(new Error('blocked M1 Golden scenario reached the signer boundary'));
     },
   };
+  setRunStage(scenarioStage(scenario, 'blocked-policy-evaluation'));
   const audit = await new IntentLockMetaMaskAdapter(trapExecutor).execute({
     contract: contractFor(fixture, scenario, pre),
     action: {
@@ -629,15 +646,16 @@ async function blockedScenarioEvidence(
     evaluatedAt: '2026-08-29T00:00:00Z',
     simulationStatus: 'SUCCESS',
   });
-  const post = await snapshotState(runtime, fixture);
+  setRunStage(scenarioStage(scenario, 'blocked-post-nonce'));
+  const postNonce = await runtime.client.getTransactionCount({ address: owner.address });
   const assertions = [
     assertion('signer boundary call count', 0, signerCallCount, 0, signerCallCount === 0),
     assertion(
       'account transaction nonce unchanged',
       pre.accountNonce,
-      post.accountNonce,
+      postNonce,
       pre.accountNonce,
-      post.accountNonce === pre.accountNonce,
+      postNonce === pre.accountNonce,
     ),
   ];
   const observedCode = audit.preDecision.kind === 'ALLOW' ? null : audit.preDecision.code;
@@ -684,18 +702,25 @@ async function runScenario(
   fixture: M1GoldenFixture,
   scenario: M1GoldenScenario,
 ): Promise<ScenarioEvidence> {
+  setRunStage(scenarioStage(scenario, 'snapshot'));
   const snapshot = await fork.snapshot();
   let result: ScenarioEvidence;
+  let failedStage: string | undefined;
   try {
     resetExecutionSequence();
     const runtime = new ForkRuntime(fork, fingerprint);
+    setRunStage(scenarioStage(scenario, 'prepare'));
     const setupTransactionHashes = await prepareScenario(runtime, fixture, scenario);
     if (scenario.expectedDecision !== 'ALLOW') {
+      setRunStage(scenarioStage(scenario, 'blocked-evaluation'));
       result = await blockedScenarioEvidence(runtime, fixture, scenario);
     } else {
+      setRunStage(scenarioStage(scenario, 'runtime-codehash'));
       const currentHash = await runtimeCodehash(runtime, fixture.addresses.usdc as Address);
+      setRunStage(scenarioStage(scenario, 'pre-state'));
       const pre = await snapshotState(runtime, fixture);
       const decoder = decoderFor(fixture, scenario, currentHash);
+      setRunStage(scenarioStage(scenario, 'allow-execution'));
       result = await realScenarioEvidence(
         runtime,
         fingerprint,
@@ -707,9 +732,15 @@ async function runScenario(
         pre,
       );
     }
+  } catch (error) {
+    failedStage = activeRunStage;
+    throw error;
   } finally {
+    setRunStage(scenarioStage(scenario, 'revert'));
     await fork.revert(snapshot);
+    if (failedStage !== undefined) setRunStage(failedStage);
   }
+  setRunStage(scenarioStage(scenario, 'restore-healthcheck'));
   const restored = await fork.healthcheck();
   if (restored.digest.toLowerCase() !== fingerprint.digest.toLowerCase()) {
     throw new Error(`fork fingerprint did not restore after ${scenario.id}`);
@@ -718,25 +749,32 @@ async function runScenario(
 }
 
 async function main(): Promise<void> {
+  setRunStage('source-check-start');
   const requireCleanSource = process.argv.includes('--require-clean-source');
   const sourceAtStart = readGitSourceState(ROOT);
   if (requireCleanSource) assertCleanSourceAtStart(sourceAtStart, 'M1 Golden evidence');
+  setRunStage('arguments');
   const output = parseOutputArgument();
   if (existsSync(output)) throw new Error(`refusing to overwrite existing evidence: ${output}`);
+  setRunStage('fixture-load');
   const fixtureRaw = readFileSync(FIXTURE_PATH, 'utf8');
   const fixture = M1GoldenFixtureSchema.parse(JSON.parse(fixtureRaw));
   if (fixture.addresses.account.toLowerCase() !== owner.address.toLowerCase()) {
     throw new Error('M1 Golden fixture account is not the public Anvil test owner');
   }
+  setRunStage('fork-start');
   const baseConfig = loadForkConfig('experiments/configs/forks/ethereum-25773000.json');
   const fork = await AnvilFork.start({ ...baseConfig, port: baseConfig.port + 20 });
   try {
+    setRunStage('fork-owner-funding');
     await fork.setBalance(owner.address, HUNDRED_ETH);
+    setRunStage('fork-healthcheck');
     const fingerprint = await fork.healthcheck();
     const scenarios: ScenarioEvidence[] = [];
     for (const scenario of fixture.scenarios) {
       scenarios.push(await runScenario(fork, fingerprint, fixture, scenario));
     }
+    setRunStage('source-check-end');
     const sourceAtEnd = readGitSourceState(ROOT);
     if (requireCleanSource)
       assertCleanSourceUnchanged(sourceAtStart, sourceAtEnd, 'M1 Golden evidence');
@@ -751,6 +789,7 @@ async function main(): Promise<void> {
         anvil: toolVersion('anvil'),
       },
     };
+    setRunStage('evidence-build');
     const draft = M1GoldenEvidenceSchema.parse({
       schemaVersion: 'm1-golden-evidence-v1',
       generatedAt: new Date().toISOString(),
@@ -773,6 +812,7 @@ async function main(): Promise<void> {
       },
       scenarios,
     });
+    setRunStage('evidence-finalize');
     const evidence = M1GoldenEvidenceSchema.parse({
       ...draft,
       summary: {
@@ -780,9 +820,11 @@ async function main(): Promise<void> {
         stableDecisionDigest: computeM1StableDecisionDigest(draft),
       },
     });
+    setRunStage('evidence-validate');
     validateM1GoldenEvidence(evidence, fixture, {
       fixtureSha256: source.fixtureSha256,
     });
+    setRunStage('evidence-write');
     mkdirSync(dirname(output), { recursive: true });
     writeFileSync(output, json(evidence), { flag: 'wx' });
     process.stdout.write(
@@ -795,6 +837,8 @@ async function main(): Promise<void> {
 
 main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  process.stderr.write(`M1 Golden failed: ${sanitizeExecutionFailure(message)}\n`);
+  process.stderr.write(
+    `M1 Golden failed at ${activeRunStage}: ${sanitizeExecutionFailure(message)}\n`,
+  );
   process.exitCode = 1;
 });
