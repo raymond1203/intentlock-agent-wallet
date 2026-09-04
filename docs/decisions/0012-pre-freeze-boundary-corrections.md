@@ -48,3 +48,13 @@ Reports retain `collectorMatchesCurrent` (false after this change) and separatel
 `collectorMatchesBoundSource`. Thus the old execution can support historical data validity, not a
 claim that M2 ran the patched M3 implementation. A diagnostic reconstruction of source `a0cca37`
 reproduced the recorded collector digest `d3ca47765b9de0aa86d88a55d0a048e6708692711f82a7778c14ba147fa50474`.
+
+## Freeze reader metadata boundary
+
+The first exact-20 run (`freeze-solo-v0.4.0-01`, candidate `89e6013`) matched all expected
+decisions. Before approving the freeze, inspection found that the committed-source reader also
+counted root-level `coverage.json` as a scenario, yielding 81 instead of 80. The reader now uses
+the runner's one-workflow-directory file layout. A regression loads the real committed coverage
+metadata alongside all 80 scenarios and verifies the regenerated 400-case manifest. This changes
+file selection only, not a scenario, label, policy, or metric. The original dry-run bytes remain
+preserved and unapproved. A new candidate and separately bound exact-20 run are required.

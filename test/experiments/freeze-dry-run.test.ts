@@ -27,7 +27,10 @@ import {
 } from '../../src/experiments/freeze-gates.js';
 import { FrozenEvalConfigSchema } from '../../src/experiments/protocol.js';
 import { sha256Text } from '../../src/experiments/protocol.js';
-import { validateFreezeReviewEvidenceFromRepository } from '../../scripts/freeze-review-evidence.js';
+import {
+  candidateBaseScenarios,
+  validateFreezeReviewEvidenceFromRepository,
+} from '../../scripts/freeze-review-evidence.js';
 
 function loadBaseScenarios(): BenchmarkScenario[] {
   const root = resolve(import.meta.dirname, '../../benchmark/scenarios/base');
@@ -309,6 +312,28 @@ describe('pre-freeze exact-20 deterministic dry run', () => {
       ),
     ).toThrow('differs from the candidate scenario');
   });
+
+  it('loads exactly the committed 80 workflow scenarios without treating coverage metadata as a case', () => {
+    const root = resolve(import.meta.dirname, '../..');
+    const commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+    const trackedCoverage = execFileSync(
+      'git',
+      ['-C', root, 'show', `${commit}:benchmark/scenarios/base/coverage.json`],
+      { encoding: 'utf8' },
+    );
+    expect(JSON.parse(trackedCoverage)).toHaveProperty('total', 80);
+    const scenarios = candidateBaseScenarios(root, commit);
+    expect(scenarios).toHaveLength(80);
+    expect(new Set(scenarios.map((scenario) => scenario.id)).size).toBe(80);
+    expect(() =>
+      verifyCaseManifest(
+        JSON.parse(readFileSync('experiments/configs/case-manifest.json', 'utf8')),
+        createEvaluationCaseMatrix(scenarios),
+      ),
+    ).not.toThrow();
+  }, 30_000);
 
   it('rejects a review that names dry-run artifacts absent from the freeze commit', async () => {
     const repositoryRoot = resolve(import.meta.dirname, '../..');

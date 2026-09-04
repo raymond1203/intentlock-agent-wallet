@@ -174,7 +174,7 @@ function allBases(): BenchmarkScenario[] {
 }
 
 describe('preregistered ablation evaluation', () => {
-  it('loads the eight-arm candidate manifest but refuses to treat it as frozen', () => {
+  it('validates the canonical eight-arm manifest and still rejects an unfrozen candidate', () => {
     const manifest = AblationManifestSchema.parse(
       JSON.parse(
         readFileSync(
@@ -184,8 +184,15 @@ describe('preregistered ablation evaluation', () => {
       ),
     );
     expect(manifest.arms.map((arm) => arm.id)).toEqual(ABLATION_ARMS);
-    expect(manifest.status).toBe('CANDIDATE_UNFROZEN');
-    expect(ReadyAblationManifestSchema.safeParse(manifest).success).toBe(false);
+    expect(ReadyAblationManifestSchema.safeParse(manifest).success).toBe(
+      manifest.status === 'FROZEN',
+    );
+    const unfrozen = AblationManifestSchema.parse({
+      ...manifest,
+      status: 'CANDIDATE_UNFROZEN',
+      freeze: { gitCommit: null, frozenAt: null, humanReviewer: null },
+    });
+    expect(ReadyAblationManifestSchema.safeParse(unfrozen).success).toBe(false);
   });
 
   it('records reviewed A, primary freeze B, and descendant ablation C separately', () => {

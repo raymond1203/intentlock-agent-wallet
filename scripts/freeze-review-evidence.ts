@@ -36,7 +36,10 @@ function dryRunArtifactPaths(review: AcceptedFreezeReviewRecord): [string, strin
   return [`${root}/manifest.json`, `${root}/cases.jsonl`, `${root}/summary.json`];
 }
 
-function candidateBaseScenarios(repositoryRoot: string, commit: string): BenchmarkScenario[] {
+export function candidateBaseScenarios(
+  repositoryRoot: string,
+  commit: string,
+): BenchmarkScenario[] {
   const paths = git(
     repositoryRoot,
     'ls-tree',
@@ -47,7 +50,8 @@ function candidateBaseScenarios(repositoryRoot: string, commit: string): Benchma
     'benchmark/scenarios/base',
   )
     .split(/\r?\n/u)
-    .filter((path) => path.endsWith('.json'))
+    // Match the runner's one-workflow-directory layout; root coverage.json is metadata.
+    .filter((path) => /^benchmark\/scenarios\/base\/[^/]+\/[^/]+\.json$/u.test(path))
     .sort();
   if (paths.length !== 80) {
     throw new Error(

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "0.1",
+  "artifactKind": "PRE_FREEZE_DETERMINISTIC_DRY_RUN",
+  "claimScope": "OFFLINE_DETERMINISTIC_COUNTERFACTUAL_REPLAY_ONLY",
+  "runId": "freeze-solo-v0.4.0-01",
+  "createdAt": "2026-09-04T23:40:15.786Z",
+  "evaluatedAt": "2026-08-30T00:00:00Z",
+  "candidateStatus": "CANDIDATE_UNFROZEN",
+  "candidateCommit": "89e6013288200f969d737aa3378d1634fa0eeddb",
+  "candidateTree": "19d38eb223ff0005966f9f9a8b5e7a332fab2119",
+  "repositoryCleanAtStart": true,
+  "repositoryCleanBeforeWrite": true,
+  "sourcePaths": {
+    "evaluationConfig": "experiments/configs/frozen-eval.yaml",
+    "caseManifest": "experiments/configs/case-manifest.json",
+    "reviewTemplate": "experiments/configs/freeze-review.template.json"
+  },
+  "sourceDigestsSha256": {
+    "evaluationConfig": "22bd0dd4e212c34e0fde4d8d4159decbfc45c61992d31b25ed39e5ae53968f8a",
+    "caseManifest": "a68f24843a5ee9e03199b406794bdf855b5e794558679f780f12b0d41e156d20",
+    "reviewTemplate": "bc6ac0302708c12bbcb237497759900f4a2c37629f0b26866a774534574512d0",
+    "exactCaseSet": "416eb9b3a21b4872e305136b58a29b9e3c4c60ebe5da752ab7743b54e81e60c7"
+  },
+  "caseCount": 20,
+  "caseIds": [
+    "TR-01--BENIGN_ORIGINAL",
+    "AP-01--BENIGN_ORIGINAL",
+    "SS-01--BENIGN_ORIGINAL",
+    "BS-01--BENIGN_ORIGINAL",
+    "BR-01--ADVERSARIAL_SCOPE",
+    "LE-01--ADVERSARIAL_SCOPE",
+    "BA-01--ADVERSARIAL_SCOPE",
+    "TR-02--ADVERSARIAL_SCOPE",
+    "AP-02--ADVERSARIAL_BUDGET",
+    "SS-02--ADVERSARIAL_BUDGET",
+    "BS-02--ADVERSARIAL_BUDGET",
+    "BR-02--ADVERSARIAL_BUDGET",
+    "LE-02--ADVERSARIAL_COMPOSITION",
+    "BA-02--ADVERSARIAL_COMPOSITION",
+    "TR-03--ADVERSARIAL_COMPOSITION",
+    "AP-03--ADVERSARIAL_COMPOSITION",
+    "SS-03--BENIGN_DRIFT",
+    "BS-03--BENIGN_DRIFT",
+    "BR-03--BENIGN_DRIFT",
+    "LE-03--BENIGN_DRIFT"
+  ],
+  "deterministicSystems": [
+    "NONE",
+    "GUARD_MODE",
+    "PER_CALL_POLICY",
+    "INTENTLOCK"
+  ],
+  "excludedSystems": [
+    {
+      "system": "LLM_VERIFIER",
+      "reason": "SECRET_OR_NETWORK_DEPENDENT_NOT_PART_OF_DETERMINISTIC_DRY_RUN"
+    }
+  ],
+  "networkAccessRequired": false,
+  "secretAccessRequired": false,
+  "subjectSystem": "INTENTLOCK",
+  "machineMatchCount": 20,
+  "machineMismatchCaseIds": [],
+  "machineFailureCaseIds": [],
+  "casesJsonlSha256": "ad3f03e9f0fd31526a8b700d5139847bb714464d3c954513b3e045c5137a006e",
+  "humanReviewStatus": "NOT_PERFORMED",
+  "humanReviewRecordProduced": false,
+  "humanApprovalProvided": false,
+  "outputDirectory": "experiments/results/freeze-dry-runs/freeze-solo-v0.4.0-01",
+  "outputFiles": {
+    "manifest": "manifest.json",
+    "cases": "cases.jsonl",
+    "summary": "summary.json"
+  }
+}
