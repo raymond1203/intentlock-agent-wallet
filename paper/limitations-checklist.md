@@ -10,8 +10,9 @@
 - `[x]` 실제 증거의 run ID·hash·경로와 검수자가 기록된 경우에만 완료
 - `N/A — 이유` 사전 등록 범위 밖인 경우만 사용
 
-이 파일은 템플릿 상태로 배포한다. 현재 M3 수치는 없으며 모든 결과 칸은
-`RESULT_PLACEHOLDER`다.
+이 파일은 템플릿 상태로 배포한다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline
+case)이며 M3 수치는 없다. v0.4.0 실행 evidence와 독립 인간 검수도 아직 `PENDING`이므로 모든 결과
+칸은 `RESULT_PLACEHOLDER`이고 사람 검수 완료를 주장하지 않는다.
 
 ## 1. 연구 동결과 provenance
 
@@ -20,8 +21,8 @@
 - [ ] 평가 config hash, model snapshot, prompt version, random seed, timeout, retry budget을 run
       metadata에서 추적할 수 있다.
 - [ ] Ethereum·Base block number/hash, contract address/codehash와 RPC evidence class를 기록했다.
-- [ ] v0.2.0 diagnostic와 v0.3.0 primary evidence를 별도 run으로 유지하고, 이전 진단을 성능 수치에
-      섞지 않았다.
+- [ ] v0.2.0 diagnostic, 폐기된 local v0.3.0 clean replay와 v0.4.0 primary evidence를 별도
+      version/run으로 유지하고, 이전 진단을 성능 수치에 섞지 않았다.
 - [ ] 실험 대상 commit이 clean하고 결과 artifact가 같은 commit·dataset version을 가리킨다.
 - [ ] `HIDDEN_TEST`가 author-exposed legacy split임을 본문에 밝히고 unseen/sealed 표현을 제거했다.
 - [ ] pilot에서 변경한 threshold, mutation, metric 또는 workflow를 change log에 남기고 final 결과를 본
@@ -39,7 +40,7 @@
 - [ ] authored fixture, expected fork effect, executed receipt/post-state와 human label을 서로 다른 evidence
       class로 유지했다.
 - [ ] quote, slippage minimum, Permit2 spender, Aave rounding/interest buffer와 ordered-prefix funding이
-      v0.3.0 data contract를 따른다.
+      v0.4.0 data contract와 [`ADR 0010`](../docs/decisions/0010-m2-v0.4-data-contract.md)을 따른다.
 - [ ] bridge destination fixture가 test relayer/attester라는 점과 production settlement·liveness를
       재현하지 않는다는 점을 본문에 적었다.
 - [ ] 각 workflow의 supported ABI·function·codehash 범위를 appendix에 열거했다.
@@ -119,6 +120,8 @@
 - [ ] specification, extraction, enforcement, simulation/execution drift, protocol semantics, model output,
       operational failure를 별도 root cause로 분류한다.
 - [ ] benchmark defect로 드러난 결과를 system performance로 재분류하지 않는다.
+- [ ] 폐기된 local v0.3.0 clean replay가 진단한 swap batch 7건의 residual-allowance reference 결함과
+      해당 run의 M2 evidence 부적격 판정을 공개했다.
 - [ ] 결과에서 제외한 run/case의 개수, ID와 제외 이유를 공개한다.
 - [ ] post-hoc fix 전후 결과를 덮어쓰지 않고 별도 version/run으로 보존한다.
 - [ ] adaptive 결과를 `OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY`로 한정하고 model-adaptive/fork-post-state

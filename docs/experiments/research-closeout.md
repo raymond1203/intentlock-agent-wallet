@@ -7,11 +7,11 @@ machine-verifiable check and every explicitly human acceptance gate below has a 
 
 | Issue                         | Implemented evidence                                                                 | Remaining closeout gate                                                               |
 | ----------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| #20 schema, labels, split     | v0.3 schemas, labeling guide, deterministic split and case-manifest checks           | independent 10-case labeling submission                                               |
+| #20 schema, labels, split     | v0.4 schemas, labeling guide, deterministic split and case-manifest checks           | independent 10-case labeling submission                                               |
 | #21 transfer/approval/swap 40 | 40 schema-valid base scenarios and coverage checks                                   | clean fixed-fork evidence; independent 10-case contract review                        |
 | #22 bridge/lending/batch 40   | 40 schema-valid base scenarios, cross-chain and prefix/final-goal metadata           | clean fixed-fork evidence; independent 10-case review                                 |
 | #23 mutations                 | deterministic operators, semantic-validity checks, no-op/invalid distinction         | independent 20-mutation review and adjudication                                       |
-| #24 oracle                    | exact delta oracle, integer violation/exposure fields, review gate                   | 80-case v0.3 execution evidence; two independent 20-case submissions and adjudication |
+| #24 oracle                    | exact delta oracle, integer violation/exposure fields, zero-disagreement gate        | 80-case v0.4 execution evidence; two independent 20-case submissions and adjudication |
 | #25 Guard Mode emulator       | STRICT/LITERAL public-document emulator and tests                                    | source-to-rule human review; never claim production equivalence                       |
 | #26 LLM/per-call baselines    | fixed prompt/model policy, structured output, fail-closed timeout/malformed handling | 20-case API run and independent rationale review                                      |
 
@@ -41,7 +41,8 @@ transaction or authorization was actually issued. Actual execution claims requir
 ## Required execution order
 
 1. Land the candidate on a clean commit and run all repository checks.
-2. Collect v0.3 fixed-fork evidence without overwriting attempts.
+2. Collect v0.4 fixed-fork evidence without overwriting attempts. The clean v0.3 80/80 replay is
+   rejected diagnostic provenance under ADR 0010 and cannot satisfy this gate.
 3. Complete the M2 human review packet and adjudication.
 4. Complete the 20-case experiment dry-run review, freeze config/data/code digests, and commit only
    the frozen manifest.

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { z } from 'zod';
 
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 import { EVALUATION_VARIANTS } from './case-matrix.js';
 
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
@@ -41,7 +42,7 @@ const CommonFrozenEvalConfigSchema = z
     freezeIssue: z.number().int().positive(),
     dataset: z
       .object({
-        version: z.literal('0.3.0'),
+        version: z.literal(BENCHMARK_DATASET_VERSION),
         baseManifest: z.string().min(1),
         caseManifest: z.string().min(1),
         m2Validation: z.string().min(1),

@@ -1,6 +1,6 @@
 {
   "protocolVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "rootSeed": 2026,
   "baseCount": 80,
   "caseCount": 400,
@@ -2649,7 +2649,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "005c87334408baed4a05d3b320409f3f41a347316674aa5ab9febba7e8942983"
+      "scenarioSha256": "e5fd7146b0426ddc193fe764b8c6c73552006778f71be967c792ab41465e0082"
     },
     {
       "caseId": "BS-01--ADVERSARIAL_SCOPE",
@@ -2664,7 +2664,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 2078174362,
-      "scenarioSha256": "9bd2b1e2d06afb76120126d1b72e78822aa423a015fd750d04905eaaad4c0987"
+      "scenarioSha256": "6168d75d22bc015b7433ba57d7f1ab7d5eba6df0e0c4f88c40a415ef4f9c46ee"
     },
     {
       "caseId": "BS-01--ADVERSARIAL_BUDGET",
@@ -2679,7 +2679,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 2007009871,
-      "scenarioSha256": "396ef6cc33a5e130c1b8b2e24c37b85d126d961d1d20958ddd48098ccdfde31d"
+      "scenarioSha256": "0ff28c5d66541bbcae95ebbe5b5bc63b14671f7a2724a13b6ee8f0053abf24c6"
     },
     {
       "caseId": "BS-01--ADVERSARIAL_COMPOSITION",
@@ -2694,7 +2694,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 3834625741,
-      "scenarioSha256": "800b274338ab76758378530510cf3b5577bd64eb6ea14f14dde718205dea509a"
+      "scenarioSha256": "c2b0449ff0e132123c998bc15b4617749babdbb1a89fb2da9ec709bb745d4150"
     },
     {
       "caseId": "BS-01--BENIGN_DRIFT",
@@ -2709,7 +2709,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 2901138002,
-      "scenarioSha256": "82fb3328a78991a04ff7ce49bbde96b07663c7e75f3ca8fdf212ee8e03c523c2"
+      "scenarioSha256": "313d31aae1ebe22685270c5e6fec283d61a6947223b77257359e61d024784a28"
     },
     {
       "caseId": "BS-02--BENIGN_ORIGINAL",
@@ -2724,7 +2724,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "d6c7f1bc375a8c76869062b5c7f741a125b94fdd17ba28b1270a8793ee37f0f9"
+      "scenarioSha256": "e0475d9505474bf9f0e7bc8b1acdc196083710124034d194b06eba0c9b0e5f76"
     },
     {
       "caseId": "BS-02--ADVERSARIAL_SCOPE",
@@ -2739,7 +2739,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 1466318671,
-      "scenarioSha256": "3d6210d75fd5436f9ec569046c1afa9af95bc91e67270b9eb20659d41b5ba2a3"
+      "scenarioSha256": "9d71037793fbcd0702fbda34dd8be37d1c58934603d5f6e27b91358d12f839f7"
     },
     {
       "caseId": "BS-02--ADVERSARIAL_BUDGET",
@@ -2754,7 +2754,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 1065090065,
-      "scenarioSha256": "a4c491eabe3c04d01d077a8162e30a6eb3df6f716d11b32c41a7f80d74ffec02"
+      "scenarioSha256": "11bb34b4c346f4739cea2ef73d45aec76a9b4efa4e9f3608442661a04d33889b"
     },
     {
       "caseId": "BS-02--ADVERSARIAL_COMPOSITION",
@@ -2769,7 +2769,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 2407219522,
-      "scenarioSha256": "f9f627934025fed36126159025e1ad9a7cabdf41ccffc5acf29c4dc5d5ca2b0a"
+      "scenarioSha256": "52ab2010696979e623a7259807f3315ebc61fe8c89b1a320f18272f9e726391c"
     },
     {
       "caseId": "BS-02--BENIGN_DRIFT",
@@ -2784,7 +2784,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 1666266923,
-      "scenarioSha256": "eb2dd2f1249245c17a568fe3ffba8926d162ab6bd0662dc23608f86aebd0783a"
+      "scenarioSha256": "eb0a02dfaee06cec5d261d993f3294defa427fba08d596c4d7fcd2f70c8b98cc"
     },
     {
       "caseId": "BS-03--BENIGN_ORIGINAL",
@@ -2874,7 +2874,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "0716dd616ba8079ba4d91fc4795fc71f2058ff5c24a20c70fa2fe7be81879364"
+      "scenarioSha256": "41eeff03be5817a75981f8ca7d52285f261193fb84be7cdd2d9261253e0121e9"
     },
     {
       "caseId": "BS-04--ADVERSARIAL_SCOPE",
@@ -2889,7 +2889,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 959358123,
-      "scenarioSha256": "013a02982f4912d9cbffd6c0021431b4defe905993ec9382a78339f5092d60f3"
+      "scenarioSha256": "e78745d59a07559075a7e8c9dff32ebe1594b6cb0e43d11890f6ec10928035b9"
     },
     {
       "caseId": "BS-04--ADVERSARIAL_BUDGET",
@@ -2904,7 +2904,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 355821978,
-      "scenarioSha256": "c271cb86d032b924800cf5cd1ede4cffa59ec99ed6025adaf905b7d57cce117e"
+      "scenarioSha256": "691a7502f2175686cece394c9246aa64144cb3504f3efda12518a4099109a111"
     },
     {
       "caseId": "BS-04--ADVERSARIAL_COMPOSITION",
@@ -2919,7 +2919,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 1336275258,
-      "scenarioSha256": "9318e18ce4efacb3a67e3d2d9e4e37ed123cebd34bca4f1a5e74b3e27e422ee8"
+      "scenarioSha256": "e638958bd967f329ee9ead5fa730527ef3c02259154af35a987c812ea4840e21"
     },
     {
       "caseId": "BS-04--BENIGN_DRIFT",
@@ -2934,7 +2934,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 2238411934,
-      "scenarioSha256": "d990472ef45cc1d967677fe2ec7fcd74be4a17fa18066c04a8df343f3ae51c13"
+      "scenarioSha256": "b0040b72de2fffe49637e60aeb1d2ca96dd9f813bfb73c38b17ce1b215c0946c"
     },
     {
       "caseId": "BS-05--BENIGN_ORIGINAL",
@@ -2949,7 +2949,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "5744948925ff0bcbd6b9ccc57c1b51fbe6855f396ecf574042ffe04e772a8c8f"
+      "scenarioSha256": "829e035f72ddf25535d9759f21e9366be2c0637405633b16260779fb8cf86a90"
     },
     {
       "caseId": "BS-05--ADVERSARIAL_SCOPE",
@@ -2964,7 +2964,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 2296300356,
-      "scenarioSha256": "9b8445698b61838d6eb21a0327ae03530c559c178695fc19be3315742d6266d7"
+      "scenarioSha256": "f4dc6b10c840f6651015cfe8b200df9650859f1c864debe26afca0b1a9705653"
     },
     {
       "caseId": "BS-05--ADVERSARIAL_BUDGET",
@@ -2979,7 +2979,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 1101996263,
-      "scenarioSha256": "1a9784e9d98281d662ea50eb28f31af429e34bc765ef8382e8567f044395df4c"
+      "scenarioSha256": "d2f6d71e474b1e9df6a9e4c431c840a4cb5f5d8750dded8ab926d4da8bcbd67a"
     },
     {
       "caseId": "BS-05--ADVERSARIAL_COMPOSITION",
@@ -2994,7 +2994,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 2054849638,
-      "scenarioSha256": "897848291c3356121926ad5c03de076eb934eb4940cda173aa5a8e4e149a2bf8"
+      "scenarioSha256": "929e9c6b826fac10bd6704f5c537e684497d23cac8c6973f6d27e86352444fd6"
     },
     {
       "caseId": "BS-05--BENIGN_DRIFT",
@@ -3009,7 +3009,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 3277117000,
-      "scenarioSha256": "dbae54614fe5e4f275fe0860161d04bc885f059da4a392e65eb5c4b7142dcc0d"
+      "scenarioSha256": "af261d4762ec965d41cc3877ff52cf27b71a03683a3edf61c283c9b338dd8dd7"
     },
     {
       "caseId": "BS-06--BENIGN_ORIGINAL",
@@ -3099,7 +3099,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "0c0d87ada131e37f3a1b692cf47e81217a575d6918c857ee09282149ae8ecac4"
+      "scenarioSha256": "2e080754961831c9c44cacb7f73b89e994410d8facba1f21e0c6a1ed65d124b4"
     },
     {
       "caseId": "BS-07--ADVERSARIAL_SCOPE",
@@ -3114,7 +3114,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 2022284015,
-      "scenarioSha256": "c5b0e5d4db999cf354b3372b8be5230c4c5039af899daba660c2aa3677239ef6"
+      "scenarioSha256": "d9db462c304cb8e620f0d9dca6b514537a44140f88415fff5c80f9e3de757214"
     },
     {
       "caseId": "BS-07--ADVERSARIAL_BUDGET",
@@ -3129,7 +3129,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 31582511,
-      "scenarioSha256": "e6b1633204ab44306b63dec61753f5f2281d6aa94ce728c286c9d53f92cc7774"
+      "scenarioSha256": "8d32e114c720178182a7d91015aecc70297eb162a7bea47a20b4df468b5e4dc1"
     },
     {
       "caseId": "BS-07--ADVERSARIAL_COMPOSITION",
@@ -3144,7 +3144,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 1755921848,
-      "scenarioSha256": "58a98365ab7f6321687ee3da0e367bd0930e2fd98c46ffc1cb541fe15742b374"
+      "scenarioSha256": "1905ebca473ddf6a2ab55cc6fe2c5b355d0c43291889f0afa5fc75190fe6e994"
     },
     {
       "caseId": "BS-07--BENIGN_DRIFT",
@@ -3159,7 +3159,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 3977363768,
-      "scenarioSha256": "994d18e29db5ef5a7c496ee34112f191c393e8bb149cd4624d69cc6baebc5580"
+      "scenarioSha256": "6ff6907f8ae48996787bcb7d176223401102379f21d46adf7b806d30ea94aa14"
     },
     {
       "caseId": "BS-08--BENIGN_ORIGINAL",
@@ -3174,7 +3174,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "c384d9ea3940434b376940f9e0c43b360fae233fdcafda0e0466432427213ba6"
+      "scenarioSha256": "cc52afc3009fd4c2fdfb878d793d4ae0618f5a24fc31ebaa938752e3e6ab50da"
     },
     {
       "caseId": "BS-08--ADVERSARIAL_SCOPE",
@@ -3189,7 +3189,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 3899318916,
-      "scenarioSha256": "a376abac104b42035392aabbdb8d84e8d1ea23d97e0c6180040f842e65faaf3c"
+      "scenarioSha256": "0bdbd059b97ae09ffaf39f46f24ef51e608d1194f77d98f81d4ec0231b4ebdef"
     },
     {
       "caseId": "BS-08--ADVERSARIAL_BUDGET",
@@ -3204,7 +3204,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 4262080868,
-      "scenarioSha256": "703ed746fe4a21c88722a652729972129150c815e3e47697d8310252872a4fbf"
+      "scenarioSha256": "e0760a32082fdd0707a0b1d165b18ff48f74602ffcd2028c87346dacb57a5c9a"
     },
     {
       "caseId": "BS-08--ADVERSARIAL_COMPOSITION",
@@ -3219,7 +3219,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 3802754447,
-      "scenarioSha256": "e2a92b4a14b6a208173a5ccc5febb9f3a6ef6ddac50499664aad4bf9284ec08d"
+      "scenarioSha256": "02cda585b87429dae911b6de445fea646ecf43438314fdbe2aa5c921a58380a7"
     },
     {
       "caseId": "BS-08--BENIGN_DRIFT",
@@ -3234,7 +3234,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 4281461083,
-      "scenarioSha256": "be35f1c976586fd2c3e9aafb2e76acf84b2ba4eb22ff7340671f5c66ff7b0cb0"
+      "scenarioSha256": "ba88ce1e45d205fecece553e316da8d906b9fb14670bba64161e2d64465a4eb6"
     },
     {
       "caseId": "BS-09--BENIGN_ORIGINAL",
@@ -3324,7 +3324,7 @@
       "mutationValidity": null,
       "mutationOperator": null,
       "seed": null,
-      "scenarioSha256": "d229bf8442c6e06754c8888753850f474a62775688971f6aabe9a584ddd40179"
+      "scenarioSha256": "625145d0c8722fa46c5fb582217c0a9e34a4500a94721fa02a23f881b00c6b3d"
     },
     {
       "caseId": "BS-10--ADVERSARIAL_SCOPE",
@@ -3339,7 +3339,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "chain-substitution",
       "seed": 319514854,
-      "scenarioSha256": "5c0f63817d5ab829b479514d1bac7b71c958db0b6b9bebf4cbb281fa3bf116e5"
+      "scenarioSha256": "7ab577b14167b4507cf651cf6bdc5aeb9c638640fe52a351ea0ec85182908cf7"
     },
     {
       "caseId": "BS-10--ADVERSARIAL_BUDGET",
@@ -3354,7 +3354,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "gas-inflation",
       "seed": 2515682976,
-      "scenarioSha256": "58b703bc59da16cff324e0aa9bc57ae6f0eb0df45a03ef454a1e931672e1d872"
+      "scenarioSha256": "e46f16aedc2e36eb83cb57c87f0cf0a5606e8b224e972c528aec67efe00f5b97"
     },
     {
       "caseId": "BS-10--ADVERSARIAL_COMPOSITION",
@@ -3369,7 +3369,7 @@
       "mutationValidity": "VALID_SEMANTIC",
       "mutationOperator": "hidden-batch",
       "seed": 1796798830,
-      "scenarioSha256": "c0a8ae859f235c22786ae9fd5b021848625a9c49030d7999249e063c6fa8db75"
+      "scenarioSha256": "191fd84ff6f805c43bff8a7d5ff86b7f8bbfb8ac55195cb666e04553c65a545e"
     },
     {
       "caseId": "BS-10--BENIGN_DRIFT",
@@ -3384,7 +3384,7 @@
       "mutationValidity": "INVALID_CALLDATA",
       "mutationOperator": "benign-hallucination",
       "seed": 313468292,
-      "scenarioSha256": "d99fa0f313fb696811a15ac4a380770cfb23d19ca44f94dcf21f76878dcedd97"
+      "scenarioSha256": "0d087e84b6208058dfc0d2966c2cef50908302af2b099de55b3f442274039fd9"
     },
     {
       "caseId": "LE-01--BENIGN_ORIGINAL",

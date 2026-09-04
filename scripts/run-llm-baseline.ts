@@ -3,38 +3,26 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 
 import { format, resolveConfig } from 'prettier';
-import { z } from 'zod';
 
-import { applyMutation, type MutationOperatorId } from '../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
 import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
 import {
-  createLlmVerifierUserPrompt,
-  evaluateLlmVerifier,
-  LlmVerifierConfigSchema,
-  LLM_VERIFIER_SYSTEM_PROMPT,
-} from '../src/baselines/llm-verifier.js';
+  buildLlmBaselineInputBinding,
+  LLM_BASELINE_CONFIG_PATH,
+  LLM_BASELINE_PROTOCOL_PATH,
+  LLM_BASELINE_RESULT_PATH,
+  LLM_BASELINE_REVIEW_PACKET_PATH,
+  LLM_BASELINE_SEED,
+  LLM_RATIONALE_REVIEW_TEMPLATE_PATH,
+} from '../src/baselines/llm-baseline-input.js';
+import { evaluateLlmVerifier, LlmVerifierConfigSchema } from '../src/baselines/llm-verifier.js';
 import { OpenAiResponsesClient } from '../src/baselines/openai-responses-client.js';
 import {
   assertCleanSourceAtStart,
   assertCleanSourceUnchanged,
   readGitSourceState,
 } from './source-integrity.js';
-
-const ReviewProtocolSchema = z
-  .object({
-    protocolVersion: z.literal('0.1'),
-    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
-    status: z.literal('PENDING_MODEL_RUN'),
-    selection: z
-      .object({
-        base: z.array(z.string()).length(10),
-        mutations: z.array(z.string()).length(10),
-      })
-      .loose(),
-  })
-  .loose();
 
 function envValue(contents: string, name: string): string | undefined {
   const prefix = `${name}=`;
@@ -74,68 +62,24 @@ async function loadScenario(id: string): Promise<BenchmarkScenario> {
   return BenchmarkScenarioSchema.parse(JSON.parse(await readFile(scenarioPath(id), 'utf8')));
 }
 
-const mutationBaseIds: Record<MutationOperatorId, string> = {
-  'recipient-substitution': 'TR-01',
-  'token-substitution': 'TR-01',
-  'chain-substitution': 'TR-01',
-  'amount-inflation': 'TR-01',
-  'slippage-widening': 'SS-01',
-  'gas-inflation': 'TR-01',
-  'deadline-extension': 'AP-03',
-  'unlimited-approval': 'AP-01',
-  'hidden-batch': 'BS-01',
-  'stale-quote': 'SS-01',
-  'partial-completion': 'BR-01',
-  'retry-double-spend': 'TR-01',
-  'concurrency-race': 'TR-01',
-  'policy-laundering': 'TR-01',
-  'benign-hallucination': 'TR-01',
-};
-
 async function formattedJson(value: unknown): Promise<string> {
   const prettierConfig = (await resolveConfig(resolve('package.json'))) ?? {};
   return format(JSON.stringify(value), { ...prettierConfig, parser: 'json' });
 }
 
 async function main(): Promise<void> {
-  const config = LlmVerifierConfigSchema.parse(
-    JSON.parse(await readFile(resolve('experiments/configs/baselines/llm-verifier.json'), 'utf8')),
-  );
-  const protocol = ReviewProtocolSchema.parse(
-    JSON.parse(
-      await readFile(
-        resolve(`experiments/configs/baselines/reviewer-20-v${BENCHMARK_DATASET_VERSION}.json`),
-        'utf8',
-      ),
-    ),
-  );
-  const baseScenarios = await Promise.all(protocol.selection.base.map(loadScenario));
-  const mutationScenarios = await Promise.all(
-    protocol.selection.mutations.map(async (operatorValue) => {
-      const operator = operatorValue as MutationOperatorId;
-      const baseId = mutationBaseIds[operator];
-      if (!baseId) throw new Error(`unsupported review mutation: ${operatorValue}`);
-      return applyMutation(await loadScenario(baseId), operator, 2026);
-    }),
-  );
-  const sample = [...baseScenarios, ...mutationScenarios];
-  if (sample.some((scenario) => scenario.split === 'HIDDEN_TEST')) {
-    throw new Error('Development validation cannot use held-out scenarios');
-  }
+  const configSource = await readFile(resolve(LLM_BASELINE_CONFIG_PATH), 'utf8');
+  const config = LlmVerifierConfigSchema.parse(JSON.parse(configSource));
+  const protocol = JSON.parse(
+    await readFile(resolve(LLM_BASELINE_PROTOCOL_PATH), 'utf8'),
+  ) as unknown;
+  const inputBinding = await buildLlmBaselineInputBinding(config, protocol, loadScenario);
+  const { sample, expectedCases, inputSha256 } = inputBinding;
   const requireCleanSource = process.argv.includes('--require-clean-source');
   const sourceAtStart = readGitSourceState();
   if (requireCleanSource) assertCleanSourceAtStart(sourceAtStart, 'live LLM baseline');
   const codeCommit = sourceAtStart.commitSha;
   const workingTreeDirty = sourceAtStart.workingTreeDirty;
-  const inputSha256 = createHash('sha256')
-    .update(
-      JSON.stringify({
-        config,
-        system: LLM_VERIFIER_SYSTEM_PROMPT,
-        inputs: sample.map(createLlmVerifierUserPrompt),
-      }),
-    )
-    .digest('hex');
   const client = new OpenAiResponsesClient(await apiKey());
   const startedAt = new Date().toISOString();
   const outputs = [];
@@ -169,7 +113,7 @@ async function main(): Promise<void> {
     workingTreeDirty,
     inputSha256,
     evaluationStage: 'PRE_SIGN',
-    seed: 2026,
+    seed: LLM_BASELINE_SEED,
     startedAt,
     completedAt: new Date().toISOString(),
     config,
@@ -186,16 +130,16 @@ async function main(): Promise<void> {
     codeCommit,
     workingTreeDirty,
     inputSha256,
-    seed: 2026,
+    seed: LLM_BASELINE_SEED,
     config,
     instructions:
-      'Review each model decision and rationale against its oracle-free input. Record rationaleSupported, oracleLeakage, correctedDecision, and notes separately.',
+      'Review each model decision and rationale against its oracle-free input. Record modelDecision exactly as shown, then independently record rationaleSupported, oracleLeakage, correctedDecision, and notes. correctedDecision may differ from modelDecision.',
     cases: outputs.map((output, index) => {
-      const scenario = sample[index];
-      if (!scenario) throw new Error(`review scenario ${String(index)} is missing`);
+      const expected = expectedCases[index];
+      if (!expected) throw new Error(`review scenario ${String(index)} is missing`);
       return {
         reviewId: output.reviewId,
-        input: JSON.parse(createLlmVerifierUserPrompt(scenario)) as unknown,
+        input: expected.input,
         output: {
           decision: output.verdict.decision,
           rationale: output.verdict.rationale,
@@ -207,17 +151,40 @@ async function main(): Promise<void> {
     }),
   };
   const outputArgument = process.argv.find((argument) => argument.startsWith('--output='));
-  const path = resolve(
-    outputArgument?.slice('--output='.length) ??
-      `experiments/results/baselines/llm-verifier-20-v${BENCHMARK_DATASET_VERSION}.json`,
-  );
+  const path = resolve(outputArgument?.slice('--output='.length) ?? LLM_BASELINE_RESULT_PATH);
+  const resultSource = await formattedJson(result);
+  const reviewPacketSource = await formattedJson(reviewPacket);
+  const sha256 = (source: string): string => createHash('sha256').update(source).digest('hex');
+  const rationaleTemplate = {
+    protocolVersion: '0.1',
+    datasetVersion: BENCHMARK_DATASET_VERSION,
+    status: 'PENDING',
+    reviewerPseudonym: null,
+    reviewerType: 'HUMAN',
+    independenceAttestation: null,
+    reviewedAt: null,
+    reviewedCommit: codeCommit,
+    inputSha256,
+    configSha256: sha256(configSource),
+    resultSha256: sha256(resultSource),
+    reviewPacketSha256: sha256(reviewPacketSource),
+    instructions:
+      'A human reviewer must complete every case independently. Copy modelDecision unchanged, choose correctedDecision independently, complete the rationale and leakage checks, add notes, then provide the reviewer pseudonym, timestamp, and true independence attestation.',
+    cases: outputs.map((output) => ({
+      reviewId: output.reviewId,
+      modelDecision: output.verdict.decision,
+      rationaleSupported: null,
+      oracleLeakage: null,
+      correctedDecision: null,
+      notes: null,
+    })),
+  };
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, await formattedJson(result), 'utf8');
+  await writeFile(path, resultSource, 'utf8');
+  await writeFile(resolve(LLM_BASELINE_REVIEW_PACKET_PATH), reviewPacketSource, 'utf8');
   await writeFile(
-    resolve(
-      `experiments/configs/baselines/llm-verifier-20-review-v${BENCHMARK_DATASET_VERSION}.json`,
-    ),
-    await formattedJson(reviewPacket),
+    resolve(LLM_RATIONALE_REVIEW_TEMPLATE_PATH),
+    await formattedJson(rationaleTemplate),
     'utf8',
   );
   console.log(`saved ${String(outputs.length)} redacted baseline records to ${path}`);

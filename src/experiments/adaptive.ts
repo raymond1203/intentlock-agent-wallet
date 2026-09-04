@@ -21,6 +21,7 @@ import type {
   MetaMaskWalletExecutor,
 } from '../adapters/metamask/adapter.js';
 import type { BenchmarkScenario } from '../benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 import type { EconomicEffect } from '../domain/action-ir.js';
 import {
   EvmAddressSchema,
@@ -279,7 +280,7 @@ export const AdaptiveSelectionConfigSchema = z
   .object({
     schemaVersion: z.literal('0.1'),
     protocolVersion: z.literal('0.1'),
-    datasetVersion: z.literal('0.3.0'),
+    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     rootSeed: z.literal(2026),
     evaluatedAt: z.iso.datetime(),
     maxReplans: z.literal(3),

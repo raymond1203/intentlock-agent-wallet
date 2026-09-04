@@ -1,11 +1,13 @@
 {
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "purpose": "M2 integration diagnostics, not experimental performance",
   "baseCount": 80,
   "mutationCount": 15,
   "preSignEligibleMutations": 13,
   "baseReferencePass": 80,
   "baseReferenceLabelDisagreements": [],
+  "syntheticReferenceCheckedCount": 0,
+  "syntheticReferenceDisagreementCount": 0,
   "baseMonitorAllow": 80,
   "executedBaseCount": 0,
   "strictAuthoredFixtureExecutedBaseCount": 0,
@@ -29,7 +31,42 @@
     "disagreementCount": 0,
     "blockers": ["exactly-two-complete-human-submissions-required"]
   },
-  "completionCriteria": { "executionComplete": false, "referenceOracleComplete": true },
+  "llmBaselineEvidence": {
+    "resultPath": "benchmark/evidence/llm-verifier-20-v0.4.0.json",
+    "reviewPacketPath": "experiments/configs/baselines/llm-verifier-20-review-v0.4.0.json",
+    "rationaleReviewPath": "experiments/configs/baselines/llm-verifier-20-rationale-review-v0.4.0.json",
+    "expectedDatasetVersion": "0.4.0",
+    "runStatus": "PENDING",
+    "codeCommit": null,
+    "workingTreeDirty": null,
+    "sampleSize": 0,
+    "inputSha256": null,
+    "configSha256": "73d1f7828504040d4ddca9dd298934780de37beafb7d8802f06f31e9f647e3a7",
+    "protocolSha256": "4f358d4cdbdfb1c21d3b4171465679ad32df955f3ae51249c03790c20c744049",
+    "resultSha256": null,
+    "reviewPacketSha256": null,
+    "runBlockers": ["result:missing", "review-packet:missing", "execution-source-commit:missing"],
+    "rationaleReview": {
+      "status": "PENDING",
+      "reviewerPseudonym": null,
+      "reviewerType": null,
+      "independenceAttestation": null,
+      "reviewedAt": null,
+      "reviewedCommit": null,
+      "caseCount": 0,
+      "submissionSha256": null,
+      "blockers": [
+        "rationale-review:missing",
+        "rationale-review:digest-missing",
+        "baseline-run:not-complete"
+      ]
+    }
+  },
+  "completionCriteria": {
+    "executionComplete": false,
+    "referenceOracleComplete": false,
+    "llmBaselineComplete": false
+  },
   "independentReviewStatus": "PENDING",
   "m2Complete": false,
   "rows": [

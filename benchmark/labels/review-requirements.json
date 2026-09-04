@@ -1,10 +1,10 @@
 {
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "baseCount": 80,
   "requiredSampleSize": 20,
   "sampleSize": 20,
   "fraction": 0.25,
-  "packetSha256": "f100a6be573ad32c3365f9e6abf3057dfda75f7ad647da5910dafe7c8acf2907",
+  "packetSha256": "87e7048e962fdd2cceebfd35cce3300463dbc2fb1edc7a9ffc1068fdce0e4e28",
   "requiredDistinctHumanReviewers": 2,
   "submissionsDirectory": "benchmark/labels/submissions",
   "adjudicationRecord": "benchmark/labels/adjudications.json",

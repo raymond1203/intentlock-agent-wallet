@@ -51,17 +51,18 @@ The #20 review sample is ten Golden scenarios. #24 expands double review to 25% 
 ## Split policy
 
 - Grouped, stratified 60/20/20 assignment: 48 train, 16 dev, 16 publicly visible held-out base
-  scenarios in v0.3.0.
+  scenarios in v0.4.0.
 - A base scenario and all its mutations stay in the same split.
 - Normalized natural-language and structural fingerprints are checked for leakage across splits.
 - `HIDDEN_TEST` is a legacy split name, not a secrecy claim. The fixtures and generator have already
-  been published, and two held-out cases appeared in a development review packet. v0.3.0 preserves
-  this exposure; removing those cases from the packet does not erase it. Development review and
-  model validation exclude this split, but a truly unseen evaluation requires a new sealed set.
+  been published, and two held-out cases appeared in a development review packet. v0.3.0 preserved
+  this exposure and v0.4.0 keeps the same split; removing those cases from the packet does not erase
+  it. Development review and model validation exclude this split, but a truly unseen evaluation
+  requires a new sealed set.
 - Changing a hidden assignment requires independent reviewer approval, a dataset version bump, a dedicated
   PR, a contamination note, and regeneration of every reported result.
 
-## Observable stage and evidence level (v0.3.0)
+## Observable stage and evidence level (v0.4.0)
 
 `oracle.executionComplete` is false for the cross-chain partial-completion fixture: destination
 observations are missing, so the terminal oracle returns INSUFFICIENT_EVIDENCE, not success. Its
@@ -81,7 +82,7 @@ are expected fixtures, not 80 transaction receipts. Predicted policy checks, exa
 checks and actual execution are separate evidence columns. Cause labels are authored metadata;
 the oracle computes state violations without guessing attacker motive.
 
-## Delta and quote references (v0.3.0)
+## Delta and quote references (v0.4.0)
 
 Base completion references are account-side signed deltas. `EXACT` is used for deterministic
 transfers and modeled allowance outcomes, `AT_LEAST` for pinned swap/bridge outputs and Aave
@@ -92,3 +93,14 @@ pool, aToken or bridge-contract balances.
 Every swap effect must match a pinned QuoterV2 reference. For a quote `q` and maximum slippage `b`,
 the only accepted minimum is `ceil(q * (10000 - b) / 10000)`. A stale-quote mutation changes the
 observed output delta below this threshold; it does not rewrite the authored quote.
+
+ADR 0010 also defines terminal ERC-20 allowance as the approval amount minus every later matching
+`transferFrom` consumption in effect order. Consumption must match chain, asset, owner/from account,
+and spender/executing target, and generation rejects underflow. The seven affected `SWAP_BATCH`
+cases therefore end with zero residual allowance. This v0.4.0 correction does not change their
+decisions, labels, splits, quote inputs, calldata, or oracle operators.
+
+The clean v0.3.0 replay reached 80/80 normal execution PASS but disagreed with the synthetic
+reference on those seven allowance rows. It is rejected diagnostic history, not current evidence.
+M2 completion and freeze require a fresh clean v0.4.0 replay with zero synthetic reference
+disagreements as well as the version-matched two-person review; neither gate is currently complete.

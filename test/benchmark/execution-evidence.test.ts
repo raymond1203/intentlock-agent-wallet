@@ -141,7 +141,7 @@ function validRawEvidence(): M2RawExecutionEvidence {
     requiredReceiptCount: requiredReceiptCount(scenario),
   });
   return M2RawExecutionEvidenceSchema.parse({
-    datasetVersion: '0.3.0',
+    datasetVersion: '0.4.0',
     scenarioId: scenario.id,
     sourceCommit: 'a'.repeat(40),
     workingTreeDirty: false,
@@ -229,7 +229,7 @@ function validBundle(mutateRaw?: (raw: M2RawExecutionEvidence) => void) {
     failure: null,
   };
   const evidence = {
-    datasetVersion: '0.3.0',
+    datasetVersion: '0.4.0',
     purpose: 'Diagnostic evidence, not a frozen performance result',
     selection: M2_ATTEMPT_SELECTION_POLICY,
     baseCount: 1,
@@ -239,12 +239,13 @@ function validBundle(mutateRaw?: (raw: M2RawExecutionEvidence) => void) {
     strictAuthoredFixtureExecutionCount: 1,
     finalGoalPassCount: 1,
     strictAuthoredFixtureFinalGoalPassCount: 1,
+    syntheticReferenceCheckedCount: 1,
     syntheticReferenceDisagreementCount: 0,
     humanReview: 'PENDING',
     m2Complete: false,
     latest: [
       {
-        datasetVersion: '0.3.0',
+        datasetVersion: '0.4.0',
         scenarioId: attempt.scenarioId,
         run: attempt.run,
         rawFilePath: attempt.rawFilePath,
@@ -336,6 +337,35 @@ describe('published execution evidence validation', () => {
     expect(
       M2PublishedEvidenceSchema.safeParse({ ...evidence, latest: [withoutDatasetVersion] }).success,
     ).toBe(false);
+  });
+
+  it('requires and independently recomputes the synthetic reference checked denominator', () => {
+    const bundle = validBundle();
+    const withoutCheckedCount: Record<string, unknown> = { ...bundle.evidence };
+    delete withoutCheckedCount.syntheticReferenceCheckedCount;
+    expect(M2PublishedEvidenceSchema.safeParse(withoutCheckedCount).success).toBe(false);
+
+    const understated = structuredClone(bundle.evidence);
+    understated.syntheticReferenceCheckedCount = 0;
+    expect(() =>
+      validatePublished(understated, new Map([[bundle.attempt.rawFilePath, bundle.bytes]])),
+    ).toThrow('published execution aggregate does not match revalidated attempts');
+
+    const uncollected = {
+      ...structuredClone(bundle.evidence),
+      attemptedCount: 0,
+      missing: [scenario.id],
+      completedExecutionCount: 0,
+      strictAuthoredFixtureExecutionCount: 0,
+      finalGoalPassCount: 0,
+      strictAuthoredFixtureFinalGoalPassCount: 0,
+      syntheticReferenceCheckedCount: 0,
+      latest: [],
+      attempts: [],
+    };
+    expect(validatePublished(uncollected, new Map()).evidence.syntheticReferenceCheckedCount).toBe(
+      0,
+    );
   });
 
   it('recomputes completion from full receipts and observations instead of trusting flags', () => {

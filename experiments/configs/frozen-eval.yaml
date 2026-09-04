@@ -5,7 +5,7 @@ freezeIssue: 27
 # This file is deliberately non-runnable until every null freeze field is filled and
 # status becomes FROZEN. The runner must reject CANDIDATE_UNFROZEN manifests.
 dataset:
-  version: '0.3.0'
+  version: '0.4.0'
   baseManifest: benchmark/splits/manifest.json
   caseManifest: experiments/configs/case-manifest.json
   m2Validation: experiments/configs/m2-validation.json

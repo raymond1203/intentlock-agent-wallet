@@ -66,7 +66,7 @@ function primaryManifest() {
     schemaVersion: '0.1',
     runId: 'primary-20260904',
     protocolVersion: '0.1',
-    datasetVersion: '0.3.0',
+    datasetVersion: '0.4.0',
     createdAt: '2026-09-04T01:00:00.000Z',
     gitCommit: reviewedSourceCommit,
     executionCommit: freezeCommit,

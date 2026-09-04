@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 import { AdaptiveEpisodeResultSchema } from './adaptive.js';
 import { ReadyAblationManifestSchema, type AblationManifestSchema } from './ablations.js';
 import { FreezeDigestsSchema, type FreezeDigests } from './freeze-digests.js';
@@ -29,7 +30,7 @@ export const AdaptiveRunManifestSchema = z
     schemaVersion: z.literal('0.2'),
     runId: z.string().regex(/^adaptive-[a-zA-Z0-9._-]{3,70}$/),
     protocolVersion: z.literal('0.1'),
-    datasetVersion: z.literal('0.3.0'),
+    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     createdAt: z.iso.datetime(),
     evaluatedAt: z.iso.datetime(),
     reviewedSourceCommit: GitCommitSchema,

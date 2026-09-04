@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "strategy": "grouped-stratified-60-20-20",
   "salt": "intentlock-m2-v0-2026",
   "assignments": {
@@ -105,6 +105,11 @@
     {
       "version": "0.3.0",
       "reason": "Pinned QuoterV2 references, delta-based completion semantics, Permit2 corrections, and lending prefix-funding/interest policy",
+      "pullRequest": "#46"
+    },
+    {
+      "version": "0.4.0",
+      "reason": "Correct terminal finite allowance after exact router consumption; hidden-test observation disclosed in ADR 0010",
       "pullRequest": "#46"
     }
   ]

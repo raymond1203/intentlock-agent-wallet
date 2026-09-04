@@ -4,6 +4,11 @@
 코드·테스트·패킷 생성은 자동화할 수 있지만, 사람의 판단·독립성·승인·Notion 확인은 자동화할 수
 없다. 이 문서 작성 시점에는 어떤 승인도 수행되지 않았으며 모든 사람 판정은 `PENDING`이다.
 
+현재 candidate는 v0.4.0이다. ADR 0010은 ordered approval 뒤 matching `transferFrom`이 소비한 양을
+차감해 일곱 `SWAP_BATCH`의 terminal residual allowance를 0으로 고쳤다. Clean v0.3.0 실행은 80/80
+normal PASS였지만 이 일곱 synthetic reference disagreement 때문에 폐기된 진단이다. v0.4.0 실행,
+live LLM, 두 사람 review는 모두 새로 해야 하며 아직 완료되지 않았다.
+
 ## 1. 완료 판정의 경계
 
 - AI와 스크립트는 패킷 생성, 해시 계산, 형식 검증, 표·그림 재생성까지만 수행한다.
@@ -54,7 +59,7 @@ Reviewer B가 한 번의 집중 검수 창에서 M2 packet, freeze dry run, M3 �
 | #23      | `mutation-validity-20.json`, 이후 `terminal-observations-20.json`                           | 같은 M2 bundle                                                    | 없음                                               |
 | #24      | `benchmark/reviews/submission.template.json`                                                | `benchmark/labels/submissions/reviewer-a.json`, `reviewer-b.json` | 있음                                               |
 | #25      | `docs/baselines/guard-mode.md`의 source-to-rule 표                                          | M2 bundle                                                         | 없음                                               |
-| #26      | live run이 만드는 `llm-verifier-20-review-v0.3.0.json`                                      | M2 bundle                                                         | live run만 자동, 사람 rationale checker는 없음     |
+| #26      | live run이 만드는 `llm-verifier-20-review-v0.4.0.json`                                      | versioned rationale-review JSON과 M2 bundle                       | `pnpm m2:validate`가 run·packet·20개 판단을 결속   |
 | #27      | `experiments/configs/freeze-review.template.json`                                           | `experiments/reviews/freeze-review.reviewer-b.json`               | `pnpm evaluation:freeze ...`                       |
 | #28, #31 | primary raw/summary와 metric 정의                                                           | `artifacts/human-reviews/m3-review-bundle.reviewer-b.md`          | run/analysis만 자동, 사람 재계산 checker는 없음    |
 | #29      | adaptive run이 만드는 `human-review-10.packet.json`                                         | 같은 M3 bundle                                                    | packet 생성만 자동, 사람 submission checker는 없음 |
@@ -114,15 +119,18 @@ pnpm contracts:test
 pnpm schema:check
 pnpm benchmark:check
 pnpm m2:validate --check
-pnpm m2:execute --out=experiments/results/m2-v0.3.0-attempt-01
-pnpm m2:evidence --runs=experiments/results/m2-v0.3.0-attempt-01 --out=benchmark/evidence/m2-execution-v0.3.0.json --require-all-executed
+pnpm m2:execute --out=experiments/results/m2-v0.4.0-attempt-01
+pnpm m2:evidence --runs=experiments/results/m2-v0.4.0-attempt-01 --out=benchmark/evidence/m2-execution-v0.4.0.json --require-all-executed
 pnpm m2:validate
 pnpm m2:validate --check
 ```
 
 실패한 실행을 재시도할 때는 `attempt-02`처럼 새 directory를 쓰고 `--runs=`에 실제 시간 순서대로
 모두 적는다. Publisher는 case별 첫 complete attempt를 선택하고 모든 시도를 보존한다. 최종
-`experiments/configs/m2-validation.json`은 v0.3.0 80건의 complete clean evidence를 가리켜야 한다.
+`experiments/configs/m2-validation.json`은 v0.4.0 80건의 complete clean evidence와
+`syntheticReferenceDisagreementCount: 0`을 가리켜야 한다. 80건 모두 normal PASS여도 synthetic
+reference disagreement가 하나라도 있으면 diagnostic으로만 보존하고 candidate A로 사용하지 않는다.
+Raw bundle은 `benchmark/evidence/raw/v0.4.0/sha256/` 아래의 exact bytes여야 한다.
 
 ### 5.2 #20, #21, #23 blind packet을 먼저 끝낸다
 
@@ -215,28 +223,35 @@ Reviewer B의 실제 서명 전까지 `PENDING`이다.
 고정 model 설정과 local key가 준비된 clean commit에서 실행한다.
 
 ```powershell
-pnpm baseline:llm:run --output=experiments/results/llm-verifier-v0.3.0.json
+pnpm baseline:llm:run
 ```
 
 이 packaged live 명령은 API 요청 전에 dirty source를 거부하고, 실행 중 commit 또는 worktree가
 바뀌어도 결과 생성을 거부한다. 따라서 tracked evidence 또는 review packet을 생성하기 전에 실행한다.
 
-실행은 다음 두 파일을 만든다.
+실행은 다음 세 파일을 만든다.
 
-- `experiments/results/llm-verifier-v0.3.0.json`
-- `experiments/configs/baselines/llm-verifier-20-review-v0.3.0.json`
+- `benchmark/evidence/llm-verifier-20-v0.4.0.json`
+- `experiments/configs/baselines/llm-verifier-20-review-v0.4.0.json`
+- `experiments/configs/baselines/llm-verifier-20-rationale-review-v0.4.0.template.json` (`PENDING`)
 
-Reviewer B는 live packet의 R01–R20마다 decision, rationale supported 여부, oracle leakage 여부와 notes를
-M2 bundle에 기록한다. Historical v0.2.0 packet을 대신 사용하지 않는다. Timeout, malformed output과
-ABSTAIN을 삭제하거나 성공으로 바꾸지 않는다. 사람 rationale review checker는 없으므로 20개 행과
-run/config hash를 PR에서 수동 대조한다.
+Reviewer B는 live packet의 R01–R20마다 `modelDecision`을 그대로 옮기고, rationale supported 여부,
+oracle leakage 여부, 독립적으로 판단한 필수 `correctedDecision`과 notes를
+`experiments/configs/baselines/llm-verifier-20-rationale-review-v0.4.0.json`과 M2 bundle에 기록한다.
+제출 JSON에는 stable pseudonym, `HUMAN`, independence attestation, reviewed commit, input/config/result/
+packet hash와 R01–R20의 판단을 모두 넣는다. Historical v0.2.0 packet이나 rejected v0.3.0 packet을 대신
+사용하지 않는다. Timeout, malformed output과 ABSTAIN을 삭제하거나 성공으로 바꾸지 않는다.
+`pnpm m2:validate`는 Git `HEAD`에 추적된 제출·live result·public packet을 현재 redacted input,
+input hash, 순서가 고정된 20개 ID, 그리고 선택된 M2 실행 증거의 단일 source commit과 대조한다.
+다만 자동 검사는 사람이 실제로 독립 검수했다는 사실 자체를 만들어 내거나 대신 증명하지 않는다.
 
 ## 6. Phase freeze — #27, candidate A에서 freeze B까지
 
 ### 6.1 Candidate A
 
-A에는 v0.3.0 execution evidence, 두 #24 submission, adjudication, 완료된 M2 bundle, live baseline과 모든
-동결 대상 구현이 들어 있어야 한다. 다음 명령이 clean A에서 통과해야 한다.
+A에는 v0.4.0 execution evidence, synthetic reference disagreement 0, 두 #24 submission,
+adjudication, 완료된 M2 bundle, live baseline과 모든 동결 대상 구현이 들어 있어야 한다. 다음 명령이
+clean A에서 통과해야 한다.
 
 ```powershell
 pnpm check
@@ -344,15 +359,15 @@ Clean B에서 all-five primary run을 시작한다. `attempt 1`이 intention-to-
 이를 대체하지 않는다.
 
 ```powershell
-pnpm evaluation:run --run-id=primary-v0.3.0-01 --concurrency=4 --retry-failures
+pnpm evaluation:run --run-id=primary-v0.4.0-01 --concurrency=4 --retry-failures
 ```
 
 필수 출력은 다음 네 파일이다.
 
-- `experiments/results/primary-v0.3.0-01/manifest.json`
-- `experiments/results/primary-v0.3.0-01/raw.jsonl`
-- `experiments/results/primary-v0.3.0-01/summary.json`
-- `experiments/results/primary-v0.3.0-01/summary.csv`
+- `experiments/results/primary-v0.4.0-01/manifest.json`
+- `experiments/results/primary-v0.4.0-01/raw.jsonl`
+- `experiments/results/primary-v0.4.0-01/summary.json`
+- `experiments/results/primary-v0.4.0-01/summary.csv`
 
 2,000개의 attempt-1 조합이 모두 존재하고 실패·timeout도 분모에 남아 있어야 한다. 네 파일을
 force-add해 primary artifact commit C로 보존한 뒤에 adaptive와 ablation을 실행한다.
@@ -386,7 +401,7 @@ claim에 쓰지 않는다.
 Primary artifact가 commit C에 tracked된 clean descendant에서 실행한다.
 
 ```powershell
-pnpm evaluation:adaptive --primary-run-id=primary-v0.3.0-01 --run-id=adaptive-v0.3.0-01
+pnpm evaluation:adaptive --primary-run-id=primary-v0.4.0-01 --run-id=adaptive-v0.4.0-01
 ```
 
 필수 출력은 `manifest.json`, `episodes.jsonl`, `comparison.json`, `summary.json`,
@@ -405,11 +420,11 @@ seed로 다시 실행·검사하고 다음을 M3 bundle에 기록한다.
 ### 7.4 #30 ablation 실행과 #31 분석
 
 ```powershell
-pnpm evaluation:ablations --primary-run-id=primary-v0.3.0-01 --run-id=primary-v0.3.0-01-ablations
-pnpm evaluation:adaptive --primary-run-id=primary-v0.3.0-01 --run-id=adaptive-v0.3.0-01
+pnpm evaluation:ablations --primary-run-id=primary-v0.4.0-01 --run-id=primary-v0.4.0-01-ablations
+pnpm evaluation:adaptive --primary-run-id=primary-v0.4.0-01 --run-id=adaptive-v0.4.0-01
 
 # 두 secondary run의 manifest/raw/summary/comparison/review packet을 force-add해 먼저 commit한다.
-pnpm evaluation:analyze --run-id=primary-v0.3.0-01 --ablation-run-id=primary-v0.3.0-01-ablations --adaptive-run-id=adaptive-v0.3.0-01
+pnpm evaluation:analyze --run-id=primary-v0.4.0-01 --ablation-run-id=primary-v0.4.0-01-ablations --adaptive-run-id=adaptive-v0.4.0-01
 ```
 
 분석 명령은 clean HEAD에 primary·ablation·adaptive 입력이 모두 tracked되어 있지 않으면 거부한다.
@@ -515,9 +530,9 @@ checklist가 끝난 뒤 서로 비교하고 불일치를 해결한다. 최종 ha
 | M2 gate 완료 후      | #21   | C01–C10 contract alignment, clean 40-path evidence                      |
 | M2 gate 완료 후      | #22   | D11–D20 두 submission/adjudication, clean 40-path evidence              |
 | M2 gate 완료 후      | #23   | M01–M20 staged pre-sign/terminal review와 adjudication                  |
-| M2 gate 완료 후      | #24   | 80-path evidence, `RECORDS_COMPLETE`, `m2Complete: true`                |
+| M2 gate 완료 후      | #24   | v0.4.0 80-path, synthetic disagreement 0, 두 사람 review, `m2Complete`  |
 | M2 gate 완료 후      | #25   | source-to-rule 사람 review, emulator test, scope 문구                   |
-| M2 gate 완료 후      | #26   | v0.3.0 live 20 raw/config, R01–R20 사람 rationale review                |
+| M2 gate 완료 후      | #26   | v0.4.0 live 20 raw/config, R01–R20 사람 rationale review                |
 | Freeze B 후          | #27   | A를 가리키는 exact-20 human record와 정확한 세-file B                   |
 | Primary + review 후  | #28   | 2,000 attempt-1 records와 40-case/200-record 재계산                     |
 | Adaptive + review 후 | #29   | immutable 40 episodes와 사람 재현 10                                    |

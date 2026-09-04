@@ -1,6 +1,6 @@
 {
   "protocolVersion": "0.2",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "status": "PENDING_INDEPENDENT_REVIEW",
   "instructions": "Each reviewer independently assesses natural-language alignment, intermediate safety, final-state goals and evidence limitations. Expected fixtures do not demonstrate execution. Do not open source labels or diagnostics before submitting.",
   "cases": [
@@ -1178,7 +1178,7 @@
               "field": "ALLOWANCE",
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "value": "1000000",
+              "value": "0",
               "source": "EXPECTED_FIXTURE"
             }
           ],
@@ -1375,7 +1375,7 @@
               "field": "ALLOWANCE",
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "value": "900000",
+              "value": "0",
               "source": "EXPECTED_FIXTURE"
             }
           ],
@@ -1572,7 +1572,7 @@
               "field": "ALLOWANCE",
               "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
               "counterparty": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-              "value": "1700000",
+              "value": "0",
               "source": "EXPECTED_FIXTURE"
             }
           ],

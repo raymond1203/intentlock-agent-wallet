@@ -11,7 +11,7 @@ const candidate = {
   status: 'CANDIDATE_UNFROZEN',
   freezeIssue: 27,
   dataset: {
-    version: '0.3.0',
+    version: '0.4.0',
     baseManifest: 'benchmark/splits/manifest.json',
     caseManifest: 'experiments/configs/case-manifest.json',
     m2Validation: 'experiments/configs/m2-validation.json',

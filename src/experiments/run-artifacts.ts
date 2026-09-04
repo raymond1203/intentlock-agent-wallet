@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import type { BenchmarkScenario } from '../benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 import type { EvaluationCaseManifestEntry } from './case-matrix.js';
 import { RawEvaluationResultSchema } from './evaluate-case.js';
 import { FreezeDigestsSchema } from './freeze-digests.js';
@@ -28,7 +29,7 @@ export const EvaluationRunManifestSchema = z
     schemaVersion: z.literal('0.1'),
     runId: z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._-]{2,79}$/),
     protocolVersion: z.literal('0.1'),
-    datasetVersion: z.literal('0.3.0'),
+    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     createdAt: z.iso.datetime(),
     gitCommit: z.string().regex(/^[a-f0-9]{40}$/),
     executionCommit: z.string().regex(/^[a-f0-9]{40}$/),

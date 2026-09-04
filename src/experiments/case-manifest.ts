@@ -6,6 +6,7 @@ import {
   ScenarioSplitSchema,
   ScenarioWorkflowSchema,
 } from '../benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 import { EVALUATION_VARIANTS, type EvaluationCaseMatrix } from './case-matrix.js';
 
 export const EvaluationVariantSchema = z.enum(EVALUATION_VARIANTS);
@@ -34,7 +35,7 @@ export const EvaluationCaseManifestEntrySchema = z
 export const EvaluationCaseManifestSchema = z
   .object({
     protocolVersion: z.literal('0.1'),
-    datasetVersion: z.literal('0.3.0'),
+    datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     rootSeed: z.literal(2026),
     baseCount: z.literal(80),
     caseCount: z.literal(400),

@@ -1,6 +1,6 @@
 {
   "protocolVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "status": "PENDING_INDEPENDENT_REVIEW",
   "instructions": "Compare natural language with the canonical Intent Contract and trace. Record alignment, missing or widened fields, and notes separately.",
   "cases": [

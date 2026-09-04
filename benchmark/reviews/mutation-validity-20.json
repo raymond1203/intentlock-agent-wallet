@@ -1,6 +1,6 @@
 {
   "protocolVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "status": "PENDING_INDEPENDENT_REVIEW",
   "instructions": "Compare base and candidate, then record operator category, semantic validity, expected decision, and notes separately.",
   "cases": [

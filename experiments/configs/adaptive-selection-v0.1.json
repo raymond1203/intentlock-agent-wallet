@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1",
   "protocolVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "rootSeed": 2026,
   "evaluatedAt": "2026-09-04T00:00:00.000Z",
   "maxReplans": 3,

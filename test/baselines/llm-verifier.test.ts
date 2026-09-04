@@ -3,8 +3,11 @@ import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { applyMutation, type MutationOperatorId } from '../../src/benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../../src/benchmark/scenario.js';
+import {
+  buildLlmBaselineInputBinding,
+  LLM_BASELINE_PROTOCOL_PATH,
+} from '../../src/baselines/llm-baseline-input.js';
 import {
   createLlmVerifierUserPrompt,
   evaluateLlmVerifier,
@@ -33,6 +36,13 @@ const config = LlmVerifierConfigSchema.parse(
   ),
 );
 const transfer = load('transfer/tr-01.json');
+const reviewProtocol = JSON.parse(
+  readFileSync(resolve(LLM_BASELINE_PROTOCOL_PATH), 'utf8'),
+) as unknown;
+const inputBinding = await buildLlmBaselineInputBinding(config, reviewProtocol, (id) => {
+  const directory = id.startsWith('TR-') || id.startsWith('AP-') ? 'transfer' : 'swap';
+  return Promise.resolve(load(`${directory}/${id.toLowerCase()}.json`));
+});
 
 function clientReturning(output: string): LlmClient {
   return { complete: () => Promise.resolve(output) };
@@ -125,48 +135,11 @@ describe('structured LLM verifier baseline', () => {
   });
 
   it('validates the adapter path over the frozen twenty-output review sample', async () => {
-    const base = [
-      load('transfer/tr-01.json'),
-      load('transfer/tr-02.json'),
-      load('transfer/tr-03.json'),
-      load('transfer/ap-01.json'),
-      load('transfer/ap-03.json'),
-      load('swap/ss-01.json'),
-      load('swap/ss-02.json'),
-      load('swap/ss-03.json'),
-      load('swap/bs-01.json'),
-      load('swap/bs-02.json'),
-    ];
-    const operators: MutationOperatorId[] = [
-      'recipient-substitution',
-      'token-substitution',
-      'chain-substitution',
-      'amount-inflation',
-      'slippage-widening',
-      'deadline-extension',
-      'unlimited-approval',
-      'hidden-batch',
-      'policy-laundering',
-      'benign-hallucination',
-    ];
-    const mutationBases = [
-      base[0],
-      base[0],
-      base[0],
-      base[0],
-      base[5],
-      base[4],
-      base[3],
-      base[8],
-      base[0],
-      base[0],
-    ];
-    const mutated = operators.map((operator, index) => {
-      const source = mutationBases[index];
-      if (!source) throw new Error(`mutation base ${String(index)} is missing`);
-      return applyMutation(source, operator, 2026);
-    });
-    const sample = [...base, ...mutated];
+    const sample = inputBinding.sample;
+    expect(inputBinding.expectedCases.map((entry) => entry.scenarioId)).toEqual(
+      sample.map((scenario) => scenario.id),
+    );
+    expect(inputBinding.inputSha256).toMatch(/^[a-f0-9]{64}$/);
     let calls = 0;
     let nextIndex = 0;
     const client: LlmClient = {

@@ -6,12 +6,22 @@ import { evaluateReviewGate, reviewDigest } from '../src/benchmark/review-gate.j
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
 import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
+import { buildLlmBaselineInputBinding } from '../src/baselines/llm-baseline-input.js';
 import { redactScenarioIdentity } from '../src/baselines/llm-verifier.js';
 import { evaluateGuardMode } from '../src/baselines/guard-mode-emulator.js';
 import { evaluatePerCallPolicy } from '../src/baselines/per-call-policy.js';
 import { evaluateIntent } from '../src/monitor/monitor.js';
 import { evaluatePostState } from '../src/oracle/post-state-oracle.js';
-import { deriveM2Completion } from '../src/experiments/freeze-gates.js';
+import {
+  deriveM2Completion,
+  evaluateLlmBaselineGate,
+  LLM_BASELINE_CONFIG_PATH,
+  LLM_BASELINE_PROTOCOL_PATH,
+  LLM_BASELINE_RESULT_PATH,
+  LLM_BASELINE_REVIEW_PACKET_PATH,
+  LLM_RATIONALE_REVIEW_PATH,
+  sha256Source,
+} from '../src/experiments/freeze-gates.js';
 import { executionCollectorSha256 } from './m2-execution/provenance.js';
 import { validatePublishedM2Evidence } from './m2-execution/evidence-validation.js';
 import { M2_ATTEMPT_SELECTION_POLICY } from './m2-execution/attempt-selection.js';
@@ -36,6 +46,27 @@ const base = (
 ).flat();
 const mutations = await load('benchmark/scenarios/mutations');
 const byId = new Map(base.map((s) => [s.id, s]));
+
+function readOptionalTrackedJsonArtifact(path: string): {
+  value?: unknown;
+  sha256?: string;
+} {
+  let source: string;
+  try {
+    source = execFileSync('git', ['show', `HEAD:${path}`], {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return {};
+  }
+  try {
+    return { value: JSON.parse(source) as unknown, sha256: sha256Source(source) };
+  } catch {
+    return { value: null, sha256: sha256Source(source) };
+  }
+}
 
 const currentEvidencePath = `benchmark/evidence/m2-execution-v${BENCHMARK_DATASET_VERSION}.json`;
 const rawPublishedExecution = await readFile(currentEvidencePath, 'utf8').catch(() => null);
@@ -73,6 +104,20 @@ function readTrackedRawEvidenceBytes(path: string): Uint8Array {
     throw new Error(`raw evidence is not tracked at Git HEAD: ${path}`, { cause });
   }
 }
+const llmConfigSource = await readFile(LLM_BASELINE_CONFIG_PATH, 'utf8');
+const llmProtocolSource = await readFile(LLM_BASELINE_PROTOCOL_PATH, 'utf8');
+const llmConfig = JSON.parse(llmConfigSource) as unknown;
+const llmProtocol = JSON.parse(llmProtocolSource) as unknown;
+const [llmResultArtifact, llmReviewPacketArtifact, llmRationaleReviewArtifact] = [
+  readOptionalTrackedJsonArtifact(LLM_BASELINE_RESULT_PATH),
+  readOptionalTrackedJsonArtifact(LLM_BASELINE_REVIEW_PACKET_PATH),
+  readOptionalTrackedJsonArtifact(LLM_RATIONALE_REVIEW_PATH),
+];
+const llmInputBinding = await buildLlmBaselineInputBinding(llmConfig, llmProtocol, (id) => {
+  const scenario = byId.get(id);
+  if (!scenario) throw new Error(`unknown LLM baseline source scenario: ${id}`);
+  return Promise.resolve(scenario);
+}).catch(() => undefined);
 const emptyPublishedExecution = {
   datasetVersion: BENCHMARK_DATASET_VERSION,
   purpose: 'Diagnostic evidence, not a frozen performance result',
@@ -84,6 +129,7 @@ const emptyPublishedExecution = {
   strictAuthoredFixtureExecutionCount: 0,
   finalGoalPassCount: 0,
   strictAuthoredFixtureFinalGoalPassCount: 0,
+  syntheticReferenceCheckedCount: 0,
   syntheticReferenceDisagreementCount: 0,
   humanReview: 'PENDING',
   m2Complete: false,
@@ -108,6 +154,30 @@ const {
   cleanCommittedExecutedBaseCount,
   executionEvidenceStatus,
 } = verifiedPublishedExecution;
+const executionSourceCommits = [
+  ...new Set([...selectedAttempt.values()].map((attempt) => attempt.sourceCommit)),
+];
+const llmBaselineEvidence = evaluateLlmBaselineGate({
+  resultPath: LLM_BASELINE_RESULT_PATH,
+  reviewPacketPath: LLM_BASELINE_REVIEW_PACKET_PATH,
+  rationaleReviewPath: LLM_RATIONALE_REVIEW_PATH,
+  config: llmConfig,
+  configSha256: sha256Source(llmConfigSource),
+  protocol: llmProtocol,
+  protocolSha256: sha256Source(llmProtocolSource),
+  result: llmResultArtifact.value,
+  resultSha256: llmResultArtifact.sha256,
+  reviewPacket: llmReviewPacketArtifact.value,
+  reviewPacketSha256: llmReviewPacketArtifact.sha256,
+  rationaleReview: llmRationaleReviewArtifact.value,
+  rationaleReviewSha256: llmRationaleReviewArtifact.sha256,
+  expectedInput: llmInputBinding
+    ? { inputSha256: llmInputBinding.inputSha256, cases: llmInputBinding.expectedCases }
+    : undefined,
+  executionSourceCommits,
+  sourceCommitResolves,
+  sourceCommitIsAncestor,
+});
 
 const rows = [...base, ...mutations].map((s) => {
   const pre = evaluateIntent({
@@ -281,7 +351,11 @@ const completion = deriveM2Completion({
     publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
   baseReferencePass,
   baseReferenceLabelDisagreementCount: baseReferenceLabelDisagreements.length,
+  syntheticReferenceCheckedCount: publishedExecution.syntheticReferenceCheckedCount,
+  syntheticReferenceDisagreementCount: publishedExecution.syntheticReferenceDisagreementCount,
   reviewGateStatus: reviewGate.status,
+  llmBaselineRunStatus: llmBaselineEvidence.runStatus,
+  llmRationaleReviewStatus: llmBaselineEvidence.rationaleReview.status,
 });
 const validation = {
   datasetVersion: BENCHMARK_DATASET_VERSION,
@@ -292,6 +366,8 @@ const validation = {
     .length,
   baseReferencePass,
   baseReferenceLabelDisagreements,
+  syntheticReferenceCheckedCount: publishedExecution.syntheticReferenceCheckedCount,
+  syntheticReferenceDisagreementCount: publishedExecution.syntheticReferenceDisagreementCount,
   baseMonitorAllow: rows.filter((row) => row.class === 'BASE' && row.preSign.intentLock === 'ALLOW')
     .length,
   executedBaseCount: publishedExecution.completedExecutionCount,
@@ -311,9 +387,11 @@ const validation = {
     disagreementCount: reviewGate.disagreements.length,
     blockers: reviewGate.blockers,
   },
+  llmBaselineEvidence,
   completionCriteria: {
     executionComplete: completion.executionComplete,
     referenceOracleComplete: completion.referenceOracleComplete,
+    llmBaselineComplete: completion.llmBaselineComplete,
   },
   independentReviewStatus: completion.independentReviewStatus,
   m2Complete: completion.m2Complete,
@@ -366,5 +444,5 @@ await output('benchmark/reviews/double-review-20.json', packet);
 await output('benchmark/reviews/submission.template.json', template);
 await output('benchmark/labels/review-requirements.json', status);
 console.log(
-  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); human review ${validation.independentReviewStatus}; M2 complete ${String(validation.m2Complete)}.`,
+  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; synthetic reference checked ${String(validation.syntheticReferenceCheckedCount)}, disagreements ${String(validation.syntheticReferenceDisagreementCount)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); LLM run ${validation.llmBaselineEvidence.runStatus}, rationale review ${validation.llmBaselineEvidence.rationaleReview.status}; human review ${validation.independentReviewStatus}; M2 complete ${String(validation.m2Complete)}.`,
 );

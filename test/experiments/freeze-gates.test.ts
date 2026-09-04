@@ -1,14 +1,29 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { BenchmarkScenarioSchema } from '../../src/benchmark/scenario.js';
+import { scoreDecision } from '../../src/benchmark/scoring.js';
+import {
+  buildLlmBaselineInputBinding,
+  LlmBaselineProtocolSchema,
+  LLM_BASELINE_CONFIG_PATH,
+  LLM_BASELINE_PROTOCOL_PATH,
+  LLM_BASELINE_RESULT_PATH,
+  LLM_BASELINE_REVIEW_PACKET_PATH,
+  LLM_RATIONALE_REVIEW_PATH,
+} from '../../src/baselines/llm-baseline-input.js';
+import { LlmVerifierConfigSchema } from '../../src/baselines/llm-verifier.js';
 import {
   FREEZE_REVIEW_CASE_IDS,
   FROZEN_ABLATION_CONFIG_PATH,
   FROZEN_EVALUATION_CONFIG_PATH,
   FreezeReviewRecordSchema,
   deriveM2Completion,
+  evaluateLlmBaselineGate,
   resolveRepoRelativeJson,
+  sha256Source,
   validateApprovedFreezeReview,
   validateFreezeReviewCaseManifest,
   validateFreezeTransition,
@@ -17,6 +32,34 @@ import {
 
 const head = 'a'.repeat(40);
 const tree = 'b'.repeat(40);
+const sha = 'c'.repeat(64);
+const completedLlmBaselineEvidence = {
+  resultPath: LLM_BASELINE_RESULT_PATH,
+  reviewPacketPath: LLM_BASELINE_REVIEW_PACKET_PATH,
+  rationaleReviewPath: LLM_RATIONALE_REVIEW_PATH,
+  expectedDatasetVersion: '0.4.0',
+  runStatus: 'COMPLETE',
+  codeCommit: head,
+  workingTreeDirty: false,
+  sampleSize: 20,
+  inputSha256: sha,
+  configSha256: sha,
+  protocolSha256: sha,
+  resultSha256: sha,
+  reviewPacketSha256: sha,
+  runBlockers: [],
+  rationaleReview: {
+    status: 'COMPLETE',
+    reviewerPseudonym: 'reviewer-b',
+    reviewerType: 'HUMAN',
+    independenceAttestation: true,
+    reviewedAt: '2026-09-05T00:00:00.000Z',
+    reviewedCommit: head,
+    caseCount: 20,
+    submissionSha256: sha,
+    blockers: [],
+  },
+};
 const approvedReview = {
   schemaVersion: '0.2',
   status: 'APPROVED',
@@ -53,7 +96,7 @@ const approvedReview = {
 } as const;
 
 const completedM2 = {
-  datasetVersion: '0.3.0',
+  datasetVersion: '0.4.0',
   baseCount: 80,
   executedBaseCount: 80,
   strictAuthoredFixtureExecutedBaseCount: 80,
@@ -62,16 +105,167 @@ const completedM2 = {
   strictAuthoredFixtureFinalGoalPassCount: 80,
   baseReferencePass: 80,
   baseReferenceLabelDisagreements: [],
+  syntheticReferenceCheckedCount: 80,
+  syntheticReferenceDisagreementCount: 0,
   executionEvidenceStatus: 'COMPLETE',
   independentReviewEvidence: {
     recordStatus: 'RECORDS_COMPLETE',
     submissionCount: 2,
     blockers: [],
   },
-  completionCriteria: { executionComplete: true, referenceOracleComplete: true },
+  llmBaselineEvidence: completedLlmBaselineEvidence,
+  completionCriteria: {
+    executionComplete: true,
+    referenceOracleComplete: true,
+    llmBaselineComplete: true,
+  },
   independentReviewStatus: 'COMPLETE',
   m2Complete: true,
 };
+
+const fixtureConfigSource = readFileSync(LLM_BASELINE_CONFIG_PATH, 'utf8');
+const fixtureProtocolSource = readFileSync(LLM_BASELINE_PROTOCOL_PATH, 'utf8');
+const fixtureConfig = LlmVerifierConfigSchema.parse(JSON.parse(fixtureConfigSource));
+const fixtureProtocol = LlmBaselineProtocolSchema.parse(JSON.parse(fixtureProtocolSource));
+const fixtureInputBinding = await buildLlmBaselineInputBinding(
+  fixtureConfig,
+  fixtureProtocol,
+  (id) => {
+    const directory =
+      id.startsWith('TR-') || id.startsWith('AP-')
+        ? 'transfer'
+        : id.startsWith('BR-')
+          ? 'bridge'
+          : 'swap';
+    return Promise.resolve(
+      BenchmarkScenarioSchema.parse(
+        JSON.parse(
+          readFileSync(
+            resolve('benchmark/scenarios/base', directory, `${id.toLowerCase()}.json`),
+            'utf8',
+          ),
+        ),
+      ),
+    );
+  },
+);
+
+function validLlmGateInput() {
+  const config = structuredClone(fixtureConfig);
+  const protocol = structuredClone(fixtureProtocol);
+  const outputs = fixtureInputBinding.sample.map((scenario, index) => {
+    const expectedCase = fixtureInputBinding.expectedCases[index];
+    if (!expectedCase) throw new Error(`missing expected LLM case ${String(index)}`);
+    const modelDecision =
+      scenario.oracle.expectedDecision === 'ESCALATE'
+        ? ('ABSTAIN' as const)
+        : scenario.oracle.expectedDecision;
+    const score = scoreDecision(scenario, modelDecision, 'PRE_SIGN');
+    return {
+      reviewId: expectedCase.reviewId,
+      scenarioId: scenario.id,
+      split: scenario.split,
+      class: scenario.class,
+      verdict: {
+        decision: modelDecision,
+        rationale: `Rationale ${String(index)}`,
+        reasonCodes: [],
+        attempts: 1,
+        rawOutput: `raw-${String(index)}`,
+      },
+      ...score,
+    };
+  });
+  const result = {
+    schemaVersion: '0.1',
+    datasetVersion: '0.4.0',
+    codeCommit: head,
+    workingTreeDirty: false,
+    inputSha256: fixtureInputBinding.inputSha256,
+    evaluationStage: 'PRE_SIGN',
+    seed: 2026,
+    config,
+    sampleSize: 20,
+    eligibleCount: outputs.filter((output) => output.eligible).length,
+    exactMatches: outputs.filter((output) => output.exactMatch).length,
+    outputs,
+    reviewerStatus: 'PENDING_INDEPENDENT_REVIEW',
+  };
+  const reviewPacket = {
+    protocolVersion: '0.1',
+    status: 'PENDING_INDEPENDENT_REVIEW',
+    datasetVersion: '0.4.0',
+    codeCommit: head,
+    workingTreeDirty: false,
+    inputSha256: result.inputSha256,
+    seed: 2026,
+    config,
+    instructions: 'Review every rationale.',
+    cases: outputs.map((output, index) => {
+      const expectedCase = fixtureInputBinding.expectedCases[index];
+      if (!expectedCase) throw new Error(`missing expected LLM packet case ${String(index)}`);
+      return {
+        reviewId: output.reviewId,
+        input: expectedCase.input,
+        output: {
+          decision: output.verdict.decision,
+          rationale: output.verdict.rationale,
+          violatedFields: output.verdict.reasonCodes,
+          attempts: output.verdict.attempts,
+          rawOutput: output.verdict.rawOutput,
+        },
+      };
+    }),
+  };
+  const configSha256 = sha256Source(fixtureConfigSource);
+  const protocolSha256 = sha256Source(fixtureProtocolSource);
+  const resultSha256 = sha256Source(JSON.stringify(result));
+  const reviewPacketSha256 = sha256Source(JSON.stringify(reviewPacket));
+  const rationaleReview = {
+    protocolVersion: '0.1',
+    datasetVersion: '0.4.0',
+    status: 'COMPLETE',
+    reviewerPseudonym: 'reviewer-b',
+    reviewerType: 'HUMAN',
+    independenceAttestation: true,
+    reviewedAt: '2026-09-05T00:00:00.000Z',
+    reviewedCommit: head,
+    inputSha256: result.inputSha256,
+    configSha256,
+    resultSha256,
+    reviewPacketSha256,
+    cases: outputs.map((output) => ({
+      reviewId: output.reviewId,
+      modelDecision: output.verdict.decision,
+      rationaleSupported: true,
+      oracleLeakage: false,
+      correctedDecision: output.verdict.decision,
+      notes: 'Independently checked against the redacted input.',
+    })),
+  };
+  return {
+    resultPath: LLM_BASELINE_RESULT_PATH,
+    reviewPacketPath: LLM_BASELINE_REVIEW_PACKET_PATH,
+    rationaleReviewPath: LLM_RATIONALE_REVIEW_PATH,
+    config,
+    configSha256,
+    protocol,
+    protocolSha256,
+    result,
+    resultSha256,
+    reviewPacket,
+    reviewPacketSha256,
+    rationaleReview,
+    rationaleReviewSha256: sha256Source(JSON.stringify(rationaleReview)),
+    expectedInput: {
+      inputSha256: fixtureInputBinding.inputSha256,
+      cases: fixtureInputBinding.expectedCases,
+    },
+    executionSourceCommits: [head],
+    sourceCommitResolves: () => true,
+    sourceCommitIsAncestor: () => true,
+  };
+}
 
 describe('evaluation freeze gates', () => {
   it('derives M2 completion only from all execution, oracle, and review evidence', () => {
@@ -85,11 +279,16 @@ describe('evaluation freeze gates', () => {
       strictAuthoredFixtureFinalGoalPassCount: 80,
       baseReferencePass: 80,
       baseReferenceLabelDisagreementCount: 0,
+      syntheticReferenceCheckedCount: 80,
+      syntheticReferenceDisagreementCount: 0,
       reviewGateStatus: 'RECORDS_COMPLETE',
+      llmBaselineRunStatus: 'COMPLETE',
+      llmRationaleReviewStatus: 'COMPLETE',
     } as const;
     expect(deriveM2Completion(evidence)).toEqual({
       executionComplete: true,
       referenceOracleComplete: true,
+      llmBaselineComplete: true,
       independentReviewStatus: 'COMPLETE',
       m2Complete: true,
     });
@@ -100,6 +299,178 @@ describe('evaluation freeze gates', () => {
     expect(
       deriveM2Completion({ ...evidence, baseReferenceLabelDisagreementCount: 1 }).m2Complete,
     ).toBe(false);
+    expect(
+      deriveM2Completion({ ...evidence, syntheticReferenceDisagreementCount: 1 }),
+    ).toMatchObject({ referenceOracleComplete: false, m2Complete: false });
+    expect(deriveM2Completion({ ...evidence, syntheticReferenceCheckedCount: 79 })).toMatchObject({
+      referenceOracleComplete: false,
+      m2Complete: false,
+    });
+    expect(deriveM2Completion({ ...evidence, syntheticReferenceCheckedCount: 0 })).toMatchObject({
+      referenceOracleComplete: false,
+      m2Complete: false,
+    });
+    expect(deriveM2Completion({ ...evidence, llmBaselineRunStatus: 'PENDING' })).toMatchObject({
+      llmBaselineComplete: false,
+      m2Complete: false,
+    });
+    expect(deriveM2Completion({ ...evidence, llmRationaleReviewStatus: 'PENDING' })).toMatchObject({
+      llmBaselineComplete: false,
+      m2Complete: false,
+    });
+  });
+
+  it('binds a complete LLM run and rationale review to exact v0.4 artifacts', () => {
+    expect(evaluateLlmBaselineGate(validLlmGateInput())).toMatchObject({
+      runStatus: 'COMPLETE',
+      codeCommit: head,
+      sampleSize: 20,
+      runBlockers: [],
+      rationaleReview: {
+        status: 'COMPLETE',
+        reviewerPseudonym: 'reviewer-b',
+        reviewerType: 'HUMAN',
+        independenceAttestation: true,
+        reviewedAt: '2026-09-05T00:00:00.000Z',
+        caseCount: 20,
+        blockers: [],
+      },
+    });
+  });
+
+  it('keeps missing or partial LLM evidence parseable and pending', () => {
+    const valid = validLlmGateInput();
+    const missing = evaluateLlmBaselineGate({
+      ...valid,
+      result: undefined,
+      resultSha256: undefined,
+      reviewPacket: undefined,
+      reviewPacketSha256: undefined,
+      rationaleReview: undefined,
+      rationaleReviewSha256: undefined,
+    });
+    expect(missing).toMatchObject({
+      runStatus: 'PENDING',
+      rationaleReview: { status: 'PENDING' },
+    });
+    expect(missing.runBlockers).toEqual(
+      expect.arrayContaining(['result:missing', 'review-packet:missing']),
+    );
+    expect(missing.rationaleReview.blockers).toEqual(
+      expect.arrayContaining(['rationale-review:missing', 'baseline-run:not-complete']),
+    );
+    const partialReview = structuredClone(valid.rationaleReview);
+    partialReview.cases.pop();
+    const partial = evaluateLlmBaselineGate({ ...valid, rationaleReview: partialReview });
+    expect(partial.rationaleReview.status).toBe('PENDING');
+    expect(partial.rationaleReview.blockers).toContain('rationale-review:invalid');
+  });
+
+  it('rejects stale config, unrelated samples, changed inputs, hashes, and source commits', () => {
+    const valid = validLlmGateInput();
+    expect(
+      evaluateLlmBaselineGate({ ...valid, sourceCommitIsAncestor: () => false }).runBlockers,
+    ).toContain('result:commit-not-head-ancestor');
+    expect(
+      evaluateLlmBaselineGate({ ...valid, executionSourceCommits: ['f'.repeat(40)] }).runBlockers,
+    ).toContain('result:execution-source-commit-mismatch');
+    expect(evaluateLlmBaselineGate({ ...valid, executionSourceCommits: [] }).runBlockers).toContain(
+      'execution-source-commit:missing',
+    );
+    expect(
+      evaluateLlmBaselineGate({
+        ...valid,
+        executionSourceCommits: [head, 'f'.repeat(40)],
+      }).runBlockers,
+    ).toContain('execution-source-commit:multiple');
+    expect(
+      evaluateLlmBaselineGate({
+        ...valid,
+        config: { ...valid.config, timeoutMs: 31_000 },
+      }).runBlockers,
+    ).toContain('result:config-mismatch');
+    const unrelatedResult = structuredClone(valid.result);
+    const unrelatedOutput = unrelatedResult.outputs[0];
+    if (!unrelatedOutput) throw new Error('missing LLM result row');
+    unrelatedOutput.scenarioId = 'UNRELATED-SELECTION';
+    expect(evaluateLlmBaselineGate({ ...valid, result: unrelatedResult }).runBlockers).toContain(
+      'result:sample-mismatch:R01',
+    );
+    const staleHashResult = { ...valid.result, inputSha256: 'e'.repeat(64) };
+    expect(evaluateLlmBaselineGate({ ...valid, result: staleHashResult }).runBlockers).toContain(
+      'result:input-digest-mismatch',
+    );
+    const changedInputPacket = structuredClone(valid.reviewPacket);
+    const changedInputCase = changedInputPacket.cases[0];
+    if (!changedInputCase) throw new Error('missing LLM packet case');
+    changedInputCase.input = { replaced: true };
+    expect(
+      evaluateLlmBaselineGate({ ...valid, reviewPacket: changedInputPacket }).runBlockers,
+    ).toContain('review-packet:input-mismatch:R01');
+    const mismatchedPacket = structuredClone(valid.reviewPacket);
+    const firstCase = mismatchedPacket.cases[0];
+    if (!firstCase) throw new Error('missing LLM packet case');
+    firstCase.output.rationale = 'Changed after the run.';
+    expect(
+      evaluateLlmBaselineGate({ ...valid, reviewPacket: mismatchedPacket }).runBlockers,
+    ).toContain('review-packet:output-mismatch:R01');
+    expect(
+      evaluateLlmBaselineGate({
+        ...valid,
+        rationaleReview: { ...valid.rationaleReview, reviewedCommit: 'f'.repeat(40) },
+      }).rationaleReview.blockers,
+    ).toContain('rationale-review:artifact-binding-mismatch');
+    const changedDecisionReview = structuredClone(valid.rationaleReview);
+    const firstReview = changedDecisionReview.cases[0];
+    if (!firstReview) throw new Error('missing rationale review case');
+    firstReview.modelDecision =
+      firstReview.modelDecision === 'DENY' ? ('ALLOW' as const) : ('DENY' as const);
+    expect(
+      evaluateLlmBaselineGate({ ...valid, rationaleReview: changedDecisionReview }).rationaleReview
+        .blockers,
+    ).toContain('rationale-review:model-decision-mismatch:R01');
+    const inconsistentResult = structuredClone(valid.result);
+    const firstOutput = inconsistentResult.outputs[0];
+    if (!firstOutput) throw new Error('missing LLM result row');
+    firstOutput.exactMatch = false;
+    inconsistentResult.exactMatches = 19;
+    expect(evaluateLlmBaselineGate({ ...valid, result: inconsistentResult }).runBlockers).toContain(
+      'result:invalid',
+    );
+    const changedMetadataResult = structuredClone(valid.result);
+    const changedMetadataOutput = changedMetadataResult.outputs[0];
+    if (!changedMetadataOutput) throw new Error('missing LLM result row');
+    changedMetadataOutput.split = 'HIDDEN_TEST';
+    changedMetadataOutput.class = changedMetadataOutput.class === 'BASE' ? 'ADVERSARIAL' : 'BASE';
+    expect(
+      evaluateLlmBaselineGate({ ...valid, result: changedMetadataResult }).runBlockers,
+    ).toContain('result:sample-mismatch:R01');
+    const changedScoreResult = structuredClone(valid.result);
+    const changedScoreOutput = changedScoreResult.outputs[0];
+    if (!changedScoreOutput) throw new Error('missing LLM result row');
+    changedScoreOutput.expectedDecision =
+      changedScoreOutput.expectedDecision === 'DENY' ? 'ALLOW' : 'DENY';
+    changedScoreOutput.exactMatch =
+      changedScoreOutput.verdict.decision === changedScoreOutput.expectedDecision;
+    changedScoreResult.exactMatches = changedScoreResult.outputs.filter(
+      (output) => output.exactMatch,
+    ).length;
+    expect(evaluateLlmBaselineGate({ ...valid, result: changedScoreResult }).runBlockers).toContain(
+      'result:score-mismatch:R01',
+    );
+  });
+
+  it('allows an independent corrected decision to differ from the model decision', () => {
+    const valid = validLlmGateInput();
+    const corrected = structuredClone(valid.rationaleReview);
+    const firstReview = corrected.cases[0];
+    if (!firstReview) throw new Error('missing rationale review case');
+    firstReview.correctedDecision =
+      firstReview.modelDecision === 'DENY' ? ('ALLOW' as const) : ('DENY' as const);
+    expect(evaluateLlmBaselineGate({ ...valid, rationaleReview: corrected })).toMatchObject({
+      runStatus: 'COMPLETE',
+      rationaleReview: { status: 'COMPLETE', blockers: [] },
+    });
   });
 
   it('requires real human approval for the exact candidate and at least twenty dry runs', () => {
@@ -242,6 +613,52 @@ describe('evaluation freeze gates', () => {
     expect(() =>
       validateM2ReadyForFreeze({ ...completedM2, cleanCommittedExecutedBaseCount: 79 }),
     ).toThrow('M2 is not freeze-ready');
+    expect(() =>
+      validateM2ReadyForFreeze({ ...completedM2, syntheticReferenceDisagreementCount: 1 }),
+    ).toThrow('M2 is not freeze-ready');
+    expect(() =>
+      validateM2ReadyForFreeze({ ...completedM2, syntheticReferenceCheckedCount: 79 }),
+    ).toThrow('M2 is not freeze-ready');
+    expect(() =>
+      validateM2ReadyForFreeze({
+        ...completedM2,
+        llmBaselineEvidence: {
+          ...completedLlmBaselineEvidence,
+          resultPath: 'experiments/results/baselines/stale.json',
+        },
+      }),
+    ).toThrow();
+    expect(() =>
+      validateM2ReadyForFreeze({
+        ...completedM2,
+        llmBaselineEvidence: {
+          ...completedLlmBaselineEvidence,
+          rationaleReview: {
+            ...completedLlmBaselineEvidence.rationaleReview,
+            status: 'PENDING',
+          },
+        },
+      }),
+    ).toThrow('M2 is not freeze-ready');
+    for (const rationaleReview of [
+      { ...completedLlmBaselineEvidence.rationaleReview, reviewerPseudonym: null },
+      { ...completedLlmBaselineEvidence.rationaleReview, reviewerType: null },
+      { ...completedLlmBaselineEvidence.rationaleReview, independenceAttestation: null },
+      { ...completedLlmBaselineEvidence.rationaleReview, reviewedAt: null },
+    ]) {
+      expect(() =>
+        validateM2ReadyForFreeze({
+          ...completedM2,
+          llmBaselineEvidence: { ...completedLlmBaselineEvidence, rationaleReview },
+        }),
+      ).toThrow('M2 is not freeze-ready');
+    }
+    const withoutSyntheticCount: Partial<typeof completedM2> = { ...completedM2 };
+    delete withoutSyntheticCount.syntheticReferenceDisagreementCount;
+    expect(() => validateM2ReadyForFreeze(withoutSyntheticCount)).toThrow();
+    const withoutSyntheticChecked: Partial<typeof completedM2> = { ...completedM2 };
+    delete withoutSyntheticChecked.syntheticReferenceCheckedCount;
+    expect(() => validateM2ReadyForFreeze(withoutSyntheticChecked)).toThrow();
   });
 
   it('rejects the repository current pending M2 state and pending review template', () => {
@@ -251,7 +668,7 @@ describe('evaluation freeze gates', () => {
     const reviewTemplate: unknown = JSON.parse(
       readFileSync('experiments/configs/freeze-review.template.json', 'utf8'),
     );
-    expect(() => validateM2ReadyForFreeze(currentM2)).toThrow('M2 is not freeze-ready');
+    expect(() => validateM2ReadyForFreeze(currentM2)).toThrow();
     expect(FreezeReviewRecordSchema.parse(reviewTemplate)).toMatchObject({
       status: 'PENDING',
       dryRunCases: 0,

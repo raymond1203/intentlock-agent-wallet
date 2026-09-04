@@ -158,6 +158,7 @@ const evidence = M2PublishedEvidenceSchema.parse({
   strictAuthoredFixtureFinalGoalPassCount: strictAuthoredFixture.filter(
     (a) => a.oracle.status === 'PASS',
   ).length,
+  syntheticReferenceCheckedCount: selected.filter((a) => a.referenceReconciliation !== null).length,
   syntheticReferenceDisagreementCount: selected.filter(
     (a) => a.referenceReconciliation?.status === 'DISAGREEMENT',
   ).length,
@@ -219,6 +220,7 @@ console.log(
       attempted: evidence.attemptedCount,
       executed: evidence.completedExecutionCount,
       finalGoalPass: evidence.finalGoalPassCount,
+      referenceChecked: evidence.syntheticReferenceCheckedCount,
       referenceDisagreements: evidence.syntheticReferenceDisagreementCount,
       missing,
     },

@@ -2,7 +2,9 @@
 
 > 상태: M4 원고용 근거 등록부. 2026-09-04에 아래 외부 1차 출처를 다시 열어 확인했다.
 > 이 문서는 논문 원문·공식 문서가 직접 지지하는 범위와 프로젝트 실험으로 입증해야 할 범위를
-> 분리한다. 아직 생성되지 않은 M3 결과는 모두 `RESULT_PLACEHOLDER`로 남긴다.
+> 분리한다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline case)이며, v0.4.0 실행
+> evidence와 독립 인간 검수는 아직 `PENDING`이다. 아직 생성되지 않은 M3 결과는 모두
+> `RESULT_PLACEHOLDER`로 남기고 사람 검수 완료를 주장하지 않는다.
 
 ## 사용 규칙
 
@@ -68,8 +70,14 @@
 | IL-DESIGN-2 | Unsupported effect, ambiguity와 contract widening은 자동 ALLOW가 아니라 DENY 또는 ESCALATE로 간다.                                                                      | [`docs/decisions/0004-security-guarantee-boundary.md`](../docs/decisions/0004-security-guarantee-boundary.md), negative tests                                                                            | 모든 advertised decoder·unknown selector·typed-data·depth limit test와 outcome audit가 필요하다.                    | **조건부 설계 주장.** liveness나 낮은 false denial을 보장하지 않는다.                                                 |
 | IL-SAFE-1   | 명세 충분성, decoder/simulator soundness, linearizable ledger와 우회 불가능 signer gate 아래 authorized prefix가 계약 invariant 안에 남는다는 귀납 argument를 제시한다. | [`docs/decisions/0004-security-guarantee-boundary.md`](../docs/decisions/0004-security-guarantee-boundary.md), [`paper/draft-method.md`](draft-method.md)                                                | invariant별 negative/property test, concurrency counterexample test, 독립 인간의 proof-sketch 반례 검토가 필요하다. | **조건부 설계 주장.** mechanized proof, natural-language intent proof 또는 end-to-end safety proof라고 부르지 않는다. |
 | IL-CASE-1   | MetaMask Agent Wallet은 금전 상태 전이와 signer/policy 경계가 공개된 practical case study다.                                                                            | MM-ARCH-1~MM-CMD-1, [`docs/decisions/0002-competition-rules-and-deadline.md`](../docs/decisions/0002-competition-rules-and-deadline.md)                                                                  | 원고 전체에서 `case study`, `public-docs emulator` 표기를 확인한다.                                                 | **제한된 비교.** MetaMask 제품 보안 평가나 취약점 보고가 아니다.                                                      |
-| IL-DATA-1   | v0.3.0 벤치마크는 두 fixed fork와 제한된 workflow·protocol 범위의 authored case다.                                                                                      | [`docs/decisions/0005-mvp-workflows-and-forks.md`](../docs/decisions/0005-mvp-workflows-and-forks.md), [`docs/decisions/0009-m2-v0.3-data-contract.md`](../docs/decisions/0009-m2-v0.3-data-contract.md) | version-matched clean execution evidence, manifest hashes와 review gate가 필요하다.                                 | **조건부 설계 주장.** `HIDDEN_TEST`는 author-exposed legacy name이며 unseen generalization evidence가 아니다.         |
+| IL-DATA-1   | v0.4.0 벤치마크는 두 fixed fork와 제한된 workflow·protocol 범위의 authored case다.                                                                                      | [`docs/decisions/0005-mvp-workflows-and-forks.md`](../docs/decisions/0005-mvp-workflows-and-forks.md), [`docs/decisions/0010-m2-v0.4-data-contract.md`](../docs/decisions/0010-m2-v0.4-data-contract.md) | version-matched clean execution evidence, manifest hashes와 review gate가 필요하다.                                 | **조건부 설계 주장.** `HIDDEN_TEST`는 author-exposed legacy name이며 unseen generalization evidence가 아니다.         |
 | IL-ORACLE-1 | 주 평가는 LLM judge 대신 supported case의 exact integer post-state oracle을 사용한다.                                                                                   | [`docs/claim-to-evidence.md`](../docs/claim-to-evidence.md), oracle 구현·test                                                                                                                            | reference disagreement, insufficient evidence와 unsupported를 분모에서 제거하지 않는 audit가 필요하다.              | **조건부 설계 주장.** oracle 입력과 decoder가 sound하다는 전제가 남는다.                                              |
+
+v0.2.0 진단 기록과 v0.3.0 데이터 계약은 역사적 provenance로 보존한다. 특히 폐기된 local v0.3.0 clean
+replay는 swap batch 7건의 terminal finite allowance reference가 실제 소비 뒤에도 승인량을 남기는 결함을
+진단했다. [`ADR 0010`](../docs/decisions/0010-m2-v0.4-data-contract.md)에 따라 이 replay와 파생 artifact는
+시스템 성능 또는 M2 완료 evidence가 아니며, 현재 claim은 전량 재생성한 v0.4.0 evidence에만 연결한다.
+80/400은 corpus 구성 수이지 완료된 실험 결과나 사람 검수 수가 아니다.
 
 ## D. 실험 결과 claim slots
 

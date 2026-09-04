@@ -1,7 +1,8 @@
 # 벤치마크·평가·한계·MetaMask 제안 초안
 
-> 상태: M3 동결 결과 전 구조 초안. `[결과 삽입]` 표시는 raw result와 분석 스크립트가 생성한
-> 값으로만 교체한다.
+> 상태: v0.4.0 M3 동결 결과 전 구조 초안. `[결과 삽입]` 표시는 raw result와 분석 스크립트가
+> 생성한 값으로만 교체한다. v0.4.0 실행 evidence와 독립 인간 검수는 아직 `PENDING`이며, 이
+> 초안은 사람 검수 완료를 주장하지 않는다.
 
 ## 1. 평가 목적
 
@@ -15,7 +16,7 @@ author-exposed evaluation split과 적응형 재계획에서 실패 양상이 �
 
 ## 2. 벤치마크
 
-데이터 v0.3.0은 transfer, approval·Permit2, single/batch swap, bridge+destination action, lending,
+데이터 v0.4.0은 transfer, approval·Permit2, single/batch swap, bridge+destination action, lending,
 batch recovery의 80개 base intent를 포함한다. 모든 scenario는 natural-language request, typed intent
 contract, ordered calls, expected economic effects, fixed-fork reference와 oracle 요구사항을 갖는다.
 
@@ -24,9 +25,9 @@ contract, ordered calls, expected economic effects, fixed-fork reference와 orac
 유지한다. mutation operator가 workflow에 적용되지 않으면 사전 등록된 동일 범주의 다음 operator를
 사용하며, invalid calldata나 no-op을 수량 충족용 공격으로 세지 않는다.
 
-Ethereum과 Base의 block number, block hash, contract codehash를 고정한다. base 80개 fixed-fork 실행
-evidence는 clean committed candidate에서 별도로 수집하고, 수집되지 않은 행은 `EXPECTED_FIXTURE`로
-남긴다. mutation은 semantic transaction candidate,
+Ethereum과 Base의 block number, block hash, contract codehash를 고정한다. v0.4.0 base 80개의
+fixed-fork 실행 evidence는 clean committed candidate에서 전량 다시 수집해야 하며 현재는 `PENDING`이다.
+수집되지 않은 행은 `EXPECTED_FIXTURE`로 남긴다. mutation은 semantic transaction candidate,
 post-state-only fixture, invalid-call drift를 구분한다. cross-chain destination 단계의 test
 relayer·attester는 production bridge liveness나 attestation security를 재현하지 않는다.
 
@@ -80,7 +81,11 @@ base-intent group을 단위로 한 stratified bootstrap 10,000회로 계산한�
 
 실제 fork에서 관찰된 protocol rounding, interest, quote와 authored reference의 차이를 공격 탐지
 성능과 섞지 않는다. 데이터 계약 결함으로 수정된 v0.2.0 진단 결과는 pilot·data-quality evidence로만
-남기고 v0.3.0 primary score의 분자에 포함하지 않는다.
+남긴다. 또한 폐기된 local v0.3.0 clean replay는 swap batch 7건에서 exact router consumption 뒤의
+terminal finite allowance를 0이 아닌 승인량으로 남긴 reference 결함을 진단했다. 이 replay와 파생
+artifact는 [`ADR 0010`](../docs/decisions/0010-m2-v0.4-data-contract.md)에 따라 v0.4.0 primary score,
+M2 완료 또는 시스템 성능의 근거로 사용하지 않는다. v0.4.0 execution evidence와 version-matched
+독립 인간 검수는 모두 아직 `PENDING`이다.
 
 ### RQ2 — Security–utility 비교
 

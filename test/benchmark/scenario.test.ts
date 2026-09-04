@@ -11,6 +11,10 @@ import {
   type BenchmarkScenario,
 } from '../../src/benchmark/scenario.js';
 import { evaluateIntent } from '../../src/monitor/monitor.js';
+import {
+  buildBaseScenarios,
+  terminalAllowanceAfterApproval,
+} from '../../scripts/generate-benchmark.js';
 
 const baseDirectories = [
   resolve(import.meta.dirname, '../../benchmark/scenarios/base/transfer'),
@@ -37,6 +41,7 @@ function loadScenarios(): BenchmarkScenario[] {
 }
 
 const scenarios = loadScenarios();
+const generatedScenarios = buildBaseScenarios();
 
 describe('benchmark scenario schema and split freeze', () => {
   it('validates exactly 40 unique base scenarios', () => {
@@ -125,22 +130,100 @@ describe('benchmark scenario schema and split freeze', () => {
           scenario.id,
         ).toBe(true);
       }
-      const lastApproval = [...scenario.trace.expectedEffects]
-        .reverse()
-        .find((effect) => effect.kind === 'APPROVAL');
-      if (lastApproval) {
+      const lastApprovalIndex = scenario.trace.expectedEffects.findLastIndex(
+        (effect) => effect.kind === 'APPROVAL',
+      );
+      const lastApproval = scenario.trace.expectedEffects[lastApprovalIndex];
+      if (lastApproval?.kind === 'APPROVAL') {
+        const expectedAllowance = terminalAllowanceAfterApproval(
+          scenario.trace.expectedEffects,
+          lastApprovalIndex,
+        ).toString();
         const hasStoredAllowance = scenario.oracle.postState.some(
           (state) =>
             state.field === 'ALLOWANCE' &&
             state.subject.toLowerCase() === lastApproval.owner.toLowerCase() &&
             state.counterparty?.toLowerCase() === lastApproval.spender.toLowerCase() &&
-            state.value === lastApproval.amount,
+            state.value === expectedAllowance,
         );
         const oneUseSignatureTransfer =
           lastApproval.signatureDeadline !== undefined && lastApproval.expiration === undefined;
         expect(hasStoredAllowance, scenario.id).toBe(!oneUseSignatureTransfer);
       }
     }
+  });
+
+  it('subtracts router consumption from terminal allowance for BS-01 through BS-10', () => {
+    for (const number of Array.from({ length: 10 }, (_, index) => index + 1)) {
+      const id = `BS-${String(number).padStart(2, '0')}`;
+      const value = generatedScenarios.find((candidate) => candidate.id === id);
+      expect(value, id).toBeDefined();
+      if (!value) continue;
+      const approval = [...value.trace.expectedEffects]
+        .reverse()
+        .find((effect) => effect.kind === 'APPROVAL');
+      expect(approval?.kind, id).toBe('APPROVAL');
+      if (approval?.kind !== 'APPROVAL') continue;
+      expect(
+        value.oracle.postState.find(
+          (state) =>
+            state.field === 'ALLOWANCE' &&
+            state.subject.toLowerCase() === approval.owner.toLowerCase() &&
+            state.asset?.toLowerCase() === approval.asset.toLowerCase() &&
+            state.counterparty?.toLowerCase() === approval.spender.toLowerCase(),
+        )?.value,
+        id,
+      ).toBe('0');
+    }
+  });
+
+  it('preserves pure approval, revoke, and Permit2 terminal-state semantics', () => {
+    const expectedStoredAllowance = new Map([
+      ['AP-01', '2000000'],
+      ['AP-02', '0'],
+      ['AP-03', '1500000'],
+      ['AP-05', '3000000'],
+      ['AP-06', '400000'],
+      ['AP-07', '0'],
+      ['AP-09', '1000000'],
+      ['AP-10', '700000'],
+    ]);
+    for (const [id, expected] of expectedStoredAllowance) {
+      const value = generatedScenarios.find((candidate) => candidate.id === id);
+      expect(value, id).toBeDefined();
+      expect(value?.oracle.postState.find((state) => state.field === 'ALLOWANCE')?.value, id).toBe(
+        expected,
+      );
+    }
+    for (const id of ['AP-04', 'AP-08']) {
+      const value = generatedScenarios.find((candidate) => candidate.id === id);
+      expect(value, id).toBeDefined();
+      expect(
+        value?.oracle.postState.some((state) => state.field === 'ALLOWANCE'),
+        id,
+      ).toBe(false);
+    }
+  });
+
+  it('rejects modeled allowance consumption above the approval', () => {
+    const value = generatedScenarios.find((candidate) => candidate.id === 'BS-01');
+    if (!value) throw new Error('generated BS-01 is missing');
+    const effects = structuredClone(value.trace.expectedEffects);
+    const approvalIndex = effects.findIndex((effect) => effect.kind === 'APPROVAL');
+    const approval = effects[approvalIndex];
+    const transfer = effects.find(
+      (effect) =>
+        effect.kind === 'TRANSFER' &&
+        approval?.kind === 'APPROVAL' &&
+        effect.provenance.target.toLowerCase() === approval.spender.toLowerCase(),
+    );
+    if (approval?.kind !== 'APPROVAL' || transfer?.kind !== 'TRANSFER') {
+      throw new Error('generated BS-01 approval or router transfer is missing');
+    }
+    transfer.amount = (BigInt(approval.amount) + 1n).toString();
+    expect(() => terminalAllowanceAfterApproval(effects, approvalIndex)).toThrow(
+      'modeled allowance consumption exceeds approval',
+    );
   });
 
   it('does not contain exact or normalized near-duplicate scenarios', () => {

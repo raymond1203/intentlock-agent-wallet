@@ -31,7 +31,7 @@ function scenario(id: string): BenchmarkScenario {
   return value;
 }
 
-describe('M2 v0.3 correction policy', () => {
+describe('M2 dataset v0.4 correction policy', () => {
   it('pins every one of the 38 swap effects and implements the 100bps floor exactly', () => {
     const swaps = scenarios.flatMap((scenario) =>
       scenario.trace.expectedEffects
@@ -187,7 +187,7 @@ describe('M2 v0.3 correction policy', () => {
     }
   });
 
-  it('publishes dataset version 0.3.0 without claiming a frozen holdout', () => {
+  it('publishes dataset version 0.4.0 without claiming a frozen holdout', () => {
     const manifest = JSON.parse(readFileSync('benchmark/splits/manifest.json', 'utf8')) as {
       datasetVersion: string;
       frozen: boolean;

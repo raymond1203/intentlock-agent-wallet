@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { format, resolveConfig } from 'prettier';
 import {
@@ -50,6 +51,9 @@ const SOURCE_URLS = [
   'https://github.com/Uniswap/permit2',
   'https://github.com/Uniswap/swap-router-contracts',
 ];
+const IS_DIRECT_EXECUTION =
+  process.argv[1] !== undefined &&
+  resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1]);
 
 interface ActionDraft {
   target: Address;
@@ -229,6 +233,38 @@ function addPermission(
   const existing = permissions.get(key);
   if (existing) existing.selectors.add(functionSelector);
   else permissions.set(key, { target, selectors: new Set([functionSelector]) });
+}
+
+export function terminalAllowanceAfterApproval(
+  effects: readonly EconomicEffect[],
+  approvalIndex: number,
+): bigint {
+  const approval = effects[approvalIndex];
+  if (!approval || approval.kind !== 'APPROVAL') {
+    throw new Error(`effect ${String(approvalIndex)} is not an approval`);
+  }
+
+  let residual = BigInt(approval.amount);
+  for (const effect of effects.slice(approvalIndex + 1)) {
+    if (
+      effect.kind !== 'TRANSFER' ||
+      effect.chainId !== approval.chainId ||
+      effect.asset.toLowerCase() !== approval.asset.toLowerCase() ||
+      effect.from.toLowerCase() !== approval.owner.toLowerCase() ||
+      effect.provenance.target.toLowerCase() !== approval.spender.toLowerCase()
+    ) {
+      continue;
+    }
+
+    const consumed = BigInt(effect.amount);
+    if (consumed > residual) {
+      throw new Error(
+        `modeled allowance consumption exceeds approval at effect ${String(approvalIndex)}`,
+      );
+    }
+    residual -= consumed;
+  }
+  return residual;
 }
 
 function intentFor(draft: ScenarioDraft, effects: readonly EconomicEffect[]): IntentContract {
@@ -416,21 +452,22 @@ function scenarioFromDraft(draft: ScenarioDraft, localIndex: number): BenchmarkS
       });
     }
   }
-  const lastApproval = [...effects].reverse().find((effect) => effect.kind === 'APPROVAL');
+  const lastApprovalIndex = effects.findLastIndex((effect) => effect.kind === 'APPROVAL');
+  const lastApproval = effects[lastApprovalIndex];
   const signatureTransfer = effects.some(
     (effect) =>
       effect.kind === 'APPROVAL' &&
       effect.signatureDeadline !== undefined &&
       effect.expiration === undefined,
   );
-  if (lastApproval && !signatureTransfer) {
+  if (lastApproval?.kind === 'APPROVAL' && !signatureTransfer) {
     postState.push({
       chainId: lastApproval.chainId,
       subject: lastApproval.owner,
       field: 'ALLOWANCE',
       asset: lastApproval.asset,
       counterparty: lastApproval.spender,
-      value: lastApproval.amount,
+      value: terminalAllowanceAfterApproval(effects, lastApprovalIndex).toString(),
       source: 'EXPECTED_FIXTURE',
     });
   }
@@ -747,6 +784,7 @@ async function formattedJson(value: unknown): Promise<string> {
 }
 
 async function writeOrCheck(path: string, value: unknown, check: boolean): Promise<boolean> {
+  if (!IS_DIRECT_EXECUTION) return true;
   const absolute = resolve(path);
   const contents = await formattedJson(value);
   if (check) {
@@ -1028,9 +1066,15 @@ const splitManifest = {
       pullRequest: '#46',
     },
     {
-      version: BENCHMARK_DATASET_VERSION,
+      version: '0.3.0',
       reason:
         'Pinned QuoterV2 references, delta-based completion semantics, Permit2 corrections, and lending prefix-funding/interest policy',
+      pullRequest: '#46',
+    },
+    {
+      version: BENCHMARK_DATASET_VERSION,
+      reason:
+        'Correct terminal finite allowance after exact router consumption; hidden-test observation disclosed in ADR 0010',
       pullRequest: '#46',
     },
   ],
@@ -1140,8 +1184,10 @@ if (
 )
   valid = false;
 
-if (!valid) process.exitCode = 1;
-else
-  console.log(
-    `${check ? 'checked' : 'generated'} ${String(scenarios.length)} base scenarios, ${String(mutations.length)} mutations, and ${String(golden.scenarios.length)} golden cases`,
-  );
+if (IS_DIRECT_EXECUTION) {
+  if (!valid) process.exitCode = 1;
+  else
+    console.log(
+      `${check ? 'checked' : 'generated'} ${String(scenarios.length)} base scenarios, ${String(mutations.length)} mutations, and ${String(golden.scenarios.length)} golden cases`,
+    );
+}

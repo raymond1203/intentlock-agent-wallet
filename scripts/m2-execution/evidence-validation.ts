@@ -320,6 +320,7 @@ export const M2PublishedEvidenceSchema = z
     strictAuthoredFixtureExecutionCount: z.number().int().nonnegative(),
     finalGoalPassCount: z.number().int().nonnegative(),
     strictAuthoredFixtureFinalGoalPassCount: z.number().int().nonnegative(),
+    syntheticReferenceCheckedCount: z.number().int().nonnegative(),
     syntheticReferenceDisagreementCount: z.number().int().nonnegative(),
     humanReview: z.literal('PENDING'),
     m2Complete: z.literal(false),
@@ -832,6 +833,10 @@ export function validatePublishedM2Evidence(
     strictAuthoredFixtureFinalGoalPassCount: strict.filter(
       (attempt) => independentlyEvaluated.get(attempt)?.oracle.status === 'PASS',
     ).length,
+    syntheticReferenceCheckedCount: selected.filter((attempt) => {
+      const reconciliation = independentlyEvaluated.get(attempt)?.referenceReconciliation;
+      return reconciliation !== null && reconciliation !== undefined;
+    }).length,
     syntheticReferenceDisagreementCount: selected.filter(
       (attempt) =>
         independentlyEvaluated.get(attempt)?.referenceReconciliation?.status === 'DISAGREEMENT',
@@ -844,6 +849,7 @@ export function validatePublishedM2Evidence(
     aggregates.finalGoalPassCount !== evidence.finalGoalPassCount ||
     aggregates.strictAuthoredFixtureFinalGoalPassCount !==
       evidence.strictAuthoredFixtureFinalGoalPassCount ||
+    aggregates.syntheticReferenceCheckedCount !== evidence.syntheticReferenceCheckedCount ||
     aggregates.syntheticReferenceDisagreementCount !== evidence.syntheticReferenceDisagreementCount
   ) {
     throw new Error('published execution aggregate does not match revalidated attempts');

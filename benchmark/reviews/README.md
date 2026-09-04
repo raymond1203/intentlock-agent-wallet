@@ -9,16 +9,27 @@ packets; put answers in a separate review record or GitHub review comment.
 | #20   | `schema-labeling-10.json`              | expected decision, all labels, validity      |
 | #21   | `contract-alignment-10.json`           | aligned, missing/widened fields, notes       |
 | #23   | `mutation-validity-20.json`            | category, semantic validity, decision, notes |
-| #26   | A new v0.3.0 live output review packet | rationale, leakage, corrected decision       |
+| #26   | A new v0.4.0 live output review packet | rationale, leakage, corrected decision       |
 
 After independent review, the author reveals the oracle and records every disagreement and resolution.
 Any hidden-test oracle change follows `benchmark/LABELING.md` and requires a dataset version bump.
 
 `experiments/configs/baselines/llm-verifier-20-review.json` is the historical v0.2.0 run and is not
-silently relabeled as v0.3.0. The fixed live baseline writes
-`llm-verifier-20-review-v0.3.0.json`; it is absent until that external run actually completes.
+silently relabeled as v0.4.0. Any v0.3.0 output is also pre-ADR-0010 diagnostic history and cannot
+approve the corrected dataset. The current fixed protocol is
+`experiments/configs/baselines/reviewer-20-v0.4.0.json`; a new live run writes
+the canonical tracked result `benchmark/evidence/llm-verifier-20-v0.4.0.json`,
+`llm-verifier-20-review-v0.4.0.json`, and a separate `PENDING` rationale template. That packet and
+its independent rationale review are pending.
+The completed human rationale submission must be stored separately as
+`experiments/configs/baselines/llm-verifier-20-rationale-review-v0.4.0.json`; `m2:validate` rejects a
+missing, partial, non-human, dirty-source, wrong-commit, wrong-hash, or non-20-case binding.
+Each completed rationale row records the packet's `modelDecision` unchanged and a required,
+independent `correctedDecision`, which may differ. Validation reads the three completed evidence
+artifacts from Git `HEAD` and also requires the LLM commit to equal the single selected M2 execution
+source commit.
 
-The current v0.3.0 packets retain the v0.2.0 blinding correction, remove `trace.kind` (a stored class
+The current v0.4.0 packets retain the v0.2.0 blinding correction, remove `trace.kind` (a stored class
 label), normalize nested identifiers, and bind every generated packet to its dataset version. The
 20-case `double-review-20.json` packet covers 25% of all 80 base cases. D11–D20 cover the additional
 bridge/lending/batch cases for #22. Each person copies `submission.template.json` into a separate
@@ -28,6 +39,11 @@ names or team identity. Save submissions under `benchmark/labels/submissions/` a
 plus resolutions in `benchmark/labels/adjudications.json`; neither path is overwritten by generators.
 `benchmark/labels/review-requirements.json` is only the generated review specification, not evidence
 of completion. Compare packet hashes and all 20 decisions before accepting a submission.
+
+ADR 0010 regenerated these packets after correcting seven terminal residual-allowance rows. Prior
+v0.3.0 packets, submissions, or review comments cannot be carried forward. At present there are no
+two complete independent human submissions for the exact v0.4.0 packet, so the review gate remains
+`PENDING` even if automated packet checks pass.
 
 ### Submitting the 25% double-review sample
 

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { applyMutation, type MutationOperatorId } from '../benchmark/mutations/index.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../benchmark/scenario.js';
+import { BENCHMARK_DATASET_VERSION } from '../benchmark/version.js';
 
 type ScenarioWorkflow = BenchmarkScenario['workflow'];
 
@@ -94,7 +95,7 @@ export interface EvaluationCaseManifestEntry {
 
 export interface EvaluationCaseMatrix {
   protocolVersion: '0.1';
-  datasetVersion: '0.3.0';
+  datasetVersion: typeof BENCHMARK_DATASET_VERSION;
   rootSeed: 2026;
   baseCount: number;
   caseCount: number;
@@ -187,7 +188,7 @@ function entry(
   };
 }
 
-/** Creates the preregistered five-case group for every schema-valid v0.3 base. */
+/** Creates the preregistered five-case group for every schema-valid v0.4 base. */
 export function createEvaluationCaseMatrix(
   input: readonly BenchmarkScenario[],
 ): EvaluationCaseMatrix {
@@ -219,7 +220,7 @@ export function createEvaluationCaseMatrix(
     throw new Error('evaluation matrix case IDs must be unique');
   return {
     protocolVersion: '0.1',
-    datasetVersion: '0.3.0',
+    datasetVersion: BENCHMARK_DATASET_VERSION,
     rootSeed: 2026,
     baseCount: 80,
     caseCount: 400,

@@ -1,8 +1,23 @@
-# M2 baseline validation — 2026-09-03
+# M2 baseline validation
 
-This is a historical v0.2.0 validation record. It is not a v0.3.0 result and must not be carried
+## Current v0.4.0 candidate status — 2026-09-04
+
+The pending current protocol is `reviewer-20-v0.4.0.json`. It preserves the fixed selection and
+protocol from `reviewer-20-v0.3.0.json`, while binding the run and review packet to dataset v0.4.0.
+No v0.4.0 live model output or independent rationale review exists yet. Run the live baseline again
+against the v0.4.0 candidate before publishing comparative metrics; do not reuse an earlier result.
+The run writes the canonical result to tracked evidence at
+`benchmark/evidence/llm-verifier-20-v0.4.0.json`, publishes the blinded packet as
+`llm-verifier-20-review-v0.4.0.json`, and emits a separate pending rationale template. The completed
+human submission belongs at `llm-verifier-20-rationale-review-v0.4.0.json`. M2 validation reads the
+result, packet, and completed rationale bytes from Git `HEAD`, then binds them to the current dataset,
+config, system prompt, ordered twenty-case inputs, and the single exact source commit used by selected
+M2 execution evidence. Missing or untracked work remains `PENDING`.
+
+## Historical v0.2.0 validation — 2026-09-03
+
+This is a historical v0.2.0 validation record. It is not a v0.4.0 result and must not be carried
 into current comparative metrics. The corrected dataset requires a new live run and rationale review.
-The pending current protocol is `reviewer-20-v0.3.0.json`; its output files do not exist yet.
 
 ## Result and scope
 

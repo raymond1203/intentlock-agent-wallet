@@ -1,7 +1,7 @@
 {
   "protocolVersion": "0.2",
-  "datasetVersion": "0.3.0",
-  "packetSha256": "f100a6be573ad32c3365f9e6abf3057dfda75f7ad647da5910dafe7c8acf2907",
+  "datasetVersion": "0.4.0",
+  "packetSha256": "87e7048e962fdd2cceebfd35cce3300463dbc2fb1edc7a9ffc1068fdce0e4e28",
   "reviewer": null,
   "reviewerType": "HUMAN",
   "submittedAt": null,

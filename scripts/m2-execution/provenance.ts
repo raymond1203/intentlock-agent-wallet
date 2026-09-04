@@ -25,6 +25,7 @@ export const EXECUTION_COLLECTOR_PATHS = [
   'scripts/source-integrity.ts',
   'src/benchmark/execution-funding.ts',
   'src/benchmark/scenario.ts',
+  'src/benchmark/version.ts',
   'src/domain/action-ir.ts',
   'src/domain/intent-contract.ts',
   'src/domain/required.ts',
@@ -39,17 +40,21 @@ export const EXECUTION_COLLECTOR_PATHS = [
   'tsconfig.json',
 ] as const;
 
-export async function executionCollectorSha256(): Promise<string> {
+type CollectorFileReader = (path: string) => Promise<Uint8Array>;
+
+export async function executionCollectorSha256(
+  readCollectorFile: CollectorFileReader = async (path) => readFile(path),
+): Promise<string> {
   const digest = createHash('sha256');
   for (const path of EXECUTION_COLLECTOR_PATHS) {
-    const bytes = await readFile(path);
+    const bytes = await readCollectorFile(path);
     digest.update(path);
     digest.update('\0');
     digest.update(createHash('sha256').update(bytes).digest('hex'));
     digest.update('\n');
     if (path.endsWith('.ts')) {
       const runtimePath = `dist/${path.slice(0, -3)}.js`;
-      const runtimeBytes = await readFile(runtimePath).catch(() => {
+      const runtimeBytes = await readCollectorFile(runtimePath).catch(() => {
         throw new Error('collector build is missing; run pnpm build before execution');
       });
       digest.update(runtimePath);

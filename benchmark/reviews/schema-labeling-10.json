@@ -1,6 +1,6 @@
 {
   "protocolVersion": "0.1",
-  "datasetVersion": "0.3.0",
+  "datasetVersion": "0.4.0",
   "status": "PENDING_INDEPENDENT_REVIEW",
   "instructions": "Without opening source scenarios, assign expected decision, every applicable label, and mutation validity. Record answers separately.",
   "cases": [
