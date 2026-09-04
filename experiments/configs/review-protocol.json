@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "0.1",
+  "mode": "SOLO_AI_ASSISTED",
+  "benchmarkAiReviewPath": "benchmark/reviews/ai-assisted-review-v0.4.0.json",
+  "llmAiReviewPath": "experiments/configs/baselines/llm-verifier-20-ai-review-v0.4.0.json",
+  "finalAuthorApproval": "PENDING",
+  "independentHumanReviewClaim": false
+}

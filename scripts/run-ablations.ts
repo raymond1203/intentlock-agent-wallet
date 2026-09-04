@@ -42,6 +42,7 @@ import {
 import { aggregateEvaluationRecords } from '../src/experiments/metrics.js';
 import {
   FrozenEvalConfigSchema,
+  getFreezeReviewBinding,
   ReadyFrozenEvalConfigSchema,
   sha256Text,
 } from '../src/experiments/protocol.js';
@@ -160,7 +161,10 @@ const reviewedCommit = config.freeze.gitCommit;
 if (
   ablationConfig.freeze.gitCommit !== reviewedCommit ||
   ablationConfig.freeze.frozenAt !== config.freeze.frozenAt ||
-  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer
+  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer ||
+  (ablationConfig.freeze.aiReviewer ?? null) !==
+    (config.freeze.aiReview?.reviewerPseudonym ?? null) ||
+  ablationConfig.reviewProtocol?.mode !== config.reviewProtocol?.mode
 ) {
   throw new Error('evaluation and ablation manifests must share the same freeze envelope');
 }
@@ -171,10 +175,11 @@ const changedDigests = differingFreezeDigests(frozenDigests, actualDigests);
 if (changedDigests.length > 0) {
   throw new Error(`frozen inputs changed: ${changedDigests.join(', ')}`);
 }
-const reviewLocation = resolveRepoRelativeJson(repositoryRoot, config.freeze.humanReviewPath);
+const reviewBinding = getFreezeReviewBinding(config);
+const reviewLocation = resolveRepoRelativeJson(repositoryRoot, reviewBinding.reviewPath);
 const reviewText = await readFile(reviewLocation.absolutePath, 'utf8');
-if (sha256Source(reviewText) !== config.freeze.humanReviewDigestSha256) {
-  throw new Error('frozen human review digest changed');
+if (sha256Source(reviewText) !== reviewBinding.reviewDigestSha256) {
+  throw new Error('frozen review digest changed');
 }
 const { review } = await validateFreezeReviewEvidenceFromRepository({
   repositoryRoot,
@@ -183,7 +188,10 @@ const { review } = await validateFreezeReviewEvidenceFromRepository({
   requireTrackedArtifacts: true,
 });
 const m2Location = resolveRepoRelativeJson(repositoryRoot, config.dataset.m2Validation);
-validateM2ReadyForFreeze(JSON.parse(await readFile(m2Location.absolutePath, 'utf8')));
+validateM2ReadyForFreeze(
+  JSON.parse(await readFile(m2Location.absolutePath, 'utf8')),
+  config.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN',
+);
 
 const primaryRunId = argument('--primary-run-id');
 if (!primaryRunId || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{2,79}$/.test(primaryRunId)) {
@@ -223,7 +231,7 @@ validateFreezeTransition({
   executionCommit: freezeExecutionCommit,
   parentCommits,
   changedPaths,
-  humanReviewPath: config.freeze.humanReviewPath,
+  humanReviewPath: reviewBinding.reviewPath,
   dryRunEvidenceDirectory: review.dryRunEvidence.outputDirectory,
 });
 try {
@@ -239,7 +247,8 @@ if (
   primaryManifest.ablationConfigSha256 !== sha256Text(ablationConfigText) ||
   primaryManifest.caseManifestSha256 !== sha256Text(caseManifestText) ||
   !sameJson(primaryManifest.freezeDigests, frozenDigests) ||
-  !sameJson(primaryManifest.systems, PRIMARY_EVALUATION_SYSTEMS)
+  !sameJson(primaryManifest.systems, PRIMARY_EVALUATION_SYSTEMS) ||
+  primaryManifest.reviewProtocol?.mode !== config.reviewProtocol?.mode
 ) {
   throw new Error('primary run provenance does not match the frozen ablation inputs');
 }
@@ -275,6 +284,7 @@ const runManifest = AblationRunManifestSchema.parse({
   executionCommit: head,
   primaryRunId,
   primaryRunManifestSha256: sha256Text(primaryManifestText),
+  reviewProtocol: config.reviewProtocol,
   primaryRawSha256: sha256Text(primaryRawText),
   primarySummarySha256: sha256Text(primarySummaryText),
   primarySummaryCsvSha256: sha256Text(primarySummaryCsvText),

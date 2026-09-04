@@ -1,5 +1,9 @@
 # References working list
 
+제출 조립 원문 [`final-source.md`](final-source.md)의 인용은 2026-09-05에 원문 버전과 직접 대조했다.
+이번 확인 범위는 [`claim-to-citation.md`](claim-to-citation.md) G절에 기록한다. 아래 목록은 더 넓은
+역사적 후보 목록이며, 모든 후보가 최종 원고에 사용되거나 이번에 다시 확인된 것은 아니다.
+
 - 기준일: 2026-08-17 KST
 - 목적: 제출 원고의 인용 후보와 사용 위치를 고정한다. 최종 서지 형식은 Notion 원고 단계에서 통일한다.
 - 원칙: arXiv version이 바뀌면 인용 수치와 limitation을 다시 확인한다.

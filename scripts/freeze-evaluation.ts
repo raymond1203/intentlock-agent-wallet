@@ -80,6 +80,9 @@ if (candidate.status !== 'CANDIDATE_UNFROZEN') {
 if (candidateAblation.status !== 'CANDIDATE_UNFROZEN') {
   throw new Error('only a CANDIDATE_UNFROZEN ablation manifest can be jointly frozen');
 }
+if (JSON.stringify(candidate.reviewProtocol) !== JSON.stringify(candidateAblation.reviewProtocol)) {
+  throw new Error('evaluation and ablation review protocols must match before freeze');
+}
 const caseManifestSource = await readFile(resolve(candidate.dataset.caseManifest), 'utf8');
 const caseManifest = EvaluationCaseManifestSchema.parse(JSON.parse(caseManifestSource));
 validateFreezeReviewCaseManifest(review.reviewedCaseIds, caseManifest.entries);
@@ -91,16 +94,30 @@ try {
   );
 }
 const m2Location = resolveRepoRelativeJson(repositoryRoot, candidate.dataset.m2Validation);
-validateM2ReadyForFreeze(JSON.parse(await readFile(m2Location.absolutePath, 'utf8')));
+validateM2ReadyForFreeze(
+  JSON.parse(await readFile(m2Location.absolutePath, 'utf8')),
+  candidate.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN',
+);
 const digests = await computeFreezeDigests(candidate);
 const frozenAt = new Date().toISOString();
 document.set('status', 'FROZEN');
 document.setIn(['freeze', 'gitCommit'], head);
 for (const [key, value] of Object.entries(digests)) document.setIn(['freeze', key], value);
 document.setIn(['freeze', 'frozenAt'], frozenAt);
-document.setIn(['freeze', 'humanReviewer'], review.reviewerPseudonym);
-document.setIn(['freeze', 'humanReviewPath'], reviewLocation.path);
-document.setIn(['freeze', 'humanReviewDigestSha256'], sha256Source(reviewSource));
+if (review.reviewerType === 'AI') {
+  document.setIn(['freeze', 'humanReviewer'], null);
+  document.setIn(['freeze', 'humanReviewPath'], null);
+  document.setIn(['freeze', 'humanReviewDigestSha256'], null);
+  document.setIn(['freeze', 'aiReview'], {
+    reviewerPseudonym: review.reviewerPseudonym,
+    reviewPath: reviewLocation.path,
+    reviewDigestSha256: sha256Source(reviewSource),
+  });
+} else {
+  document.setIn(['freeze', 'humanReviewer'], review.reviewerPseudonym);
+  document.setIn(['freeze', 'humanReviewPath'], reviewLocation.path);
+  document.setIn(['freeze', 'humanReviewDigestSha256'], sha256Source(reviewSource));
+}
 
 const rendered = document.toString({ lineWidth: 100 });
 ReadyFrozenEvalConfigSchema.parse(parseDocument(rendered).toJS());
@@ -110,7 +127,8 @@ const frozenAblation = ReadyAblationManifestSchema.parse({
   freeze: {
     gitCommit: head,
     frozenAt,
-    humanReviewer: review.reviewerPseudonym,
+    humanReviewer: review.reviewerType === 'HUMAN' ? review.reviewerPseudonym : null,
+    ...(review.reviewerType === 'AI' ? { aiReviewer: review.reviewerPseudonym } : {}),
   },
 });
 const renderedAblation = await format(JSON.stringify(frozenAblation), { parser: 'json' });
@@ -125,7 +143,9 @@ console.log(
     ablationConfig: ablationConfigPath,
     frozenAt,
     reviewRecord: reviewLocation.path,
+    reviewerType: review.reviewerType,
+    ...(candidate.reviewProtocol ? { reviewProtocol: candidate.reviewProtocol } : {}),
     reviewDigestSha256: sha256Source(reviewSource),
-    next: 'Commit the human review record, its three bound dry-run artifacts, and both frozen manifests together as the six-file direct child of the reviewed candidate, then run evaluation:run from that clean freeze commit.',
+    next: 'Commit the review record, its three bound dry-run artifacts, and both frozen manifests together as the six-file direct child of the reviewed candidate, then run evaluation:run from that clean freeze commit.',
   }),
 );

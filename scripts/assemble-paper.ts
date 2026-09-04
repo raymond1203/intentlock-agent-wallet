@@ -61,6 +61,7 @@ const assembled = assemblePaperSource(await readFile(sourcePath.absolute, 'utf8'
 const manifest = {
   schemaVersion: '0.1',
   generatedAt: new Date().toISOString(),
+  ...(assembled.reviewProtocol ? { reviewProtocol: assembled.reviewProtocol } : {}),
   source: { path: sourcePath.relative, sha256: assembled.sourceSha256 },
   output: {
     path: outputPath.relative,
@@ -80,7 +81,9 @@ const manifest = {
   humanGates: {
     privateIdentityAudit: 'REQUIRED_SEPARATELY',
     notionPreviewAndWordCount: 'REQUIRED_SEPARATELY',
-    independentFinalChecklists: 'REQUIRED_SEPARATELY',
+    ...(assembled.reviewProtocol?.mode === 'SOLO_AI_ASSISTED'
+      ? { finalAuthorReview: 'PENDING', independentHumanReviewClaim: false }
+      : { independentFinalChecklists: 'REQUIRED_SEPARATELY' }),
     finalSubmissionTimestamp: 'PRIVATE_EXTERNAL_RECORD',
   },
 };

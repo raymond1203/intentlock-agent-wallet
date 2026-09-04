@@ -25,6 +25,7 @@ export {
 const GitCommitSchema = z.string().regex(/^[a-f0-9]{40}$/);
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 const FreezeDryRunIdSchema = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._-]{2,99}$/);
+export const LLM_AI_RATIONALE_REVIEW_PATH = `experiments/configs/baselines/llm-verifier-20-ai-review-v${BENCHMARK_DATASET_VERSION}.json`;
 
 const LlmReviewIdSchema = z.string().regex(/^R(?:0[1-9]|1[0-9]|20)$/);
 const LlmReviewIdsSchema = z
@@ -146,7 +147,7 @@ const LlmBaselineReviewPacketSchema = z
     }
   });
 
-export const LlmRationaleReviewSchema = z
+export const LlmHumanRationaleReviewSchema = z
   .object({
     protocolVersion: z.literal('0.1'),
     datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
@@ -186,7 +187,34 @@ export const LlmRationaleReviewSchema = z
     }
   });
 
+export const LlmAiRationaleReviewSchema = z
+  .object({
+    ...LlmHumanRationaleReviewSchema.shape,
+    protocolVersion: z.literal('0.2'),
+    reviewMode: z.literal('SOLO_AI_ASSISTED'),
+    status: z.literal('COMPLETE_AI_ASSISTED'),
+    reviewerType: z.literal('AI'),
+    independenceAttestation: z.literal(false),
+    finalAuthorApproval: z.literal('PENDING'),
+  })
+  .strict()
+  .superRefine((review, context) => {
+    if (!LlmReviewIdsSchema.safeParse(review.cases.map((entry) => entry.reviewId)).success) {
+      context.addIssue({
+        code: 'custom',
+        path: ['cases'],
+        message: 'AI rationale review must cover R01-R20 exactly once',
+      });
+    }
+  });
+
+export const LlmRationaleReviewSchema = z.union([
+  LlmHumanRationaleReviewSchema,
+  LlmAiRationaleReviewSchema,
+]);
+
 export interface LlmBaselineGateInput {
+  reviewMode?: 'INDEPENDENT_HUMAN' | 'SOLO_AI_ASSISTED';
   resultPath: string;
   reviewPacketPath: string;
   rationaleReviewPath: string;
@@ -344,7 +372,10 @@ export function evaluateLlmBaselineGate(input: LlmBaselineGateInput) {
   const rationale =
     input.rationaleReview === undefined
       ? undefined
-      : LlmRationaleReviewSchema.safeParse(input.rationaleReview);
+      : (input.reviewMode === 'SOLO_AI_ASSISTED'
+          ? LlmAiRationaleReviewSchema
+          : LlmHumanRationaleReviewSchema
+        ).safeParse(input.rationaleReview);
   if (rationale === undefined) rationaleBlockers.push('rationale-review:missing');
   else if (!rationale.success) rationaleBlockers.push('rationale-review:invalid');
   if (!input.rationaleReviewSha256) rationaleBlockers.push('rationale-review:digest-missing');
@@ -371,7 +402,11 @@ export function evaluateLlmBaselineGate(input: LlmBaselineGateInput) {
     }
   }
   const rationaleReviewStatus =
-    rationaleBlockers.length === 0 ? ('COMPLETE' as const) : ('PENDING' as const);
+    rationaleBlockers.length === 0
+      ? input.reviewMode === 'SOLO_AI_ASSISTED'
+        ? ('COMPLETE_AI_ASSISTED' as const)
+        : ('COMPLETE' as const)
+      : ('PENDING' as const);
 
   return {
     resultPath: input.resultPath,
@@ -552,6 +587,67 @@ export const ApprovedFreezeReviewRecordSchema = FreezeReviewRecordSchema.safeExt
 
 export type ApprovedFreezeReviewRecord = z.infer<typeof ApprovedFreezeReviewRecordSchema>;
 
+export const SoloFreezeReviewRecordSchema = z
+  .object({
+    ...FreezeReviewRecordSchema.shape,
+    schemaVersion: z.literal('0.3'),
+    reviewMode: z.literal('SOLO_AI_ASSISTED'),
+    status: z.enum(['PENDING', 'COMPLETE_AI_ASSISTED']),
+    reviewerType: z.literal('AI'),
+    independenceAttestation: z.literal(false),
+    finalAuthorApproval: z.literal('PENDING'),
+    independentHumanReviewClaim: z.literal(false),
+  })
+  .strict();
+
+export const CompletedSoloFreezeReviewRecordSchema = SoloFreezeReviewRecordSchema.safeExtend({
+  status: z.literal('COMPLETE_AI_ASSISTED'),
+  reviewedCommit: GitCommitSchema,
+  reviewedAt: z.iso.datetime(),
+  dryRunEvidence: FreezeDryRunEvidenceBindingSchema,
+  dryRunCases: z.literal(FREEZE_REVIEW_CASE_IDS.length),
+  reproducedCases: ApprovedReproducedCasesSchema,
+  checks: ApprovedFreezeReviewRecordSchema.shape.checks,
+}).superRefine((review, context) => {
+  if (review.reviewedCommit !== review.dryRunEvidence.candidateCommit) {
+    context.addIssue({
+      code: 'custom',
+      path: ['dryRunEvidence', 'candidateCommit'],
+      message: 'dry-run candidate commit must equal the reviewed commit',
+    });
+  }
+});
+
+export const AnyFreezeReviewRecordSchema = z.union([
+  FreezeReviewRecordSchema,
+  SoloFreezeReviewRecordSchema,
+]);
+export const AcceptedFreezeReviewRecordSchema = z.union([
+  ApprovedFreezeReviewRecordSchema,
+  CompletedSoloFreezeReviewRecordSchema,
+]);
+export type AcceptedFreezeReviewRecord = z.infer<typeof AcceptedFreezeReviewRecordSchema>;
+
+/** AI review can authorize reproducibility runs only under an explicit solo protocol. */
+export function validateFreezeReviewForProtocol(
+  input: unknown,
+  expectedCommit: string,
+  expectedTree: string | undefined,
+  reviewMode: 'INDEPENDENT_HUMAN' | 'SOLO_AI_ASSISTED' = 'INDEPENDENT_HUMAN',
+): AcceptedFreezeReviewRecord {
+  if (reviewMode === 'INDEPENDENT_HUMAN') {
+    return validateApprovedFreezeReview(input, expectedCommit, expectedTree);
+  }
+  const review = CompletedSoloFreezeReviewRecordSchema.parse(input);
+  if (review.reviewedCommit !== expectedCommit) {
+    throw new Error('AI freeze review must target the exact candidate HEAD');
+  }
+  if (expectedTree !== undefined && review.dryRunEvidence.candidateTree !== expectedTree) {
+    throw new Error('AI freeze review must target the exact candidate tree');
+  }
+  return review;
+}
+
 export function validateFreezeReviewCaseManifest(
   reviewedCaseIds: readonly string[],
   entriesInput: unknown,
@@ -592,6 +688,35 @@ export function validateFreezeReviewCaseManifest(
 
 export const M2FreezeValidationSchema = z
   .object({
+    reviewProtocol: z
+      .union([
+        z.object({ schemaVersion: z.literal('0.1'), mode: z.literal('DUAL_HUMAN') }).strict(),
+        z
+          .object({
+            schemaVersion: z.literal('0.1'),
+            mode: z.literal('SOLO_AI_ASSISTED'),
+            finalAuthorApproval: z.literal('PENDING'),
+            independentHumanReviewClaim: z.literal(false),
+          })
+          .loose(),
+      ])
+      .optional(),
+    aiAssistedReviewEvidence: z
+      .object({
+        recordStatus: z.enum(['PENDING', 'COMPLETE_AI_ASSISTED']),
+        reviewerType: z.literal('AI'),
+        independenceAttestation: z.literal(false),
+        independentHumanReviewClaim: z.literal(false),
+        finalAuthorApproval: z.literal('PENDING'),
+        scope: z.literal('CONTRACT_CONDITIONED_REPRODUCIBILITY'),
+        submissionCount: z.number().int().nonnegative(),
+        submissionSha256: Sha256Schema.nullable(),
+        caseCount: z.number().int().nonnegative(),
+        blockers: z.array(z.string()),
+      })
+      .loose()
+      .optional(),
+    experimentReady: z.boolean().optional(),
     datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     baseCount: z.literal(80),
     executedBaseCount: z.number().int().nonnegative(),
@@ -615,7 +740,7 @@ export const M2FreezeValidationSchema = z
       .object({
         resultPath: z.literal(LLM_BASELINE_RESULT_PATH),
         reviewPacketPath: z.literal(LLM_BASELINE_REVIEW_PACKET_PATH),
-        rationaleReviewPath: z.literal(LLM_RATIONALE_REVIEW_PATH),
+        rationaleReviewPath: z.enum([LLM_RATIONALE_REVIEW_PATH, LLM_AI_RATIONALE_REVIEW_PATH]),
         expectedDatasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
         runStatus: z.enum(['PENDING', 'COMPLETE']),
         codeCommit: GitCommitSchema.nullable(),
@@ -629,13 +754,13 @@ export const M2FreezeValidationSchema = z
         runBlockers: z.array(z.string()),
         rationaleReview: z
           .object({
-            status: z.enum(['PENDING', 'COMPLETE']),
+            status: z.enum(['PENDING', 'COMPLETE', 'COMPLETE_AI_ASSISTED']),
             reviewerPseudonym: z
               .string()
               .regex(/^[A-Za-z0-9_-]{2,64}$/)
               .nullable(),
-            reviewerType: z.literal('HUMAN').nullable(),
-            independenceAttestation: z.literal(true).nullable(),
+            reviewerType: z.enum(['HUMAN', 'AI']).nullable(),
+            independenceAttestation: z.boolean().nullable(),
             reviewedAt: z.iso.datetime().nullable(),
             reviewedCommit: GitCommitSchema.nullable(),
             caseCount: z.number().int().nonnegative(),
@@ -658,6 +783,9 @@ export const M2FreezeValidationSchema = z
 export type M2FreezeValidation = z.infer<typeof M2FreezeValidationSchema>;
 
 export interface M2CompletionEvidence {
+  reviewMode?: 'INDEPENDENT_HUMAN' | 'SOLO_AI_ASSISTED';
+  aiBenchmarkReviewStatus?: 'PENDING' | 'COMPLETE_AI_ASSISTED';
+  finalAuthorApproval?: 'PENDING';
   baseCount: number;
   executedBaseCount: number;
   strictAuthoredFixtureExecutedBaseCount: number;
@@ -671,7 +799,7 @@ export interface M2CompletionEvidence {
   syntheticReferenceDisagreementCount: number;
   reviewGateStatus: 'PENDING' | 'RECORDS_COMPLETE';
   llmBaselineRunStatus: 'PENDING' | 'COMPLETE';
-  llmRationaleReviewStatus: 'PENDING' | 'COMPLETE';
+  llmRationaleReviewStatus: 'PENDING' | 'COMPLETE' | 'COMPLETE_AI_ASSISTED';
 }
 
 /**
@@ -684,6 +812,7 @@ export function deriveM2Completion(evidence: M2CompletionEvidence): {
   referenceOracleComplete: boolean;
   llmBaselineComplete: boolean;
   independentReviewStatus: 'PENDING' | 'COMPLETE';
+  experimentReady: boolean;
   m2Complete: boolean;
 } {
   const executionComplete =
@@ -700,21 +829,27 @@ export function deriveM2Completion(evidence: M2CompletionEvidence): {
     evidence.baseReferenceLabelDisagreementCount === 0 &&
     evidence.syntheticReferenceCheckedCount === evidence.baseCount &&
     evidence.syntheticReferenceDisagreementCount === 0;
+  const solo = evidence.reviewMode === 'SOLO_AI_ASSISTED';
   const llmBaselineComplete =
     evidence.llmBaselineRunStatus === 'COMPLETE' &&
-    evidence.llmRationaleReviewStatus === 'COMPLETE';
+    evidence.llmRationaleReviewStatus === (solo ? 'COMPLETE_AI_ASSISTED' : 'COMPLETE');
   const independentReviewStatus =
-    evidence.reviewGateStatus === 'RECORDS_COMPLETE' ? 'COMPLETE' : 'PENDING';
+    !solo && evidence.reviewGateStatus === 'RECORDS_COMPLETE' ? 'COMPLETE' : 'PENDING';
+  const experimentReady =
+    executionComplete &&
+    referenceOracleComplete &&
+    llmBaselineComplete &&
+    (solo
+      ? evidence.aiBenchmarkReviewStatus === 'COMPLETE_AI_ASSISTED' &&
+        evidence.finalAuthorApproval === 'PENDING'
+      : independentReviewStatus === 'COMPLETE');
   return {
     executionComplete,
     referenceOracleComplete,
     llmBaselineComplete,
     independentReviewStatus,
-    m2Complete:
-      executionComplete &&
-      referenceOracleComplete &&
-      llmBaselineComplete &&
-      independentReviewStatus === 'COMPLETE',
+    experimentReady,
+    m2Complete: !solo && experimentReady,
   };
 }
 
@@ -737,15 +872,43 @@ export function validateApprovedFreezeReview(
   return review;
 }
 
-export function validateM2ReadyForFreeze(input: unknown): M2FreezeValidation {
+export function validateM2ReadyForFreeze(
+  input: unknown,
+  expectedReviewMode: 'INDEPENDENT_HUMAN' | 'SOLO_AI_ASSISTED' = 'INDEPENDENT_HUMAN',
+): M2FreezeValidation {
   const validation = M2FreezeValidationSchema.parse(input);
+  const solo = expectedReviewMode === 'SOLO_AI_ASSISTED';
+  const rationale = validation.llmBaselineEvidence.rationaleReview;
+  const reviewReady = solo
+    ? validation.reviewProtocol?.mode === 'SOLO_AI_ASSISTED' &&
+      validation.experimentReady === true &&
+      !validation.m2Complete &&
+      validation.independentReviewStatus === 'PENDING' &&
+      validation.aiAssistedReviewEvidence?.recordStatus === 'COMPLETE_AI_ASSISTED' &&
+      validation.aiAssistedReviewEvidence.submissionCount === 1 &&
+      validation.aiAssistedReviewEvidence.submissionSha256 !== null &&
+      validation.aiAssistedReviewEvidence.caseCount === 20 &&
+      validation.aiAssistedReviewEvidence.blockers.length === 0 &&
+      validation.llmBaselineEvidence.rationaleReviewPath === LLM_AI_RATIONALE_REVIEW_PATH &&
+      rationale.status === 'COMPLETE_AI_ASSISTED' &&
+      rationale.reviewerType === 'AI' &&
+      rationale.independenceAttestation === false
+    : validation.reviewProtocol?.mode !== 'SOLO_AI_ASSISTED' &&
+      validation.m2Complete &&
+      validation.independentReviewStatus === 'COMPLETE' &&
+      validation.independentReviewEvidence.recordStatus === 'RECORDS_COMPLETE' &&
+      validation.independentReviewEvidence.submissionCount === 2 &&
+      validation.independentReviewEvidence.blockers.length === 0 &&
+      validation.llmBaselineEvidence.rationaleReviewPath === LLM_RATIONALE_REVIEW_PATH &&
+      rationale.status === 'COMPLETE' &&
+      rationale.reviewerType === 'HUMAN' &&
+      rationale.independenceAttestation === true;
   const executionComplete = ['COMPLETE', 'CLEAN_COMMITTED_CANDIDATE'].includes(
     validation.executionEvidenceStatus,
   );
   if (
-    !validation.m2Complete ||
+    !reviewReady ||
     !executionComplete ||
-    validation.independentReviewStatus !== 'COMPLETE' ||
     validation.executedBaseCount !== validation.baseCount ||
     validation.strictAuthoredFixtureExecutedBaseCount !== validation.baseCount ||
     validation.cleanCommittedExecutedBaseCount !== validation.baseCount ||
@@ -755,9 +918,6 @@ export function validateM2ReadyForFreeze(input: unknown): M2FreezeValidation {
     validation.baseReferenceLabelDisagreements.length !== 0 ||
     validation.syntheticReferenceCheckedCount !== validation.baseCount ||
     validation.syntheticReferenceDisagreementCount !== 0 ||
-    validation.independentReviewEvidence.recordStatus !== 'RECORDS_COMPLETE' ||
-    validation.independentReviewEvidence.submissionCount !== 2 ||
-    validation.independentReviewEvidence.blockers.length !== 0 ||
     validation.llmBaselineEvidence.runStatus !== 'COMPLETE' ||
     validation.llmBaselineEvidence.codeCommit === null ||
     validation.llmBaselineEvidence.workingTreeDirty !== false ||
@@ -766,10 +926,7 @@ export function validateM2ReadyForFreeze(input: unknown): M2FreezeValidation {
     validation.llmBaselineEvidence.resultSha256 === null ||
     validation.llmBaselineEvidence.reviewPacketSha256 === null ||
     validation.llmBaselineEvidence.runBlockers.length !== 0 ||
-    validation.llmBaselineEvidence.rationaleReview.status !== 'COMPLETE' ||
     validation.llmBaselineEvidence.rationaleReview.reviewerPseudonym === null ||
-    validation.llmBaselineEvidence.rationaleReview.reviewerType !== 'HUMAN' ||
-    validation.llmBaselineEvidence.rationaleReview.independenceAttestation !== true ||
     validation.llmBaselineEvidence.rationaleReview.reviewedAt === null ||
     validation.llmBaselineEvidence.rationaleReview.reviewedCommit !==
       validation.llmBaselineEvidence.codeCommit ||
@@ -781,7 +938,7 @@ export function validateM2ReadyForFreeze(input: unknown): M2FreezeValidation {
     !validation.completionCriteria.llmBaselineComplete
   ) {
     throw new Error(
-      'M2 is not freeze-ready: require complete clean execution, reference/oracle checks for all 80 authored fixtures, zero synthetic reference disagreements, a bound v0.4 LLM run with complete rationale review, and COMPLETE independent review records',
+      'M2 is not freeze-ready: require complete clean execution, reference/oracle checks for all 80 authored fixtures, zero synthetic reference disagreements, a bound v0.4 LLM run with complete rationale review, and review records matching the explicit protocol',
     );
   }
   return validation;

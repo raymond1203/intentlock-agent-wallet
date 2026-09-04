@@ -1,5 +1,10 @@
 # M2 completion plan — current v0.4.0 status (2026-09-05)
 
+The user selected `SOLO_AI_ASSISTED` on 2026-09-05. ADR 0011 and
+`docs/experiments/solo-closeout-playbook.md` supersede the two-person operational requirements below
+for current work. Their historical acceptance criteria are not evidence of completed human review.
+Experiment readiness can be recorded separately while final author approval remains pending.
+
 ## Historical audited remote state — 2026-09-03
 
 - #20–#26 are OPEN. Main contains M1, not M2.

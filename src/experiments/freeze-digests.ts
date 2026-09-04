@@ -93,6 +93,10 @@ async function evaluationConfigDigest(config: FrozenEvalConfig): Promise<string>
     digestFiles([config.dataset.m2Validation]),
     digestFiles(['experiments/configs/freeze-review.template.json']),
   ]);
+  const soloReviewEvidence =
+    config.reviewProtocol?.mode === 'SOLO_AI_ASSISTED'
+      ? await digestFiles(['experiments/configs/review-protocol.json', 'benchmark/reviews'])
+      : undefined;
   return digestJson({
     baselines,
     ablationSemantics: ablationConfigDigest(ablationManifest),
@@ -100,6 +104,7 @@ async function evaluationConfigDigest(config: FrozenEvalConfig): Promise<string>
     forks,
     m2Validation,
     reviewTemplate,
+    ...(soloReviewEvidence === undefined ? {} : { soloReviewEvidence }),
   });
 }
 

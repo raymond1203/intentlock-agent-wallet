@@ -2,6 +2,8 @@
 
 > 상태: 결과 삽입 전 초안. 대괄호로 표시한 수치와 결론은 M3 동결 결과가 생성되기 전에는
 > 채우지 않는다.
+> 현재 제출 조립 원문은 [`final-source.md`](final-source.md)다. 이 초안의 확인 계약은 실험에서
+> pre-authored contract를 가정한 것이며 실제 사용자 승인 관측이나 자연어 fidelity 결과가 아니다.
 
 ## Key Takeaways
 
@@ -37,9 +39,11 @@ IntentLock은 사용자의 확인을 거친 버전 고정 경제 의도 계약(I
 chain, target, selector, recipient뿐 아니라 자산별 누적 총유출, allowance 노출, slippage, gas, debt,
 ownership, 최종 상태 목표를 정수 단위로 표현한다. calldata, typed signature, batch와 protocol call을
 ActionIR의 경제 효과로 정규화하고, 이미 실행된 효과와 동시 예약을 누적 원장에서 합산한다. 불변식을
-충족하는 경우에만 signer 앞에서 일회성 허용 capability를 발급하며, 불확실하거나 계약 범위를 넓히는
+충족하고 프로세스 내 원장 예약이 성공한 경우에만 adapter가 executor를 호출하며, 불확실하거나 구현된
+검사에서 계약 범위를 넓히는
 경우에는 거부(DENY) 또는 사용자 확인 요청(ESCALATE)으로 처리한다. 실행 뒤에는 receipt와 실제
-post-state를 예상 효과와 대조하고, 불일치가 있으면 후속 서명을 동결한다.
+post-state를 예상 효과와 대조하고, 불일치가 있으면 mismatch와 VIOLATED 예약을 기록한다. 일회성
+암호 capability, 분산 원장과 모든 후속 서명의 강제 동결은 운영 배포를 위한 확장 제안이다.
 
 MetaMask Agent Wallet은 이 연구의 제품 평가 대상이 아니라 실무 사례다. 공개 구조에는 서버 지갑,
 거래 simulation, 위협 검사, ERC-7821 batch와 순차 실행 fallback, allowlist와 rolling outflow 정책이

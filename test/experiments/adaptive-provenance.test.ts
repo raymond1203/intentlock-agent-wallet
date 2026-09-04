@@ -43,6 +43,7 @@ function frozenInputs() {
   return {
     evaluation: {
       ...candidateEvaluation,
+      reviewProtocol: undefined,
       status: 'FROZEN' as const,
       freeze: {
         gitCommit: reviewedSourceCommit,
@@ -55,6 +56,7 @@ function frozenInputs() {
     },
     ablation: {
       ...candidateAblation,
+      reviewProtocol: undefined,
       status: 'FROZEN' as const,
       freeze: { gitCommit: reviewedSourceCommit, frozenAt, humanReviewer },
     },
@@ -100,6 +102,54 @@ const expectedPrimary = {
 };
 
 describe('adaptive run provenance gates', () => {
+  it('binds solo AI freeze identity and rejects a human/AI mode mismatch', () => {
+    const { evaluation, ablation } = frozenInputs();
+    const reviewProtocol = {
+      schemaVersion: '0.1',
+      mode: 'SOLO_AI_ASSISTED',
+      independentHumanReviewClaim: false,
+      finalAuthorApproval: 'PENDING',
+    } as const;
+    const soloEvaluation = {
+      ...evaluation,
+      reviewProtocol,
+      freeze: {
+        ...evaluation.freeze,
+        humanReviewer: null,
+        humanReviewPath: null,
+        humanReviewDigestSha256: null,
+        aiReview: {
+          reviewerPseudonym: 'ai-check',
+          reviewPath: 'experiments/reviews/ai.json',
+          reviewDigestSha256: 'f'.repeat(64),
+        },
+      },
+    };
+    const soloAblation = {
+      ...ablation,
+      reviewProtocol,
+      freeze: { ...ablation.freeze, humanReviewer: null, aiReviewer: 'ai-check' },
+    };
+    expect(
+      validateJointAdaptiveFreeze(soloEvaluation, soloAblation).evaluation.reviewProtocol?.mode,
+    ).toBe('SOLO_AI_ASSISTED');
+    expect(() => validateJointAdaptiveFreeze(soloEvaluation, ablation)).toThrow();
+    expect(() =>
+      validateJointAdaptiveFreeze(soloEvaluation, {
+        ...soloAblation,
+        freeze: { ...soloAblation.freeze, aiReviewer: 'different-ai' },
+      }),
+    ).toThrow();
+    const soloPrimary = { ...primaryManifest(), reviewProtocol };
+    expect(() => validateAdaptivePrimaryManifestBinding(soloPrimary, expectedPrimary)).toThrow();
+    expect(
+      validateAdaptivePrimaryManifestBinding(soloPrimary, {
+        ...expectedPrimary,
+        reviewMode: 'SOLO_AI_ASSISTED',
+      }).reviewProtocol?.mode,
+    ).toBe('SOLO_AI_ASSISTED');
+  });
+
   it('rejects candidate/unfrozen evaluation and ablation inputs', () => {
     expect(() => validateJointAdaptiveFreeze(candidateEvaluation, candidateAblation)).toThrow();
   });

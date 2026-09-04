@@ -2,16 +2,19 @@ import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+import { parse } from 'yaml';
+
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
 import { verifyCaseManifest } from '../src/experiments/case-manifest.js';
 import { createEvaluationCaseMatrix } from '../src/experiments/case-matrix.js';
 import { validateFreezeDryRunReviewEvidence } from '../src/experiments/freeze-dry-run.js';
 import {
-  ApprovedFreezeReviewRecordSchema,
+  AcceptedFreezeReviewRecordSchema,
   FREEZE_REVIEW_CASE_IDS,
-  validateApprovedFreezeReview,
-  type ApprovedFreezeReviewRecord,
+  validateFreezeReviewForProtocol,
+  type AcceptedFreezeReviewRecord,
 } from '../src/experiments/freeze-gates.js';
+import { FrozenEvalConfigSchema } from '../src/experiments/protocol.js';
 
 const EVALUATION_CONFIG_PATH = 'experiments/configs/frozen-eval.yaml';
 const CASE_MANIFEST_PATH = 'experiments/configs/case-manifest.json';
@@ -28,7 +31,7 @@ function committedSource(repositoryRoot: string, commit: string, path: string): 
   return git(repositoryRoot, 'show', `${commit}:${path}`);
 }
 
-function dryRunArtifactPaths(review: ApprovedFreezeReviewRecord): [string, string, string] {
+function dryRunArtifactPaths(review: AcceptedFreezeReviewRecord): [string, string, string] {
   const root = review.dryRunEvidence.outputDirectory;
   return [`${root}/manifest.json`, `${root}/cases.jsonl`, `${root}/summary.json`];
 }
@@ -57,7 +60,7 @@ function candidateBaseScenarios(repositoryRoot: string, commit: string): Benchma
 }
 
 export function freezeReviewDryRunArtifactPaths(reviewInput: unknown): [string, string, string] {
-  return dryRunArtifactPaths(ApprovedFreezeReviewRecordSchema.parse(reviewInput));
+  return dryRunArtifactPaths(AcceptedFreezeReviewRecordSchema.parse(reviewInput));
 }
 
 export async function validateFreezeReviewEvidenceFromRepository(options: {
@@ -66,7 +69,7 @@ export async function validateFreezeReviewEvidenceFromRepository(options: {
   reviewedCommit: string;
   requireTrackedArtifacts: boolean;
 }): Promise<{
-  review: ApprovedFreezeReviewRecord;
+  review: AcceptedFreezeReviewRecord;
   artifactPaths: [string, string, string];
 }> {
   const candidateTree = git(
@@ -74,10 +77,17 @@ export async function validateFreezeReviewEvidenceFromRepository(options: {
     'rev-parse',
     `${options.reviewedCommit}^{tree}`,
   ).trim();
-  const review = validateApprovedFreezeReview(
+  const evaluationConfigSource = committedSource(
+    options.repositoryRoot,
+    options.reviewedCommit,
+    EVALUATION_CONFIG_PATH,
+  );
+  const candidateConfig = FrozenEvalConfigSchema.parse(parse(evaluationConfigSource));
+  const review = validateFreezeReviewForProtocol(
     options.reviewInput,
     options.reviewedCommit,
     candidateTree,
+    candidateConfig.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN',
   );
   const artifactPaths = dryRunArtifactPaths(review);
   const artifactSources = await Promise.all(
@@ -92,11 +102,6 @@ export async function validateFreezeReviewEvidenceFromRepository(options: {
       }
       return readFile(resolve(options.repositoryRoot, path), 'utf8');
     }),
-  );
-  const evaluationConfigSource = committedSource(
-    options.repositoryRoot,
-    options.reviewedCommit,
-    EVALUATION_CONFIG_PATH,
   );
   const caseManifestSource = committedSource(
     options.repositoryRoot,

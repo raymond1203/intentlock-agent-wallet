@@ -7,9 +7,9 @@ import type { BenchmarkScenario } from '../benchmark/scenario.js';
 import type { EvaluationCaseManifestEntry } from './case-matrix.js';
 import { evaluateCase, RawEvaluationResultSchema } from './evaluate-case.js';
 import {
-  ApprovedFreezeReviewRecordSchema,
+  AcceptedFreezeReviewRecordSchema,
   FREEZE_REVIEW_CASE_IDS,
-  FreezeReviewRecordSchema,
+  AnyFreezeReviewRecordSchema,
   validateFreezeReviewCaseManifest,
 } from './freeze-gates.js';
 import { sha256Text } from './protocol.js';
@@ -367,7 +367,7 @@ export function validateFreezeDryRunReviewEvidence(
   cases: FreezeDryRunCaseEvidence[];
   summary: FreezeDryRunSummary;
 } {
-  const review = ApprovedFreezeReviewRecordSchema.parse(reviewInput);
+  const review = AcceptedFreezeReviewRecordSchema.parse(reviewInput);
   const expectedCommit = GitCommitSchema.parse(input.expectedCandidateCommit);
   const expectedTree = GitCommitSchema.parse(input.expectedCandidateTree);
   const binding = review.dryRunEvidence;
@@ -511,7 +511,7 @@ export function effectiveDecision(
 }
 
 export function validatePendingFreezeReviewTemplate(input: unknown): readonly string[] {
-  const template = FreezeReviewRecordSchema.parse(input);
+  const template = AnyFreezeReviewRecordSchema.parse(input);
   const ids = ExactFreezeDryRunIdsSchema.parse(template.reviewedCaseIds);
   const reproducedIds = ExactFreezeDryRunIdsSchema.parse(
     template.reproducedCases.map((entry) => entry.caseId),
@@ -526,7 +526,7 @@ export function validatePendingFreezeReviewTemplate(input: unknown): readonly st
     template.reproducedCases.some((entry) => entry.reproduced || entry.result !== 'INCONCLUSIVE') ||
     Object.values(template.checks).some(Boolean)
   ) {
-    throw new Error('canonical freeze review template must contain only pending human fields');
+    throw new Error('canonical freeze review template must contain only pending reviewer fields');
   }
   if (ids.some((id, index) => id !== reproducedIds[index])) {
     throw new Error('reviewed and reproduced template case IDs differ');

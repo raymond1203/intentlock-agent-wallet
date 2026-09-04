@@ -53,6 +53,7 @@ import {
 } from '../src/experiments/freeze-gates.js';
 import {
   FrozenEvalConfigSchema,
+  getFreezeReviewBinding,
   ReadyFrozenEvalConfigSchema,
 } from '../src/experiments/protocol.js';
 import {
@@ -261,7 +262,10 @@ const jointlyFrozen =
   readyAblation.success &&
   readyEvaluation.data.freeze.gitCommit === readyAblation.data.freeze.gitCommit &&
   readyEvaluation.data.freeze.frozenAt === readyAblation.data.freeze.frozenAt &&
-  readyEvaluation.data.freeze.humanReviewer === readyAblation.data.freeze.humanReviewer;
+  readyEvaluation.data.freeze.humanReviewer === readyAblation.data.freeze.humanReviewer &&
+  (readyEvaluation.data.freeze.aiReview?.reviewerPseudonym ?? null) ===
+    (readyAblation.data.freeze.aiReviewer ?? null) &&
+  readyEvaluation.data.reviewProtocol?.mode === readyAblation.data.reviewProtocol?.mode;
 const primaryRunId = argument('--primary-run-id');
 
 if (process.argv.includes('--validate-inputs') && (!jointlyFrozen || !primaryRunId)) {
@@ -330,17 +334,15 @@ const preliminaryExecutionCommit = z
   .object({ executionCommit: z.string().regex(/^[a-f0-9]{40}$/) })
   .loose()
   .parse(preliminaryPrimaryManifest).executionCommit;
-const humanReviewLocation = resolveRepoRelativeJson(
-  repositoryRoot,
-  frozenEvaluation.freeze.humanReviewPath,
-);
-const humanReviewSource = await readFile(humanReviewLocation.absolutePath, 'utf8');
-if (sha256Source(humanReviewSource) !== frozenEvaluation.freeze.humanReviewDigestSha256) {
-  throw new Error('frozen human review digest changed');
+const reviewBinding = getFreezeReviewBinding(frozenEvaluation);
+const freezeReviewLocation = resolveRepoRelativeJson(repositoryRoot, reviewBinding.reviewPath);
+const freezeReviewSource = await readFile(freezeReviewLocation.absolutePath, 'utf8');
+if (sha256Source(freezeReviewSource) !== reviewBinding.reviewDigestSha256) {
+  throw new Error('frozen review digest changed');
 }
 const { review } = await validateFreezeReviewEvidenceFromRepository({
   repositoryRoot,
-  reviewInput: JSON.parse(humanReviewSource),
+  reviewInput: JSON.parse(freezeReviewSource),
   reviewedCommit: frozenEvaluation.freeze.gitCommit,
   requireTrackedArtifacts: true,
 });
@@ -349,7 +351,7 @@ validateFreezeTransition({
   executionCommit: preliminaryExecutionCommit,
   parentCommits: gitCommitParents(preliminaryExecutionCommit),
   changedPaths: gitCommitChangedPaths(preliminaryExecutionCommit),
-  humanReviewPath: frozenEvaluation.freeze.humanReviewPath,
+  humanReviewPath: reviewBinding.reviewPath,
   dryRunEvidenceDirectory: review.dryRunEvidence.outputDirectory,
 });
 assertAdaptiveExecutionContext({
@@ -362,11 +364,15 @@ const m2ValidationLocation = resolveRepoRelativeJson(
   frozenEvaluation.dataset.m2Validation,
 );
 const m2ValidationSource = await readFile(m2ValidationLocation.absolutePath, 'utf8');
-validateM2ReadyForFreeze(JSON.parse(m2ValidationSource));
+validateM2ReadyForFreeze(
+  JSON.parse(m2ValidationSource),
+  frozenEvaluation.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN',
+);
 
 const primaryManifest = validateAdaptivePrimaryManifestBinding(preliminaryPrimaryManifest, {
   primaryRunId,
   reviewedSourceCommit: frozenEvaluation.freeze.gitCommit,
+  ...(frozenEvaluation.reviewProtocol ? { reviewMode: frozenEvaluation.reviewProtocol.mode } : {}),
   freezeCommit: preliminaryExecutionCommit,
   frozenEvaluationConfigSha256: sha256(frozenEvaluationSource),
   frozenAblationConfigSha256: sha256(frozenAblationSource),
@@ -471,8 +477,13 @@ const manifest = AdaptiveRunManifestSchema.parse({
   fixtureSha256: sha256(fixtureSource),
   selectedInputSha256: sha256(selectedInputs.join('\n')),
   freezeDigests: expectedFreezeDigests,
-  humanReviewPath: humanReviewLocation.path,
-  humanReviewDigestSha256: sha256(humanReviewSource),
+  reviewProtocol: frozenEvaluation.reviewProtocol,
+  ...(reviewBinding.reviewerType === 'AI'
+    ? { aiReviewPath: freezeReviewLocation.path, aiReviewDigestSha256: sha256(freezeReviewSource) }
+    : {
+        humanReviewPath: freezeReviewLocation.path,
+        humanReviewDigestSha256: sha256(freezeReviewSource),
+      }),
   m2ValidationPath: m2ValidationLocation.path,
   m2ValidationDigestSha256: sha256(m2ValidationSource),
   rootSeed: config.rootSeed,

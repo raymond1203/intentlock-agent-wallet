@@ -1,5 +1,11 @@
 {
   "schemaVersion": "0.1",
+  "reviewProtocol": {
+    "schemaVersion": "0.1",
+    "mode": "SOLO_AI_ASSISTED",
+    "independentHumanReviewClaim": false,
+    "finalAuthorApproval": "PENDING"
+  },
   "status": "CANDIDATE_UNFROZEN",
   "primaryRunRequired": true,
   "seed": 2026,

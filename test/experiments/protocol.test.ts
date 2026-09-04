@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  getFreezeReviewBinding,
   FrozenEvalConfigSchema,
   ReadyFrozenEvalConfigSchema,
   tokenCostUsd,
@@ -128,6 +129,46 @@ describe('frozen evaluation protocol', () => {
       },
     };
     expect(ReadyFrozenEvalConfigSchema.safeParse(ready).success).toBe(true);
+    expect(getFreezeReviewBinding(ReadyFrozenEvalConfigSchema.parse(ready))).toMatchObject({
+      reviewerType: 'HUMAN',
+      reviewerPseudonym: 'review-record-01',
+    });
+    const solo = {
+      ...ready,
+      reviewProtocol: {
+        schemaVersion: '0.1',
+        mode: 'SOLO_AI_ASSISTED',
+        independentHumanReviewClaim: false,
+        finalAuthorApproval: 'PENDING',
+      },
+      freeze: {
+        ...ready.freeze,
+        humanReviewer: null,
+        humanReviewPath: null,
+        humanReviewDigestSha256: null,
+        aiReview: {
+          reviewerPseudonym: 'ai-reviewer',
+          reviewPath: 'experiments/reviews/ai-freeze-review.json',
+          reviewDigestSha256: '6'.repeat(64),
+        },
+      },
+    };
+    expect(getFreezeReviewBinding(ReadyFrozenEvalConfigSchema.parse(solo))).toMatchObject({
+      reviewerType: 'AI',
+      reviewerPseudonym: 'ai-reviewer',
+    });
+    expect(
+      ReadyFrozenEvalConfigSchema.safeParse({ ...solo, reviewProtocol: undefined }).success,
+    ).toBe(false);
+    expect(ReadyFrozenEvalConfigSchema.safeParse({ ...solo, freeze: ready.freeze }).success).toBe(
+      false,
+    );
+    expect(
+      ReadyFrozenEvalConfigSchema.safeParse({
+        ...solo,
+        freeze: { ...solo.freeze, humanReviewer: 'fake-human' },
+      }).success,
+    ).toBe(false);
   });
 
   it('prices cached, uncached, and output tokens separately', () => {

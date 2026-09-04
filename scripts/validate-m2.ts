@@ -2,7 +2,14 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { format, resolveConfig } from 'prettier';
-import { evaluateReviewGate, reviewDigest } from '../src/benchmark/review-gate.js';
+import {
+  AI_BENCHMARK_REVIEW_PATH,
+  evaluateAiAssistedReviewGate,
+  evaluateReviewGate,
+  REVIEW_PROTOCOL_PATH,
+  ReviewProtocolSchema,
+  reviewDigest,
+} from '../src/benchmark/review-gate.js';
 import { BenchmarkScenarioSchema, type BenchmarkScenario } from '../src/benchmark/scenario.js';
 import { BENCHMARK_DATASET_VERSION } from '../src/benchmark/version.js';
 import { scoreDecision } from '../src/benchmark/scoring.js';
@@ -108,10 +115,17 @@ const llmConfigSource = await readFile(LLM_BASELINE_CONFIG_PATH, 'utf8');
 const llmProtocolSource = await readFile(LLM_BASELINE_PROTOCOL_PATH, 'utf8');
 const llmConfig = JSON.parse(llmConfigSource) as unknown;
 const llmProtocol = JSON.parse(llmProtocolSource) as unknown;
+const reviewProtocol = ReviewProtocolSchema.parse(
+  JSON.parse(await readFile(REVIEW_PROTOCOL_PATH, 'utf8')) as unknown,
+);
+const rationaleReviewPath =
+  reviewProtocol.mode === 'SOLO_AI_ASSISTED'
+    ? reviewProtocol.llmAiReviewPath
+    : LLM_RATIONALE_REVIEW_PATH;
 const [llmResultArtifact, llmReviewPacketArtifact, llmRationaleReviewArtifact] = [
   readOptionalTrackedJsonArtifact(LLM_BASELINE_RESULT_PATH),
   readOptionalTrackedJsonArtifact(LLM_BASELINE_REVIEW_PACKET_PATH),
-  readOptionalTrackedJsonArtifact(LLM_RATIONALE_REVIEW_PATH),
+  readOptionalTrackedJsonArtifact(rationaleReviewPath),
 ];
 const llmInputBinding = await buildLlmBaselineInputBinding(llmConfig, llmProtocol, (id) => {
   const scenario = byId.get(id);
@@ -160,7 +174,8 @@ const executionSourceCommits = [
 const llmBaselineEvidence = evaluateLlmBaselineGate({
   resultPath: LLM_BASELINE_RESULT_PATH,
   reviewPacketPath: LLM_BASELINE_REVIEW_PACKET_PATH,
-  rationaleReviewPath: LLM_RATIONALE_REVIEW_PATH,
+  rationaleReviewPath,
+  reviewMode: reviewProtocol.mode === 'SOLO_AI_ASSISTED' ? 'SOLO_AI_ASSISTED' : 'INDEPENDENT_HUMAN',
   config: llmConfig,
   configSha256: sha256Source(llmConfigSource),
   protocol: llmProtocol,
@@ -340,6 +355,20 @@ const reviewGate = evaluateReviewGate(
   reviewSubmissions,
   reviewAdjudications,
 );
+const aiReviewArtifact = readOptionalTrackedJsonArtifact(AI_BENCHMARK_REVIEW_PATH);
+const aiAssistedReviewEvidence = {
+  ...evaluateAiAssistedReviewGate(
+    {
+      datasetVersion: BENCHMARK_DATASET_VERSION,
+      packetSha256: packetHash,
+      reviewIds: packet.cases.map((reviewCase) => reviewCase.reviewId),
+    },
+    reviewProtocol,
+    aiReviewArtifact.value,
+  ),
+  artifactPath: AI_BENCHMARK_REVIEW_PATH,
+  artifactSha256: aiReviewArtifact.sha256 ?? null,
+};
 const completion = deriveM2Completion({
   baseCount: base.length,
   executedBaseCount: publishedExecution.completedExecutionCount,
@@ -354,6 +383,9 @@ const completion = deriveM2Completion({
   syntheticReferenceCheckedCount: publishedExecution.syntheticReferenceCheckedCount,
   syntheticReferenceDisagreementCount: publishedExecution.syntheticReferenceDisagreementCount,
   reviewGateStatus: reviewGate.status,
+  reviewMode: reviewProtocol.mode === 'SOLO_AI_ASSISTED' ? 'SOLO_AI_ASSISTED' : 'INDEPENDENT_HUMAN',
+  aiBenchmarkReviewStatus: aiAssistedReviewEvidence.recordStatus,
+  finalAuthorApproval: 'PENDING',
   llmBaselineRunStatus: llmBaselineEvidence.runStatus,
   llmRationaleReviewStatus: llmBaselineEvidence.rationaleReview.status,
 });
@@ -379,6 +411,8 @@ const validation = {
     publishedExecution.strictAuthoredFixtureFinalGoalPassCount,
   referenceLabelDisagreements,
   crossStageDifferencesNotScored,
+  ...(reviewProtocol.mode === 'SOLO_AI_ASSISTED' ? { reviewProtocol } : {}),
+  aiAssistedReviewEvidence,
   independentReviewEvidence: {
     recordStatus: reviewGate.status,
     identityAndIndependence: reviewGate.identityAndIndependence,
@@ -394,6 +428,7 @@ const validation = {
     llmBaselineComplete: completion.llmBaselineComplete,
   },
   independentReviewStatus: completion.independentReviewStatus,
+  experimentReady: completion.experimentReady,
   m2Complete: completion.m2Complete,
   rows,
 };
@@ -421,7 +456,11 @@ const status = {
   sampleSize: packet.cases.length,
   fraction: 0.25,
   packetSha256: packetHash,
-  requiredDistinctHumanReviewers: 2,
+  reviewMode: reviewProtocol.mode,
+  requiredDistinctHumanReviewers: reviewProtocol.mode === 'DUAL_HUMAN' ? 2 : 0,
+  requiredFinalAuthorApprovals: reviewProtocol.mode === 'SOLO_AI_ASSISTED' ? 1 : 0,
+  finalAuthorApproval: 'PENDING',
+  independentHumanReviewClaim: false,
   submissionsDirectory,
   adjudicationRecord: 'benchmark/labels/adjudications.json',
   status: 'REQUIREMENTS_ONLY_NOT_REVIEW_COMPLETION',
@@ -444,5 +483,5 @@ await output('benchmark/reviews/double-review-20.json', packet);
 await output('benchmark/reviews/submission.template.json', template);
 await output('benchmark/labels/review-requirements.json', status);
 console.log(
-  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; synthetic reference checked ${String(validation.syntheticReferenceCheckedCount)}, disagreements ${String(validation.syntheticReferenceDisagreementCount)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); LLM run ${validation.llmBaselineEvidence.runStatus}, rationale review ${validation.llmBaselineEvidence.rationaleReview.status}; human review ${validation.independentReviewStatus}; M2 complete ${String(validation.m2Complete)}.`,
+  `M2 diagnostics: ${String(base.length)} base, ${String(mutations.length)} mutation; reference PASS ${String(validation.baseReferencePass)}; synthetic reference checked ${String(validation.syntheticReferenceCheckedCount)}, disagreements ${String(validation.syntheticReferenceDisagreementCount)}; executed base ${String(validation.executedBaseCount)} (${validation.executionEvidenceStatus}); LLM run ${validation.llmBaselineEvidence.runStatus}, rationale review ${validation.llmBaselineEvidence.rationaleReview.status}; mode ${reviewProtocol.mode}; human review ${validation.independentReviewStatus}; experiment ready ${String(validation.experimentReady)}; M2 complete ${String(validation.m2Complete)}.`,
 );

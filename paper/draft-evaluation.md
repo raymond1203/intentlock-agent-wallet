@@ -1,8 +1,8 @@
 # 벤치마크·평가·한계·MetaMask 제안 초안
 
 > 상태: v0.4.0 M3 동결 결과 전 구조 초안. `[결과 삽입]` 표시는 raw result와 분석 스크립트가
-> 생성한 값으로만 교체한다. v0.4.0 M2 실행 evidence와 live LLM run은 수집됐지만 독립 인간
-> 검수는 `PENDING`이며, 이 초안은 M2 완료나 사람 검수 완료를 주장하지 않는다.
+> 생성한 값으로만 교체한다. 제출 조립 원문은 [`final-source.md`](final-source.md)다. 검토 절차는
+> `SOLO_AI_ASSISTED`이며 AI 검토와 최종 저자 승인을 구분한다. 독립 인간 검수를 주장하지 않는다.
 
 ## 1. 평가 목적
 
@@ -86,7 +86,7 @@ base-intent group을 단위로 한 stratified bootstrap 10,000회로 계산한�
 terminal finite allowance를 0이 아닌 승인량으로 남긴 reference 결함을 진단했다. 이 replay와 파생
 artifact는 [`ADR 0010`](../docs/decisions/0010-m2-v0.4-data-contract.md)에 따라 v0.4.0 primary score,
 M2 완료 또는 시스템 성능의 근거로 사용하지 않는다. v0.4.0 execution evidence는 수집됐지만
-version-matched 독립 인간 검수는 아직 `PENDING`이다.
+실제 사용자 승인이나 자연어와 계약의 완전한 일치를 뜻하지 않는다.
 
 ### RQ2 — Security–utility 비교
 
@@ -146,8 +146,8 @@ Byzantine RPC, reorg, MEV, 가격 oracle 조작, protocol insolvency와 자동 �
 offline counterfactual replay이며 실제 execution evidence가 아니다. adaptive 40건도 scripted
 signer-boundary test일 뿐 model-adaptive 또는 production 공격률이 아니다. local fork와 test relayer는 production
 latency, availability와 counterparty risk를 재현하지 않는다. author-exposed split은 truly unseen
-generalization evidence가 아니며, 인간 검수자의 독립성은 self-attestation 이상으로 기계 검증할 수
-없다.
+generalization evidence가 아니다. 연구는 단일 저자 주도·AI 보조 검토이며, 독립 인간 라벨링과
+blinded user study를 주장하지 않는다. 세부 compiler·원장·adapter 범위는 final-source §4·§8을 따른다.
 
 ## 8. MetaMask 적용 제안
 

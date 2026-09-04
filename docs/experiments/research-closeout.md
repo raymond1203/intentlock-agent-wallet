@@ -1,5 +1,10 @@
 # Research issue closeout map
 
+Current workflow: `SOLO_AI_ASSISTED`, selected by the user on 2026-09-05. ADR 0011 and the
+[current playbook](solo-closeout-playbook.md) supersede the legacy two-person gates listed below.
+The table retains the original issue plan for traceability. Current reporting must distinguish
+machine/AI completion, experiment readiness, final author approval and actual external submission.
+
 This file is an evidence map, not a completion claim. An issue is ready to close only when every
 machine-verifiable check and every explicitly human acceptance gate below has a real artifact.
 

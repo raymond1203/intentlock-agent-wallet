@@ -43,6 +43,7 @@ import {
 import { aggregateEvaluationRecords, evaluationRecordsCsv } from '../src/experiments/metrics.js';
 import {
   FrozenEvalConfigSchema,
+  getFreezeReviewBinding,
   ReadyFrozenEvalConfigSchema,
   sha256Text,
 } from '../src/experiments/protocol.js';
@@ -183,7 +184,10 @@ const jointlyFrozen =
   readyAblation.success &&
   readyEvaluation.data.freeze.gitCommit === readyAblation.data.freeze.gitCommit &&
   readyEvaluation.data.freeze.frozenAt === readyAblation.data.freeze.frozenAt &&
-  readyEvaluation.data.freeze.humanReviewer === readyAblation.data.freeze.humanReviewer;
+  readyEvaluation.data.freeze.humanReviewer === readyAblation.data.freeze.humanReviewer &&
+  (readyEvaluation.data.freeze.aiReview?.reviewerPseudonym ?? null) ===
+    (readyAblation.data.freeze.aiReviewer ?? null) &&
+  readyEvaluation.data.reviewProtocol?.mode === readyAblation.data.reviewProtocol?.mode;
 const missingRunArguments = [
   ...(primaryRunArgument ? [] : ['--run-id']),
   ...(ablationRunArgument ? [] : ['--ablation-run-id']),
@@ -254,7 +258,10 @@ const adaptiveArtifactPaths = {
 if (
   ablationConfig.freeze.gitCommit !== config.freeze.gitCommit ||
   ablationConfig.freeze.frozenAt !== config.freeze.frozenAt ||
-  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer
+  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer ||
+  (ablationConfig.freeze.aiReviewer ?? null) !==
+    (config.freeze.aiReview?.reviewerPseudonym ?? null) ||
+  ablationConfig.reviewProtocol?.mode !== config.reviewProtocol?.mode
 ) {
   throw new Error('analysis manifests do not share the same freeze envelope');
 }
@@ -268,7 +275,8 @@ if (changedDigests.length > 0) {
 }
 const caseManifestSource = await readFile(resolve(config.dataset.caseManifest), 'utf8');
 const caseManifestSha256 = sha256Source(caseManifestSource);
-const reviewLocation = resolveRepoRelativeJson(repositoryRoot, config.freeze.humanReviewPath);
+const reviewBinding = getFreezeReviewBinding(config);
+const reviewLocation = resolveRepoRelativeJson(repositoryRoot, reviewBinding.reviewPath);
 const m2Location = resolveRepoRelativeJson(repositoryRoot, config.dataset.m2Validation);
 assertTrackedArtifacts([
   FROZEN_EVALUATION_CONFIG_PATH,
@@ -283,8 +291,8 @@ assertTrackedArtifacts([
   ...Object.values(adaptiveArtifactPaths),
 ]);
 const reviewSource = await readFile(reviewLocation.absolutePath, 'utf8');
-if (sha256Source(reviewSource) !== config.freeze.humanReviewDigestSha256) {
-  throw new Error('analysis human review differs from the frozen digest');
+if (sha256Source(reviewSource) !== reviewBinding.reviewDigestSha256) {
+  throw new Error('analysis review differs from the frozen digest');
 }
 const { review } = await validateFreezeReviewEvidenceFromRepository({
   repositoryRoot,
@@ -293,7 +301,7 @@ const { review } = await validateFreezeReviewEvidenceFromRepository({
   requireTrackedArtifacts: true,
 });
 const m2Source = await readFile(m2Location.absolutePath, 'utf8');
-validateM2ReadyForFreeze(JSON.parse(m2Source));
+validateM2ReadyForFreeze(JSON.parse(m2Source), config.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN');
 
 const primaryManifestSource = await readFile(resolve(primaryArtifactPaths.manifest), 'utf8');
 const primaryRawSource = await readFile(resolve(primaryArtifactPaths.raw), 'utf8');
@@ -310,7 +318,8 @@ if (
   primaryManifest.caseManifestSha256 !== caseManifestSha256 ||
   primaryManifest.gitCommit !== config.freeze.gitCommit ||
   !sameJson(primaryManifest.freezeDigests, expectedDigests) ||
-  !sameJson(primaryManifest.systems, PRIMARY_EVALUATION_SYSTEMS)
+  !sameJson(primaryManifest.systems, PRIMARY_EVALUATION_SYSTEMS) ||
+  primaryManifest.reviewProtocol?.mode !== config.reviewProtocol?.mode
 ) {
   throw new Error('primary run provenance does not match the jointly frozen analysis inputs');
 }
@@ -319,7 +328,7 @@ validateFreezeTransition({
   executionCommit: primaryManifest.executionCommit,
   parentCommits: commitParents(primaryManifest.executionCommit),
   changedPaths: commitChangedPaths(primaryManifest.executionCommit),
-  humanReviewPath: config.freeze.humanReviewPath,
+  humanReviewPath: reviewBinding.reviewPath,
   dryRunEvidenceDirectory: review.dryRunEvidence.outputDirectory,
 });
 if (!gitIsAncestor(primaryManifest.executionCommit, analysisCommit)) {
@@ -398,6 +407,7 @@ const ablationSummarySource = await readFile(resolve(ablationArtifactPaths.summa
 const ablationManifest = AblationRunManifestSchema.parse(JSON.parse(ablationManifestSource));
 if (
   ablationManifest.runId !== ablationRunId ||
+  ablationManifest.reviewProtocol?.mode !== config.reviewProtocol?.mode ||
   ablationManifest.primaryRunId !== primaryRunId ||
   ablationManifest.gitCommit !== primaryManifest.gitCommit ||
   ablationManifest.primaryExecutionCommit !== primaryManifest.executionCommit ||
@@ -468,7 +478,13 @@ if (
   adaptiveManifest.frozenEvaluationConfigSha256 !== sha256Source(frozenEvaluationSource) ||
   adaptiveManifest.frozenAblationConfigSha256 !== sha256Source(frozenAblationSource) ||
   adaptiveManifest.caseManifestSha256 !== caseManifestSha256 ||
-  adaptiveManifest.humanReviewDigestSha256 !== sha256Source(reviewSource) ||
+  (reviewBinding.reviewerType === 'AI'
+    ? adaptiveManifest.aiReviewDigestSha256
+    : adaptiveManifest.humanReviewDigestSha256) !== sha256Source(reviewSource) ||
+  (reviewBinding.reviewerType === 'AI'
+    ? adaptiveManifest.aiReviewPath
+    : adaptiveManifest.humanReviewPath) !== reviewBinding.reviewPath ||
+  adaptiveManifest.reviewProtocol?.mode !== config.reviewProtocol?.mode ||
   adaptiveManifest.m2ValidationDigestSha256 !== sha256Source(m2Source) ||
   !sameJson(adaptiveManifest.freezeDigests, expectedDigests)
 ) {
@@ -828,11 +844,15 @@ await writeFile(
       generatedAt: new Date().toISOString(),
       analysisCommit,
       workingTreeDirtyAtStart: false,
+      reviewProtocol: config.reviewProtocol,
       freeze: {
         reviewedSourceCommit: primaryManifest.gitCommit,
         freezeCommit: primaryManifest.executionCommit,
         freezeDigests: expectedDigests,
-        humanReviewDigestSha256: config.freeze.humanReviewDigestSha256,
+        review: reviewBinding,
+        ...(reviewBinding.reviewerType === 'HUMAN'
+          ? { humanReviewDigestSha256: reviewBinding.reviewDigestSha256 }
+          : { aiReviewDigestSha256: reviewBinding.reviewDigestSha256 }),
       },
       primary: {
         runId: primaryRunId,

@@ -54,6 +54,110 @@ export interface ReviewRequirements {
   packetSha256: string;
   reviewIds: string[];
 }
+
+export const REVIEW_PROTOCOL_PATH = 'experiments/configs/review-protocol.json';
+export const AI_BENCHMARK_REVIEW_PATH = 'benchmark/reviews/ai-assisted-review-v0.4.0.json';
+export const AI_LLM_REVIEW_PATH =
+  'experiments/configs/baselines/llm-verifier-20-ai-review-v0.4.0.json';
+
+/** Solo review is an explicit methodological choice, never an implicit missing-review fallback. */
+export const ReviewProtocolSchema = z.discriminatedUnion('mode', [
+  z.object({ schemaVersion: z.literal('0.1'), mode: z.literal('DUAL_HUMAN') }).strict(),
+  z
+    .object({
+      schemaVersion: z.literal('0.1'),
+      mode: z.literal('SOLO_AI_ASSISTED'),
+      benchmarkAiReviewPath: z.literal(AI_BENCHMARK_REVIEW_PATH),
+      llmAiReviewPath: z.literal(AI_LLM_REVIEW_PATH),
+      finalAuthorApproval: z.literal('PENDING'),
+      independentHumanReviewClaim: z.literal(false),
+    })
+    .strict(),
+]);
+
+export const AiAssistedReviewSchema = z
+  .object({
+    protocolVersion: z.literal('0.1'),
+    reviewMode: z.literal('SOLO_AI_ASSISTED'),
+    datasetVersion: z.string().min(1),
+    packetSha256: sha,
+    reviewer: pseudonym,
+    reviewerType: z.literal('AI'),
+    independenceAttestation: z.literal(false),
+    sourceLabelsVisible: z.literal(true),
+    reviewedAt: z.iso.datetime(),
+    status: z.literal('COMPLETE_AI_ASSISTED'),
+    finalAuthorApproval: z.literal('PENDING'),
+    scope: z.literal('CONTRACT_CONDITIONED_REPRODUCIBILITY'),
+    methodology: z.string().trim().min(40),
+    limitations: z.array(z.string().trim().min(1)).min(1),
+    cases: z
+      .array(
+        ReviewValuesSchema.extend({
+          reviewId: z.string().min(1),
+          notes: z.string().trim().min(20),
+        }).strict(),
+      )
+      .min(1),
+  })
+  .strict();
+
+/** Completion means the disclosed AI assessment exists; it does not mean its judgments all pass. */
+export function evaluateAiAssistedReviewGate(
+  requirements: ReviewRequirements,
+  protocolInput: unknown,
+  reviewInput?: unknown,
+) {
+  const blockers: string[] = [];
+  const protocol = ReviewProtocolSchema.safeParse(protocolInput);
+  if (!protocol.success || protocol.data.mode !== 'SOLO_AI_ASSISTED')
+    blockers.push('explicit-solo-ai-assisted-protocol-required');
+  const review = AiAssistedReviewSchema.safeParse(reviewInput);
+  if (!review.success) blockers.push('ai-review:invalid-or-incomplete');
+  if (
+    !requirements.reviewIds.length ||
+    new Set(requirements.reviewIds).size !== requirements.reviewIds.length
+  )
+    blockers.push('requirements:invalid-case-set');
+  if (review.success) {
+    if (
+      review.data.packetSha256 !== requirements.packetSha256 ||
+      review.data.datasetVersion !== requirements.datasetVersion
+    )
+      blockers.push('ai-review:stale-packet-or-dataset');
+    const ids = review.data.cases.map((entry) => entry.reviewId);
+    if (
+      new Set(ids).size !== ids.length ||
+      ids.length !== requirements.reviewIds.length ||
+      requirements.reviewIds.some((id) => !ids.includes(id))
+    )
+      blockers.push('ai-review:case-set-mismatch');
+  }
+  return {
+    recordStatus: blockers.length ? ('PENDING' as const) : ('COMPLETE_AI_ASSISTED' as const),
+    reviewerType: 'AI' as const,
+    independenceAttestation: false as const,
+    independentHumanReviewClaim: false as const,
+    finalAuthorApproval: 'PENDING' as const,
+    scope: 'CONTRACT_CONDITIONED_REPRODUCIBILITY' as const,
+    submissionCount: review.success ? 1 : 0,
+    submissionSha256: review.success ? reviewDigest(reviewInput) : null,
+    caseCount: review.success ? review.data.cases.length : 0,
+    concerns: review.success
+      ? review.data.cases
+          .filter(
+            (entry) =>
+              entry.alignment !== 'ALIGNED' ||
+              entry.intermediateDecision !== 'ALLOW' ||
+              entry.finalStateDecision !== 'PASS' ||
+              !entry.evidenceAdequate,
+          )
+          .map((entry) => ({ reviewId: entry.reviewId, notes: entry.notes }))
+      : [],
+    limitations: review.success ? review.data.limitations : [],
+    blockers,
+  };
+}
 /** Validates records, not human identity or independence. Those remain human attestations. */
 export function evaluateReviewGate(
   requirements: ReviewRequirements,

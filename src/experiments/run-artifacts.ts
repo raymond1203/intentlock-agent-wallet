@@ -7,6 +7,7 @@ import { RawEvaluationResultSchema } from './evaluate-case.js';
 import { FreezeDigestsSchema } from './freeze-digests.js';
 import { RepoRelativeJsonPathSchema } from './freeze-gates.js';
 import type { EvaluationRecord, EvaluationSystemSchema } from './metrics.js';
+import { SoloAiReviewProtocolSchema } from './protocol.js';
 
 export const PRIMARY_EVALUATION_SYSTEMS = [
   'NONE',
@@ -29,6 +30,7 @@ export const EvaluationRunManifestSchema = z
     schemaVersion: z.literal('0.1'),
     runId: z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._-]{2,79}$/),
     protocolVersion: z.literal('0.1'),
+    reviewProtocol: SoloAiReviewProtocolSchema.optional(),
     datasetVersion: z.literal(BENCHMARK_DATASET_VERSION),
     createdAt: z.iso.datetime(),
     gitCommit: z.string().regex(/^[a-f0-9]{40}$/),

@@ -123,6 +123,35 @@ function source(): string {
 }
 
 describe('paper assembly', () => {
+  it('preserves solo AI review disclosure and rejects fabricated independent approval', () => {
+    const input = bundle();
+    const metadata = JSON.parse(input.metadata) as Record<string, unknown>;
+    const reviewProtocol = {
+      schemaVersion: '0.1',
+      mode: 'SOLO_AI_ASSISTED',
+      independentHumanReviewClaim: false,
+      finalAuthorApproval: 'PENDING',
+    };
+    const freeze = {
+      review: {
+        reviewerType: 'AI',
+        reviewerPseudonym: 'ai-reviewer',
+        reviewPath: 'experiments/reviews/ai.json',
+        reviewDigestSha256: 'a'.repeat(64),
+      },
+      aiReviewDigestSha256: 'a'.repeat(64),
+    };
+    input.metadata = JSON.stringify({ ...metadata, reviewProtocol, freeze });
+    expect(assemblePaperSource(source(), input).reviewProtocol).toEqual(reviewProtocol);
+    input.metadata = JSON.stringify({ ...metadata, reviewProtocol });
+    expect(() => validatePaperAnalysisBundle(input)).toThrow(/freeze metadata/);
+    input.metadata = JSON.stringify({
+      ...metadata,
+      reviewProtocol: { ...reviewProtocol, independentHumanReviewClaim: true },
+    });
+    expect(() => validatePaperAnalysisBundle(input)).toThrow();
+  });
+
   it('binds all 9 tables, metadata, and 4 figures before replacing final-paper slots', () => {
     const result = assemblePaperSource(source(), bundle());
 

@@ -1,5 +1,10 @@
 # Human closeout playbook for Issues #20–#35
 
+> Legacy two-person procedure. On 2026-09-05 the user selected one author with AI-assisted review.
+> The current procedure is [solo-closeout-playbook.md](solo-closeout-playbook.md), governed by
+> [ADR 0011](../decisions/0011-solo-ai-assisted-research-review.md). The records below have not been
+> completed by implication and must not be represented as actual human approvals.
+
 이 문서는 #20–#35의 사람 전용 acceptance gate를 가장 적은 중복 작업으로 닫기 위한 실행 순서다.
 코드·테스트·패킷 생성은 자동화할 수 있지만, 사람의 판단·독립성·승인·Notion 확인은 자동화할 수
 없다. 이 문서 작성 시점에는 어떤 승인도 수행되지 않았으며 모든 사람 판정은 `PENDING`이다.

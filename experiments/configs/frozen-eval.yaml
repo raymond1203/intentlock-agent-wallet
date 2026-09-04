@@ -1,6 +1,11 @@
 protocolVersion: '0.1'
 status: CANDIDATE_UNFROZEN
 freezeIssue: 27
+reviewProtocol:
+  schemaVersion: '0.1'
+  mode: SOLO_AI_ASSISTED
+  independentHumanReviewClaim: false
+  finalAuthorApproval: PENDING
 
 # This file is deliberately non-runnable until every null freeze field is filled and
 # status becomes FROZEN. The runner must reject CANDIDATE_UNFROZEN manifests.

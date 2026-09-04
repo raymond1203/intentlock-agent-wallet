@@ -3,7 +3,8 @@
 > 상태: M4 원고용 근거 등록부. 2026-09-04에 아래 외부 1차 출처를 다시 열어 확인했다.
 > 이 문서는 논문 원문·공식 문서가 직접 지지하는 범위와 프로젝트 실험으로 입증해야 할 범위를
 > 분리한다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline case)이며, v0.4.0 M2 실행
-> evidence와 live LLM run은 수집됐지만 독립 인간 검수는 아직 `PENDING`이다. 아직 생성되지 않은 M3 결과는 모두
+> evidence와 live LLM run은 수집됐다. 2026-09-05부터 검토 절차는 단일 저자 주도·AI 보조이며,
+> 독립 인간 검수 주장은 하지 않는다. 아직 생성되지 않은 M3 결과는 모두
 > `RESULT_PLACEHOLDER`로 남기고 사람 검수 완료를 주장하지 않는다.
 
 ## 사용 규칙
@@ -64,14 +65,14 @@
 
 ## C. IntentLock 설계·보장 주장
 
-| ID          | 원고에 허용되는 주장                                                                                                                                                    | 프로젝트 근거                                                                                                                                                                                            | 필요한 검증                                                                                                         | 강도와 제한                                                                                                           |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| IL-DESIGN-1 | IntentLock은 사용자가 확인한 versioned Intent Contract, ActionIR, cumulative ledger, signer capability와 post-state verification으로 구성된다.                          | [`docs/threat-model.md`](../docs/threat-model.md), [`paper/draft-method.md`](draft-method.md), 구현 모듈                                                                                                 | schema·transition·signer-boundary test가 최종 commit에서 통과하고 구조도와 코드 경계가 일치해야 한다.               | **조건부 설계 주장.** 실제 MetaMask backend 통합 또는 production deployment 주장이 아니다.                            |
-| IL-DESIGN-2 | Unsupported effect, ambiguity와 contract widening은 자동 ALLOW가 아니라 DENY 또는 ESCALATE로 간다.                                                                      | [`docs/decisions/0004-security-guarantee-boundary.md`](../docs/decisions/0004-security-guarantee-boundary.md), negative tests                                                                            | 모든 advertised decoder·unknown selector·typed-data·depth limit test와 outcome audit가 필요하다.                    | **조건부 설계 주장.** liveness나 낮은 false denial을 보장하지 않는다.                                                 |
-| IL-SAFE-1   | 명세 충분성, decoder/simulator soundness, linearizable ledger와 우회 불가능 signer gate 아래 authorized prefix가 계약 invariant 안에 남는다는 귀납 argument를 제시한다. | [`docs/decisions/0004-security-guarantee-boundary.md`](../docs/decisions/0004-security-guarantee-boundary.md), [`paper/draft-method.md`](draft-method.md)                                                | invariant별 negative/property test, concurrency counterexample test, 독립 인간의 proof-sketch 반례 검토가 필요하다. | **조건부 설계 주장.** mechanized proof, natural-language intent proof 또는 end-to-end safety proof라고 부르지 않는다. |
-| IL-CASE-1   | MetaMask Agent Wallet은 금전 상태 전이와 signer/policy 경계가 공개된 practical case study다.                                                                            | MM-ARCH-1~MM-CMD-1, [`docs/decisions/0002-competition-rules-and-deadline.md`](../docs/decisions/0002-competition-rules-and-deadline.md)                                                                  | 원고 전체에서 `case study`, `public-docs emulator` 표기를 확인한다.                                                 | **제한된 비교.** MetaMask 제품 보안 평가나 취약점 보고가 아니다.                                                      |
-| IL-DATA-1   | v0.4.0 벤치마크는 두 fixed fork와 제한된 workflow·protocol 범위의 authored case다.                                                                                      | [`docs/decisions/0005-mvp-workflows-and-forks.md`](../docs/decisions/0005-mvp-workflows-and-forks.md), [`docs/decisions/0010-m2-v0.4-data-contract.md`](../docs/decisions/0010-m2-v0.4-data-contract.md) | version-matched clean execution evidence, manifest hashes와 review gate가 필요하다.                                 | **조건부 설계 주장.** `HIDDEN_TEST`는 author-exposed legacy name이며 unseen generalization evidence가 아니다.         |
-| IL-ORACLE-1 | 주 평가는 LLM judge 대신 supported case의 exact integer post-state oracle을 사용한다.                                                                                   | [`docs/claim-to-evidence.md`](../docs/claim-to-evidence.md), oracle 구현·test                                                                                                                            | reference disagreement, insufficient evidence와 unsupported를 분모에서 제거하지 않는 audit가 필요하다.              | **조건부 설계 주장.** oracle 입력과 decoder가 sound하다는 전제가 남는다.                                              |
+| ID          | 원고에 허용되는 주장                                                                                                                      | 프로젝트 근거                                                                                                                                                                                            | 필요한 검증                                                                                                         | 강도와 제한                                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| IL-DESIGN-1 | IntentLock은 versioned Intent Contract, ActionIR, 프로세스 내 누적 원장, same-method signer gate와 post-state 대조로 구성된다.            | [`paper/final-source.md`](final-source.md) §4, adapter·ledger·monitor 구현                                                                                                                               | 구조도와 실제 코드 경계가 일치해야 한다. 외부 검증 capability·분산 원장·모든 후속 서명의 동결은 구현 완료가 아니다. | **조건부 설계 주장.** 확인 계약은 replay의 전제이며 실제 사용자 승인이나 MetaMask backend 통합을 뜻하지 않는다.                   |
+| IL-DESIGN-2 | Unsupported effect, ambiguity와 contract widening은 자동 ALLOW가 아니라 DENY 또는 ESCALATE로 간다.                                        | [`docs/decisions/0004-security-guarantee-boundary.md`](../docs/decisions/0004-security-guarantee-boundary.md), negative tests                                                                            | 모든 advertised decoder·unknown selector·typed-data·depth limit test와 outcome audit가 필요하다.                    | **조건부 설계 주장.** liveness나 낮은 false denial을 보장하지 않는다.                                                             |
+| IL-SAFE-1   | 충분한 명세, 효과 상계, 직렬화된 검사·예약과 동일 payload의 서명 gate 아래 추상 prefix의 안전 상한이 보존된다는 귀납 argument를 제시한다. | [`paper/final-source.md`](final-source.md) §4.6                                                                                                                                                          | 안전 상한과 완료 목표를 구분하고 전제를 증명 개요에 가까이 둔다. AI 반례 검토와 최종 저자 판정을 구분한다.          | **조건부 설계 주장.** 구현의 mechanized proof, 자연어 의도 증명, production 동시성 보장 또는 독립 인간 검수 주장이 아니다.        |
+| IL-CASE-1   | MetaMask Agent Wallet은 금전 상태 전이와 signer/policy 경계가 공개된 practical case study다.                                              | MM-ARCH-1~MM-CMD-1, [`docs/decisions/0002-competition-rules-and-deadline.md`](../docs/decisions/0002-competition-rules-and-deadline.md)                                                                  | 원고 전체에서 `case study`, `public-docs emulator` 표기를 확인한다.                                                 | **제한된 비교.** MetaMask 제품 보안 평가나 취약점 보고가 아니다.                                                                  |
+| IL-DATA-1   | v0.4.0 벤치마크는 두 fixed fork와 제한된 workflow·protocol 범위의 authored case다.                                                        | [`docs/decisions/0005-mvp-workflows-and-forks.md`](../docs/decisions/0005-mvp-workflows-and-forks.md), [`docs/decisions/0010-m2-v0.4-data-contract.md`](../docs/decisions/0010-m2-v0.4-data-contract.md) | version-matched clean execution evidence, manifest hashes와 review gate가 필요하다.                                 | **조건부 설계 주장.** `HIDDEN_TEST`는 author-exposed legacy name이며 unseen generalization evidence가 아니다.                     |
+| IL-ORACLE-1 | 주 offline 비교는 작성된 exact integer oracle을 사용하며 고정 포크 80개 실행 검증은 별도 증거다.                                          | [`paper/final-source.md`](final-source.md) §5, oracle 구현·test                                                                                                                                          | reference disagreement·불충분 증거·unsupported를 유지하고 실패·재시도 선택을 명시한다.                              | **조건부 설계 주장.** authored reference와 코드가 공통 가정을 가지므로 실제 execution UER나 독립적인 정답 검증이라고 하지 않는다. |
 
 v0.2.0 진단 기록과 v0.3.0 데이터 계약은 역사적 provenance로 보존한다. 특히 폐기된 local v0.3.0 clean
 replay는 swap batch 7건의 terminal finite allowance reference가 실제 소비 뒤에도 승인량을 남기는 결함을
@@ -94,10 +95,11 @@ dataset/config hash, 분자·분모, confidence interval과 원시 결과 경로
 | RES-COST        | `RESULT_PLACEHOLDER:COST`            | latency·token·RPC/call count 측정의 hardware/runtime 조건                                                                           | production overhead나 사용자 체감으로 외삽하지 않는다.                                                         |
 | RES-MM          | `RESULT_PLACEHOLDER:GUARD_EMULATOR`  | STRICT primary와 LITERAL sensitivity, emulator version·assumption 공개                                                              | 결과는 emulator에만 귀속하고 MetaMask 서비스 점수로 쓰지 않는다.                                               |
 
-## E. 독립 novelty adversarial review packet
+## E. Novelty adversarial review packet
 
-이 절은 review를 수행했다고 표시하는 곳이 아니라, 저자가 아닌 사람이 제출할 반례 검토 양식이다.
-완료 전 상태는 **PENDING HUMAN REVIEW**다.
+이 절은 반례 검토 양식이다. 현재 `SOLO_AI_ASSISTED` 절차에서 AI 보조 검토 결과와 최종 저자
+판정을 각각 기록한다. 외부 독립 검토자가 실제로 참여한 경우만 별도 독립 증거로 추가한다.
+최종 저자 승인은 **PENDING AUTHOR APPROVAL**다.
 
 ### Reviewer에게 제공할 최소 자료
 
@@ -121,7 +123,7 @@ dataset/config hash, 분자·분모, confidence interval과 원시 결과 경로
 6. Guard Mode, LLM verifier와 per-call baseline을 원 시스템보다 약하게 만들어 이득을 얻는 설계가
    있는가?
 
-### Human submission template
+### Review record template
 
 - Reviewer role: `PENDING`
 - Review date: `PENDING`
@@ -132,8 +134,8 @@ dataset/config hash, 분자·분모, confidence interval과 원시 결과 경로
 - Accept / revise / reject the current gap statement: `PENDING`
 - Author adjudication and resulting diff: `PENDING`
 
-저자 본인의 재검토는 유용하지만 `independent review`로 세지 않는다. 이 양식의 빈칸을 자동 생성된
-답으로 채우거나 review 완료로 표시하지 않는다.
+저자 본인의 재검토와 AI 보조 검토는 `independent human review`로 세지 않는다. AI 답변은 AI 검토로
+명시해 별도 기록할 수 있으나 실제 저자의 답변·승인을 대신해 이 양식의 인간 필드를 채우지 않는다.
 
 ## F. 최종 citation gate
 
@@ -142,5 +144,29 @@ dataset/config hash, 분자·분모, confidence interval과 원시 결과 경로
 - [ ] MetaMask 문서를 final freeze 날짜에 다시 열고 변경된 기능·문구를 반영했다.
 - [ ] 공식 문서의 제품 claim과 우리의 emulator 가정을 같은 문장에 섞지 않았다.
 - [ ] 각 `RESULT_PLACEHOLDER`가 생성된 evidence로 교체됐거나 결과 문장 전체가 삭제됐다.
-- [ ] 독립 reviewer가 novelty objection을 제출했고, 저자 adjudication diff가 남아 있다.
+- [ ] AI 보조 novelty objection과 저자 판정을 구분해 기록하고, 독립 인간 검수 주장을 제거했다.
 - [ ] `first`, `production-equivalent`, `proves user intent`, `all protocols/models/chains` 표현이 없다.
+
+## G. 2026-09-05 제출 원고 재대조
+
+현재 제출 조립 원문은 [`final-source.md`](final-source.md)다. 본문에 인용한 Task Shield v1, DRIFT v3,
+Progent v3, AgentSpec v3, CaMeL v2, AgentArmor v3, Formal Methods Meet LLMs v1, AgentDojo v3와 Web3
+context-manipulation 논문 v3의 원문 landing page·초록을 다시 열고 저자·버전·핵심 방법을 대조했다.
+MetaMask architecture·trading modes·outflow policy도 다시 열었다. 본문에는 선행연구의 성능 수치를
+사용하지 않았으며, 본문에서 쓰지 않는 추가 후보 인용까지 이번 확인 완료로 표시하지 않는다.
+
+구현 대조로 다음 제한을 확정했다. 이 절의 현재 해석이 이전 설계 의도를 적은 C절보다 우선한다.
+
+- `GuardDecision`은 intent hash에 연결된 내부 값이다. adapter의 same-method gate와 reservation이
+  구현되어 있으며 외부 검증용 일회성 암호 capability는 설계 제안이다.
+- `InMemoryIntentLedger`는 단일 프로세스의 직렬화다. durable/distributed 보장은 없다.
+- `VIOLATED`는 관측된 비용을 보존하지만 모든 후속 signing을 blanket freeze하지 않는다.
+- prefix invariant는 안전 상한이며 final-state goal은 완료 시 별도 술어다. 조건부 논증은 구현의
+  mechanized proof가 아니다.
+- primary replay는 pre-authored contract-conditioned 평가다. 실제 user confirmation,
+  자연어-to-contract fidelity, 독립 인간 라벨 일치도 또는 일반 decoder recall을 측정하지 않는다.
+- LLM 17/20은 label 일치뿐이며 rationale에는 단위·범위·근거 오류가 남는다.
+- M2 80/80은 기록된 첫 완료 시도 선택 후의 데이터 실행 검증이다. 첫 시도 availability나 공격
+  방어율이 아니다. zero-allowance revoke는 idempotence 사례로 제한한다.
+
+이 파일은 AI 보조 대조 기록이며 최종 저자의 승인 기록은 아니다.

@@ -17,6 +17,7 @@ import {
 import {
   FROZEN_EVALUATION_CONFIG_PATH,
   FREEZE_REVIEW_CASE_IDS,
+  AnyFreezeReviewRecordSchema,
 } from '../src/experiments/freeze-gates.js';
 import { FrozenEvalConfigSchema, sha256Text } from '../src/experiments/protocol.js';
 
@@ -137,6 +138,13 @@ const caseManifestPath = resolve(repositoryRoot, config.dataset.caseManifest);
 const caseManifestSource = await readFile(caseManifestPath, 'utf8');
 const reviewTemplatePath = resolve(repositoryRoot, REVIEW_TEMPLATE_PATH);
 const reviewTemplateSource = await readFile(reviewTemplatePath, 'utf8');
+const reviewTemplate = AnyFreezeReviewRecordSchema.parse(JSON.parse(reviewTemplateSource));
+if (
+  (config.reviewProtocol?.mode === 'SOLO_AI_ASSISTED') !==
+  (reviewTemplate.reviewerType === 'AI')
+) {
+  throw new Error('freeze dry-run review template must match the candidate review protocol');
+}
 requireTracked(repositoryRoot, [
   FROZEN_EVALUATION_CONFIG_PATH,
   config.dataset.caseManifest,
@@ -160,7 +168,7 @@ const artifacts = await createFreezeDryRunArtifacts({
   configSource,
   caseManifestSource,
   reviewTemplateSource,
-  reviewTemplate: JSON.parse(reviewTemplateSource),
+  reviewTemplate,
   manifestEntries: caseManifest.entries,
   cases: allCases,
 });
@@ -208,10 +216,11 @@ console.log(
       summarySha256: sha256Text(artifactSources.summarySource),
     },
     humanApprovalProvided: false,
+    ...(config.reviewProtocol ? { reviewProtocol: config.reviewProtocol } : {}),
     ...(machineGateBlocker === undefined ? {} : { machineGateBlocker }),
     next:
       machineGateStatus === 'PASS'
-        ? 'A human reviewer must separately copy and complete experiments/configs/freeze-review.template.json; this machine artifact is not approval.'
+        ? 'The reviewer specified by the candidate protocol must separately inspect and complete experiments/configs/freeze-review.template.json; this machine artifact is not reviewer approval.'
         : 'Do not approve or freeze. Investigate the immutable evidence, commit a corrected candidate A, and use a new append-only output directory.',
   }),
 );

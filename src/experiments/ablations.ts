@@ -8,7 +8,7 @@ import type { EvaluationCaseManifestEntry } from './case-matrix.js';
 import { RawEvaluationResultSchema, type RawEvaluationResult } from './evaluate-case.js';
 import { FreezeDigestsSchema } from './freeze-digests.js';
 import { EvaluationRecordSchema, type EvaluationRecord } from './metrics.js';
-import { sha256Text } from './protocol.js';
+import { sha256Text, SoloReviewProtocolSchema } from './protocol.js';
 import {
   evaluateSequentialSymbolic,
   type SequentialSymbolicVerdict as SymbolicVerdict,
@@ -194,12 +194,14 @@ const AblationFreezeSchema = z
       .nullable(),
     frozenAt: z.iso.datetime().nullable(),
     humanReviewer: z.string().min(1).nullable(),
+    aiReviewer: z.string().min(1).nullable().optional(),
   })
   .strict();
 
 export const AblationManifestSchema = z
   .object({
     schemaVersion: z.literal('0.1'),
+    reviewProtocol: SoloReviewProtocolSchema.optional(),
     status: z.enum(['CANDIDATE_UNFROZEN', 'FROZEN']),
     primaryRunRequired: z.literal(true),
     seed: z.literal(2026),
@@ -210,6 +212,21 @@ export const AblationManifestSchema = z
   })
   .strict()
   .superRefine((manifest, context) => {
+    const solo = manifest.reviewProtocol?.mode === 'SOLO_AI_ASSISTED';
+    if (
+      (solo &&
+        (manifest.freeze.humanReviewer !== null ||
+          (manifest.status === 'FROZEN' && !manifest.freeze.aiReviewer))) ||
+      (!solo &&
+        (manifest.freeze.aiReviewer != null ||
+          (manifest.status === 'FROZEN' && !manifest.freeze.humanReviewer)))
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['freeze'],
+        message: 'ablation freeze reviewer must match the explicit review protocol',
+      });
+    }
     if (JSON.stringify(manifest.arms.map((arm) => arm.id)) !== JSON.stringify(ABLATION_ARMS)) {
       context.addIssue({
         code: 'custom',
@@ -245,7 +262,6 @@ export const ReadyAblationManifestSchema = AblationManifestSchema.safeExtend({
       .regex(/^[a-f0-9]{40}$/)
       .describe('Human-reviewed semantic candidate commit A'),
     frozenAt: z.iso.datetime(),
-    humanReviewer: z.string().min(1),
   }),
 });
 
@@ -328,6 +344,7 @@ export const AblationRawEnvelopeSchema = z
 
 export const AblationRunManifestSchema = z
   .object({
+    reviewProtocol: SoloReviewProtocolSchema.optional(),
     schemaVersion: z.literal('0.2'),
     runId: z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._-]{2,79}$/),
     createdAt: z.iso.datetime(),

@@ -1,9 +1,12 @@
 {
-  "schemaVersion": "0.2",
+  "schemaVersion": "0.3",
+  "reviewMode": "SOLO_AI_ASSISTED",
+  "finalAuthorApproval": "PENDING",
+  "independentHumanReviewClaim": false,
   "status": "PENDING",
   "reviewedCommit": null,
-  "reviewerPseudonym": "reviewer-pending",
-  "reviewerType": "HUMAN",
+  "reviewerPseudonym": "ai-reviewer-pending",
+  "reviewerType": "AI",
   "independenceAttestation": false,
   "reviewedAt": null,
   "dryRunEvidence": null,
@@ -35,121 +38,121 @@
       "caseId": "TR-01--BENIGN_ORIGINAL",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "AP-01--BENIGN_ORIGINAL",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "SS-01--BENIGN_ORIGINAL",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BS-01--BENIGN_ORIGINAL",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BR-01--ADVERSARIAL_SCOPE",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "LE-01--ADVERSARIAL_SCOPE",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BA-01--ADVERSARIAL_SCOPE",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "TR-02--ADVERSARIAL_SCOPE",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "AP-02--ADVERSARIAL_BUDGET",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "SS-02--ADVERSARIAL_BUDGET",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BS-02--ADVERSARIAL_BUDGET",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BR-02--ADVERSARIAL_BUDGET",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "LE-02--ADVERSARIAL_COMPOSITION",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BA-02--ADVERSARIAL_COMPOSITION",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "TR-03--ADVERSARIAL_COMPOSITION",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "AP-03--ADVERSARIAL_COMPOSITION",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "SS-03--BENIGN_DRIFT",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BS-03--BENIGN_DRIFT",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "BR-03--BENIGN_DRIFT",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     },
     {
       "caseId": "LE-03--BENIGN_DRIFT",
       "reproduced": false,
       "result": "INCONCLUSIVE",
-      "notes": "Pending human reproduction."
+      "notes": "Pending AI-assisted inspection; final author review remains pending."
     }
   ],
   "checks": {
@@ -159,5 +162,5 @@
     "m2CompletionReviewed": false,
     "retryPolicyReviewed": false
   },
-  "notes": "Template only. A human reviewer fills this after reviewing a clean committed candidate; do not infer or prefill approval."
+  "notes": "Template only. An AI reviewer records actual inspection of the clean candidate and bound machine evidence. This is not independent human review; the author's final approval remains pending."
 }

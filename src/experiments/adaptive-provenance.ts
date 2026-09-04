@@ -10,7 +10,11 @@ import {
   RepoRelativeJsonPathSchema,
 } from './freeze-gates.js';
 import { EvaluationRecordSchema } from './metrics.js';
-import { ReadyFrozenEvalConfigSchema, type FrozenEvalConfigSchema } from './protocol.js';
+import {
+  ReadyFrozenEvalConfigSchema,
+  SoloAiReviewProtocolSchema,
+  type FrozenEvalConfigSchema,
+} from './protocol.js';
 import {
   EvaluationRunManifestSchema,
   PRIMARY_EVALUATION_SYSTEMS,
@@ -54,8 +58,11 @@ export const AdaptiveRunManifestSchema = z
     fixtureSha256: Sha256Schema,
     selectedInputSha256: Sha256Schema,
     freezeDigests: FreezeDigestsSchema,
-    humanReviewPath: RepoRelativeJsonPathSchema,
-    humanReviewDigestSha256: Sha256Schema,
+    reviewProtocol: SoloAiReviewProtocolSchema.optional(),
+    humanReviewPath: RepoRelativeJsonPathSchema.optional(),
+    humanReviewDigestSha256: Sha256Schema.optional(),
+    aiReviewPath: RepoRelativeJsonPathSchema.optional(),
+    aiReviewDigestSha256: Sha256Schema.optional(),
     m2ValidationPath: RepoRelativeJsonPathSchema,
     m2ValidationDigestSha256: Sha256Schema,
     rootSeed: z.literal(2026),
@@ -74,7 +81,28 @@ export const AdaptiveRunManifestSchema = z
     comparisonDesign: z.literal(ADAPTIVE_COMPARISON_DESIGN),
     overwrite: z.literal(false),
   })
-  .strict();
+  .strict()
+  .superRefine((manifest, ctx) => {
+    const solo = manifest.reviewProtocol?.mode === 'SOLO_AI_ASSISTED';
+    const valid = solo
+      ? Boolean(
+          manifest.aiReviewPath &&
+          manifest.aiReviewDigestSha256 &&
+          !manifest.humanReviewPath &&
+          !manifest.humanReviewDigestSha256,
+        )
+      : Boolean(
+          manifest.humanReviewPath &&
+          manifest.humanReviewDigestSha256 &&
+          !manifest.aiReviewPath &&
+          !manifest.aiReviewDigestSha256,
+        );
+    if (!valid)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'adaptive review binding must match the declared review protocol',
+      });
+  });
 export type AdaptiveRunManifest = z.infer<typeof AdaptiveRunManifestSchema>;
 
 const AdaptiveComparisonRowSchema = z
@@ -171,7 +199,10 @@ export function validateJointAdaptiveFreeze(
   if (
     ablation.freeze.gitCommit !== evaluation.freeze.gitCommit ||
     ablation.freeze.frozenAt !== evaluation.freeze.frozenAt ||
-    ablation.freeze.humanReviewer !== evaluation.freeze.humanReviewer
+    ablation.freeze.humanReviewer !== evaluation.freeze.humanReviewer ||
+    (ablation.freeze.aiReviewer ?? null) !==
+      (evaluation.freeze.aiReview?.reviewerPseudonym ?? null) ||
+    ablation.reviewProtocol?.mode !== evaluation.reviewProtocol?.mode
   ) {
     throw new Error('evaluation and ablation manifests were not jointly frozen');
   }
@@ -203,6 +234,7 @@ export interface AdaptivePrimaryBindingExpectation {
   modelId: string;
   maxAttemptsPerCase: number;
   maxTotalRetryAttempts: number;
+  reviewMode?: 'SOLO_AI_ASSISTED';
 }
 
 export function validateAdaptivePrimaryManifestBinding(
@@ -224,7 +256,8 @@ export function validateAdaptivePrimaryManifestBinding(
     JSON.stringify(manifest.systems) !== JSON.stringify(PRIMARY_EVALUATION_SYSTEMS) ||
     manifest.modelId !== expected.modelId ||
     manifest.maxAttemptsPerCase !== expected.maxAttemptsPerCase ||
-    manifest.maxTotalRetryAttempts !== expected.maxTotalRetryAttempts
+    manifest.maxTotalRetryAttempts !== expected.maxTotalRetryAttempts ||
+    manifest.reviewProtocol?.mode !== expected.reviewMode
   ) {
     throw new Error('primary run provenance does not match the jointly frozen adaptive inputs');
   }

@@ -2,6 +2,8 @@
 
 > 상태: 코드 경계와 M0~M2 명세를 연결한 초안. M3 ablation 결과와 최종 구조도 번호는 동결 뒤
 > 삽입한다.
+> 제출 조립 원문의 엄밀한 구현 범위는 [`final-source.md`](final-source.md) §4를 따른다.
+> 현재 검토 절차는 단일 저자 주도·AI 보조이며, 독립 인간 검토 완료를 주장하지 않는다.
 
 ## 1. 시스템 모델
 
@@ -57,22 +59,24 @@ monitor는 각 action에서 다음 순서로 결정한다.
 4. 증거가 완전하고 모든 invariant가 유지되면 ALLOW, 확정 위반이면 DENY, 불확실성 또는 widening이면
    ESCALATE한다.
 
-ALLOW는 단순 boolean이 아니라 intent hash, contract version, chain, target, selector, value bound,
-expiry, nonce와 idempotency key에 묶인 일회성 signing capability다. signer는 이 capability가 없으면
-실행하지 않는다. 여러 요청이 동시에 같은 잔여 budget을 확인하는 race를 막기 위해 monitor는 먼저
-원자적 reservation을 만들고, transaction 성공·실패·timeout에 따라 commit 또는 release한다.
+ALLOW는 intent hash와 evidence에 연결된 내부 판정이다. adapter는 판정과 원장 예약을 거친 같은
+method 안에서 검사한 payload를 executor에 전달한다. 독립적으로 검증되는 일회성 암호 capability는
+현재 구현에 없다. 원장은 한 프로세스 내 promise 직렬화로 reservation을 만들고, 명확한 성공·실패를
+정산한다. 불명확한 transport 실패는 pending 예약을 남길 수 있다. snapshot 형식이 있어도 durable
+storage나 여러 signer 서비스의 분산 원자성을 구현한 것은 아니다.
 
-bridge 전후 상태도 별도 의도로 분리하지 않는다. intent ID와 contract version이 source와 destination
-chain의 공통 ledger key이며, 목적지 swap은 동일한 누적 계약을 조회하는 두 번째 signer gate를
-통과한다.
+bridge의 source와 destination 효과는 같은 multi-chain 계약으로 표현한다. offline replay는 목적지
+동작까지 같은 accepted-effect history를 검사한다. 이를 실제 분산 chain 간 signer 조정이나
+production bridge settlement 보장으로 해석하지 않는다.
 
 ## 5. 실행 후 검증
 
 ALLOW 뒤에는 필요한 receipt가 모두 성공했는지, 고정 fork fingerprint와 contract codehash가 맞는지,
 pre/post observation이 실제 실행 증거인지 확인한다. ordered receipt event로 gross outflow를 계산하고,
 잔액·allowance·position·debt·ownership을 bigint로 비교한다. 예측과 실제가 다르면 정책 위반 여부와
-reference disagreement를 분리한다. 이미 발생한 state를 되돌린다고 주장하지 않으며, ledger를
-VIOLATED로 전환하고 후속 signing을 동결한다.
+reference disagreement를 분리한다. 이미 발생한 state를 되돌린다고 주장하지 않으며, 예약을
+VIOLATED로 전환해 관측된 비용을 후속 budget에 남긴다. 현재 구현은 mismatch를 반환하지만 계정의
+모든 후속 signing을 일괄 동결하지 않는다. 강제 동결·recovery는 별도의 운영 배포 요구다.
 
 cross-chain evaluation의 destination fill은 명시적으로 test relayer·attester fixture를 사용할 수 있다.
 이는 source contract와 message 형식을 실행하는 로컬 검증이지 production relayer liveness나 bridge
@@ -81,10 +85,11 @@ security의 증거가 아니다.
 ## 6. 조건부 prefix-safety
 
 확인된 contract를 `C`, 실행·예약된 prefix의 누적 경제 상태를 `S_k`, candidate action에서 완전하게
-해석된 효과를 `e_(k+1)`, contract의 안전 영역을 `Inv(C)`라고 하자. monitor의 ALLOW transition은
-`S_k ⊕ e_(k+1) ∈ Inv(C)`일 때만 atomic reservation과 capability를 발급한다.
+해석된 효과를 `e_(k+1)`, contract의 안전 상한 영역을 `Inv(C)`라고 하자. 완료 시 목표는 별도의
+`Goal(C, S)`이며 모든 중간 상태의 prefix invariant가 아니다. 추상 ALLOW transition은
+`S_k ⊕ e_(k+1) ∈ Inv(C)`일 때만 atomic reservation과 집행 권한을 발급한다고 가정한다.
 
-**조건부 정리.** 다음 조건이 유지되면 IntentLock이 발급한 capability만으로 구성된 모든 실행 prefix의
+**조건부 정리.** 다음 조건과 추상 ALLOW transition이 유지되면 검사된 payload만으로 구성된 모든 실행 prefix의
 누적 상태는 `Inv(C)` 안에 있다.
 
 1. `C`가 사용자의 의도를 필요한 범위에서 충분히 표현한다.
@@ -95,12 +100,13 @@ security의 증거가 아니다.
 **증명 개요.** 초기 상태는 계약 생성 시 검증되어 `S_0 ∈ Inv(C)`이다. 귀납적으로 `S_k`가 안전하다고
 하자. monitor는 candidate의 모든 효과를 contract scope와 누적 상한에 대조한다. 불완전한 효과는
 ALLOW하지 않으며, 완전한 효과에 대해 `S_k ⊕ e_(k+1)`가 안전한 경우에만 reservation을 선형화한다.
-따라서 동시에 평가되는 다른 요청도 예약된 양을 포함한 상태를 보고, 발급된 capability가 실행되면
+따라서 동시에 평가되는 다른 요청도 예약된 양을 포함한 상태를 보고, 검사한 것과 같은 payload가 실행되면
 `S_(k+1)`가 된다. 귀납법으로 모든 accepted prefix가 안전 영역에 남는다.
 
 이 정리는 자연어 compiler correctness, unknown bytecode, Byzantine RPC, future price, MEV, protocol
-solvency, liveness를 보장하지 않는다. 실행 뒤 실제 effect가 predicted effect와 다르면 soundness 전제가
-깨진 것이므로 이후 prefix를 동결하지만 이미 발생한 비가역 효과의 자동 복구는 별도 문제다.
+solvency, liveness를 보장하지 않는다. 추상 transition의 증명 개요이며 구현의 mechanized proof가 아니다.
+실행 뒤 실제 effect가 predicted effect와 다르면 soundness 전제가 깨진 것이므로 mismatch를
+보고한다. 이후 prefix의 강제 동결과 이미 발생한 비가역 효과의 복구는 별도 문제다.
 
 ## 7. 구현 경계와 비교군
 
@@ -118,9 +124,10 @@ production 동등성을 주장하지 않는다. Task Shield와 DRIFT는 선행�
 400-case 비교는 실제 transaction 실행이 아니라 동일한 case manifest, seed, model budget과 authored
 oracle을 사용하는 `OFFLINE_COUNTERFACTUAL_REPLAY`다. semantic-only,
 symbolic-only와 hybrid-conjunction은 이미 확인된 계약에서 시작하는 runtime corpus의 단계별 비교이며,
-한 요소만 바꾼 인과 ablation으로 해석하지 않는다. compiler correctness는 M1의 별도 blinded review로
-측정한다. runtime ablation은 full monitor에서 accepted-effect history, recursive decoder, post-state
-verifier 또는 confirmation policy 하나만 바꾼다. 각 arm은 security와 benign completion을 함께
+한 요소만 바꾼 인과 ablation으로 해석하지 않는다. compiler는 candidate와 field evidence의 검증이며,
+독립적인 blinded 자연어 추출 정확도를 측정한 결과로 보고하지 않는다. 실제 사용자 승인 event도
+관측한 것이 아니다. runtime one-factor ablation은 full monitor에서 accepted-effect history, 중첩
+효과 관측 또는 post-state verifier 하나만 바꾼다. confirmation-always는 별도 policy variant다. 각 arm은 security와 benign completion을 함께
 보고하며, 설정 차이는 실행 전에 semantic diff로 검수한다.
 
 주 offline 지표는 guard가 승인한 trace 중 authored exact-oracle이 계약 위반을 나타내는 episode를 전체

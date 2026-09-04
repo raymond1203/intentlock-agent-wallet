@@ -266,4 +266,6 @@ post-state reconciliation은 이미 확정된 자산 이동을 복구하지 못�
 - MetaMask 내부 검증 없이는 삭제해야 할 구체적 구현 추정: `PENDING`
 - 저자 adjudication과 원고 diff: `PENDING`
 
-주저자의 self-review는 품질 점검으로 남길 수 있지만 independent human gate를 대신하지 않는다.
+현재 검토 절차는 `SOLO_AI_ASSISTED`다. AI 보조 검토는 별도 기록하고 주저자의 최종 승인은 실제
+응답으로만 남긴다. 두 번째 독립 인간 검수 완료를 주장하지 않는다. 이 제안서의 capability·분산 예약·
+일괄 동결·recovery는 운영 배포를 위한 요구사항이며 현재 prototype의 구현 완료로 해석하지 않는다.

@@ -8,6 +8,24 @@ import { EVALUATION_VARIANTS } from './case-matrix.js';
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 const GitCommitSchema = z.string().regex(/^[a-f0-9]{40}$/);
 
+export const SoloReviewProtocolSchema = z
+  .object({
+    schemaVersion: z.literal('0.1'),
+    mode: z.literal('SOLO_AI_ASSISTED'),
+    independentHumanReviewClaim: z.literal(false),
+    finalAuthorApproval: z.literal('PENDING'),
+  })
+  .strict();
+export const SoloAiReviewProtocolSchema = SoloReviewProtocolSchema;
+
+const AiFreezeReviewBindingSchema = z
+  .object({
+    reviewerPseudonym: z.string().min(1),
+    reviewPath: z.string().min(1),
+    reviewDigestSha256: Sha256Schema,
+  })
+  .strict();
+
 export const TokenPricingSchema = z
   .object({
     input: z.number().nonnegative(),
@@ -32,6 +50,7 @@ const FreezeFieldsSchema = z
     humanReviewer: z.string().min(1).nullable(),
     humanReviewPath: z.string().min(1).nullable(),
     humanReviewDigestSha256: Sha256Schema.nullable(),
+    aiReview: AiFreezeReviewBindingSchema.nullable().optional(),
   })
   .strict();
 
@@ -40,6 +59,7 @@ const CommonFrozenEvalConfigSchema = z
     protocolVersion: z.literal('0.1'),
     status: z.enum(['CANDIDATE_UNFROZEN', 'FROZEN']),
     freezeIssue: z.number().int().positive(),
+    reviewProtocol: SoloReviewProtocolSchema.optional(),
     dataset: z
       .object({
         version: z.literal(BENCHMARK_DATASET_VERSION),
@@ -152,6 +172,33 @@ const CommonFrozenEvalConfigSchema = z
         message: 'the five primary system IDs must be unique',
       });
     }
+    const solo = config.reviewProtocol?.mode === 'SOLO_AI_ASSISTED';
+    if (solo) {
+      if (
+        config.freeze.humanReviewer !== null ||
+        config.freeze.humanReviewPath !== null ||
+        config.freeze.humanReviewDigestSha256 !== null ||
+        (config.status === 'FROZEN' && !config.freeze.aiReview)
+      ) {
+        context.addIssue({
+          code: 'custom',
+          path: ['freeze'],
+          message: 'solo freeze requires an AI review binding and must not claim human review',
+        });
+      }
+    } else if (
+      config.freeze.aiReview != null ||
+      (config.status === 'FROZEN' &&
+        (!config.freeze.humanReviewer ||
+          !config.freeze.humanReviewPath ||
+          !config.freeze.humanReviewDigestSha256))
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['freeze'],
+        message: 'legacy freeze requires human review; AI review requires explicit solo protocol',
+      });
+    }
   });
 
 export const FrozenEvalConfigSchema = CommonFrozenEvalConfigSchema;
@@ -170,15 +217,48 @@ export const ReadyFrozenEvalConfigSchema = CommonFrozenEvalConfigSchema.safeExte
     evaluationConfigDigestSha256: Sha256Schema,
     implementationDigestSha256: Sha256Schema,
     frozenAt: z.iso.datetime(),
-    humanReviewer: z.string().min(1),
-    humanReviewPath: z.string().min(1),
-    humanReviewDigestSha256: Sha256Schema,
   }),
 });
 
 export type FrozenEvalConfig = z.infer<typeof FrozenEvalConfigSchema>;
 export type ReadyFrozenEvalConfig = z.infer<typeof ReadyFrozenEvalConfigSchema>;
 export type TokenPricing = z.infer<typeof TokenPricingSchema>;
+
+/** Resolves a review binding without relabeling AI assistance as human approval. */
+export function getFreezeReviewBinding(
+  config: Pick<FrozenEvalConfig, 'freeze' | 'reviewProtocol'>,
+): {
+  reviewerPseudonym: string;
+  reviewerType: 'HUMAN' | 'AI';
+  reviewPath: string;
+  reviewDigestSha256: string;
+} {
+  if (config.reviewProtocol?.mode === 'SOLO_AI_ASSISTED') {
+    if (
+      !config.freeze.aiReview ||
+      config.freeze.humanReviewer !== null ||
+      config.freeze.humanReviewPath !== null ||
+      config.freeze.humanReviewDigestSha256 !== null
+    ) {
+      throw new Error('solo freeze requires an AI review binding without human approval');
+    }
+    return { ...config.freeze.aiReview, reviewerType: 'AI' };
+  }
+  if (
+    config.freeze.aiReview != null ||
+    !config.freeze.humanReviewer ||
+    !config.freeze.humanReviewPath ||
+    !config.freeze.humanReviewDigestSha256
+  ) {
+    throw new Error('legacy freeze requires a complete human review binding');
+  }
+  return {
+    reviewerPseudonym: config.freeze.humanReviewer,
+    reviewerType: 'HUMAN',
+    reviewPath: config.freeze.humanReviewPath,
+    reviewDigestSha256: config.freeze.humanReviewDigestSha256,
+  };
+}
 
 export interface TokenUsageForCost {
   inputTokens: number;

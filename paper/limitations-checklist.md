@@ -10,9 +10,15 @@
 - `[x]` 실제 증거의 run ID·hash·경로와 검수자가 기록된 경우에만 완료
 - `N/A — 이유` 사전 등록 범위 밖인 경우만 사용
 
-이 파일은 템플릿 상태로 배포한다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline
-case)이며 M3 수치는 없다. v0.4.0 M2 실행 evidence와 live LLM run은 수집됐지만 독립 인간 검수는
-아직 `PENDING`이므로 모든 M3 결과 칸은 `RESULT_PLACEHOLDER`이고 사람 검수 완료를 주장하지 않는다.
+이 파일은 내부 검토 체크리스트다. 현재 데이터 후보는 v0.4.0(80개 base intent, 400개 offline case)이며
+실행·LLM 진단 증거가 수집됐다. M3 수치는 생성된 분석 자료에 연결해야 한다. 최종 제출 조립 원문은
+[`final-source.md`](final-source.md)이고 검토 절차는 `SOLO_AI_ASSISTED`다.
+
+아래 독립 인간 검토 항목은 이전 두 사람 프로토콜의 확장 기준이다. 현재 제출에서는 해당 독립성
+주장을 하지 않으므로 `N/A — 단일 저자·AI 보조 절차`로 판정할 수 있고, 가짜 검토자를 만들거나
+완료 체크를 하지는 않는다. AI 검토는 명시적으로 표시하며 최종 저자 승인과 Notion 제출 확인은
+여전히 실제 사용자 기록이 필요하다. 현재 코드의 capability·분산 원장·일괄 동결은 구현 완료가 아닌
+설계 제안이며, 아래 관련 항목은 final-source에 구현 한계로 명시하는 것으로 해소한다.
 
 ## 1. 연구 동결과 provenance
 
@@ -205,41 +211,41 @@ case)이며 M3 수치는 없다. v0.4.0 M2 실행 evidence와 live LLM run은 �
    아니다.
 7. **Operational realism:** local fork와 test relayer는 production availability, latency, reorg, MEV와
    counterparty risk를 재현하지 않는다.
-8. **Human evidence:** label·novelty·proof wording의 독립 검수는 자동화할 수 없고 실제 제출이 있어야
-   완료된다.
+8. **Review evidence:** 단일 저자 주도·AI 보조 검토이며 독립 인간 검수·blinded evaluation을
+   주장하지 않는다. AI 검토와 실제 저자의 최종 승인 기록을 구분한다.
 
 ## 12. Human gates — 완료 조작 금지
 
-### H1. Novelty adversarial review
+### H1. Author-led novelty review with AI assistance
 
-- Reviewer: `PENDING HUMAN`
+- Final approver: `PENDING AUTHOR`
 - 제공 자료: [`claim-to-citation.md`](claim-to-citation.md)의 RW/GAP 표
 - 요구 산출물: strongest objection, missing nearest work, 좁혀야 할 문장, accept/revise/reject
 - 상태: `PENDING`
 
-### H2. Conditional guarantee counterexample review
+### H2. Author-led conditional guarantee review with AI assistance
 
-- Reviewer: `PENDING HUMAN`
+- Final approver: `PENDING AUTHOR`
 - 제공 자료: [`draft-method.md`](draft-method.md)의 정리·proof sketch와 실제 transition/test map
 - 요구 산출물: 최소 1개 concurrency/retry/unsupported-effect 반례 시도와 판정
 - 상태: `PENDING`
 
 ### H3. Five-number raw-result trace
 
-- Reviewer: `PENDING HUMAN`
+- Final approver: `PENDING AUTHOR`
 - 제공 자료: final table, raw records, analysis output과 metric definition
 - 요구 산출물: 핵심 수치 5개의 numerator/denominator/run ID 재계산
 - 상태: `PENDING — RESULT_PLACEHOLDER`
 
 ### H4. MetaMask wording review
 
-- Reviewer: `PENDING HUMAN`
+- Final approver: `PENDING AUTHOR`
 - 제공 자료: [`metamask-recommendations.md`](metamask-recommendations.md), 공식 문서 4개
 - 요구 산출물: production-equivalence·vulnerability inference가 없는지 문장별 판정
 - 상태: `PENDING`
 
-주저자가 H1~H4를 직접 수행한 기록은 internal self-review로 남길 수 있지만 `independent`로 세지 않는다.
-Billy 또는 제3자가 실제로 검수한 원문과 저자 adjudication이 있어야 human gate가 닫힌다.
+주저자의 H1~H4 승인과 AI 보조 검토를 각각 기록한다. 어느 쪽도 두 번째 독립 인간 검수로 세지
+않는다. 원문·표·한계가 완성되어도 최종 저자의 승인은 대신 생성하지 않는다.
 
 ## 13. 최종 release decision
 

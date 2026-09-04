@@ -7,7 +7,9 @@ GitHub 주소, 로컬 경로와 문서 메타데이터를 제거합니다.
 
 `draft-*.md`는 결과 전 연구 초안이며 그 자체가 제출본이 아니다. 동결된 primary·ablation·adaptive
 실행을 한 뒤 `pnpm evaluation:analyze ...`가 9개 표 파일, 결과 metadata와 4개 SVG를 함께 생성한다.
-분석 결과를 commit한 뒤, 사람이 검토한 최종 서술을 `paper/final-source.md`에 작성하고 필요한 위치에
+`paper/final-source.md`는 단일 저자 주도·AI 보조 검토 절차에 맞춘 제출용 조립 원문이다. 결과 수치는
+실행 전 추정하지 않으며 아래 slot으로만 연결한다. 이 파일이 존재해도 최종 저자 승인을 뜻하지 않는다.
+분석 결과를 commit한 뒤 결과 서술을 해당 원문과 대조하고, 필요한 위치에
 다음 slot을 각각 정확히 한 번 둔다.
 
 - `{{ARCHITECTURE_FIGURE}}`
@@ -45,4 +47,6 @@ pnpm paper:assemble --source=paper/final-source.md
 pnpm submission:audit --file=paper/final.md --forbidden-terms-file=<private-path>
 ```
 
-최종 권위는 두 사람의 독립 체크리스트, Notion preview·단어 수·댓글 권한 확인과 private 제출 기록이다.
+현재 절차는 `SOLO_AI_ASSISTED`다. 최종 권위는 저자의 명시적 승인, Notion preview·단어 수·댓글
+권한 확인과 private 제출 기록이다. AI 보조 검토를 두 번째 독립 인간으로 세지 않는다. 제출 조립 파일의
+제작 완료와 실제 제출 완료는 분리하며, 최종 저자 승인 대기는 내부 제출 기록에 둔다.

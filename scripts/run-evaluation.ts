@@ -36,6 +36,7 @@ import {
 } from '../src/experiments/metrics.js';
 import {
   FrozenEvalConfigSchema,
+  getFreezeReviewBinding,
   ReadyFrozenEvalConfigSchema,
   sha256Text,
 } from '../src/experiments/protocol.js';
@@ -207,16 +208,20 @@ const ablationConfig = ReadyAblationManifestSchema.parse(JSON.parse(ablationConf
 if (
   ablationConfig.freeze.gitCommit !== config.freeze.gitCommit ||
   ablationConfig.freeze.frozenAt !== config.freeze.frozenAt ||
-  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer
+  ablationConfig.freeze.humanReviewer !== config.freeze.humanReviewer ||
+  (ablationConfig.freeze.aiReviewer ?? null) !==
+    (config.freeze.aiReview?.reviewerPseudonym ?? null) ||
+  ablationConfig.reviewProtocol?.mode !== config.reviewProtocol?.mode
 ) {
   throw new Error('evaluation and ablation manifests were not jointly frozen');
 }
 if (git('status', '--porcelain')) throw new Error('primary evaluation requires a clean worktree');
 const executionCommit = git('rev-parse', 'HEAD');
-const reviewLocation = resolveRepoRelativeJson(repositoryRoot, config.freeze.humanReviewPath);
+const reviewBinding = getFreezeReviewBinding(config);
+const reviewLocation = resolveRepoRelativeJson(repositoryRoot, reviewBinding.reviewPath);
 const reviewSource = await readFile(reviewLocation.absolutePath, 'utf8');
-if (sha256Source(reviewSource) !== config.freeze.humanReviewDigestSha256) {
-  throw new Error('frozen human review digest changed');
+if (sha256Source(reviewSource) !== reviewBinding.reviewDigestSha256) {
+  throw new Error('frozen review digest changed');
 }
 const { review } = await validateFreezeReviewEvidenceFromRepository({
   repositoryRoot,
@@ -229,7 +234,7 @@ validateFreezeTransition({
   executionCommit,
   parentCommits: commitParents(executionCommit),
   changedPaths: commitChangedPaths(executionCommit),
-  humanReviewPath: config.freeze.humanReviewPath,
+  humanReviewPath: reviewBinding.reviewPath,
   dryRunEvidenceDirectory: review.dryRunEvidence.outputDirectory,
 });
 const actualDigests = await computeFreezeDigests(config);
@@ -238,7 +243,10 @@ if (!expectedDigests) throw new Error('frozen digest envelope is incomplete');
 const changed = differingFreezeDigests(expectedDigests, actualDigests);
 if (changed.length > 0) throw new Error(`frozen inputs changed: ${changed.join(', ')}`);
 const m2Location = resolveRepoRelativeJson(repositoryRoot, config.dataset.m2Validation);
-validateM2ReadyForFreeze(JSON.parse(await readFile(m2Location.absolutePath, 'utf8')));
+validateM2ReadyForFreeze(
+  JSON.parse(await readFile(m2Location.absolutePath, 'utf8')),
+  config.reviewProtocol?.mode ?? 'INDEPENDENT_HUMAN',
+);
 
 const runId = argument('--run-id') ?? defaultRunId();
 const systems = parseSystems();
@@ -255,6 +263,7 @@ const expectedManifest = EvaluationRunManifestSchema.parse({
   schemaVersion: '0.1',
   runId,
   protocolVersion: config.protocolVersion,
+  reviewProtocol: config.reviewProtocol,
   datasetVersion: config.dataset.version,
   createdAt: new Date().toISOString(),
   gitCommit: config.freeze.gitCommit,

@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { SoloAiReviewProtocolSchema } from '../experiments/protocol.js';
 
 import { auditSubmission } from './audit.js';
 
@@ -45,6 +46,12 @@ export interface ValidatedPaperAnalysisBundle {
   analysisCommit: string;
   negativeResults: string[];
   artifactSha256: Record<string, string>;
+  reviewProtocol?: {
+    schemaVersion: '0.1';
+    mode: 'SOLO_AI_ASSISTED';
+    independentHumanReviewClaim: false;
+    finalAuthorApproval: 'PENDING';
+  };
 }
 
 export interface PaperAssemblyResult extends ValidatedPaperAnalysisBundle {
@@ -121,6 +128,26 @@ export function validatePaperAnalysisBundle(
   const ablation = parseObject(bundle.ablationJson, 'ablation results');
   const adaptive = parseObject(bundle.adaptiveJson, 'adaptive results');
   const metadata = parseObject(bundle.metadata, 'analysis metadata');
+  const reviewProtocol =
+    metadata.reviewProtocol === undefined
+      ? undefined
+      : SoloAiReviewProtocolSchema.parse(metadata.reviewProtocol);
+  if (reviewProtocol) {
+    const freeze = objectField(metadata.freeze, 'analysis freeze metadata');
+    const review = objectField(freeze.review, 'analysis freeze review');
+    if (
+      review.reviewerType !== 'AI' ||
+      !/^[a-f0-9]{64}$/u.test(stringField(review.reviewDigestSha256, 'AI review digest')) ||
+      !stringField(review.reviewPath, 'AI review path') ||
+      !stringField(review.reviewerPseudonym, 'AI reviewer') ||
+      freeze.aiReviewDigestSha256 !== review.reviewDigestSha256 ||
+      freeze.humanReviewDigestSha256 !== undefined
+    ) {
+      throw new Error(
+        'solo paper metadata requires the actual AI freeze-review binding without a human approval claim',
+      );
+    }
+  }
   const primaryMetadata = objectField(metadata.primary, 'analysis metadata primary');
   const ablationMetadata = objectField(metadata.ablation, 'analysis metadata ablation');
   const adaptiveMetadata = objectField(metadata.adaptive, 'analysis metadata adaptive');
@@ -220,6 +247,7 @@ export function validatePaperAnalysisBundle(
     analysisCommit,
     negativeResults,
     artifactSha256,
+    ...(reviewProtocol ? { reviewProtocol } : {}),
   };
 }
 
@@ -272,6 +300,10 @@ export function assemblePaperSource(
   let markdown = source;
   for (const [token, insertion] of Object.entries(insertions)) {
     markdown = markdown.replace(token, insertion);
+  }
+  if (validated.reviewProtocol?.mode === 'SOLO_AI_ASSISTED') {
+    markdown +=
+      '\n\n검증 절차는 단일 저자가 주도하고 AI가 보조했다. 두 사람의 독립 검수나 맹검 평가를 수행했다는 주장은 하지 않는다.\n';
   }
   markdown = `${markdown.trim()}\n`;
   if (/\{\{[A-Z0-9_]+\}\}/u.test(markdown)) {

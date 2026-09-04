@@ -19,12 +19,13 @@ import {
   FREEZE_REVIEW_CASE_IDS,
   FROZEN_ABLATION_CONFIG_PATH,
   FROZEN_EVALUATION_CONFIG_PATH,
-  FreezeReviewRecordSchema,
+  AnyFreezeReviewRecordSchema,
   deriveM2Completion,
   evaluateLlmBaselineGate,
   resolveRepoRelativeJson,
   sha256Source,
   validateApprovedFreezeReview,
+  validateFreezeReviewForProtocol,
   validateFreezeReviewCaseManifest,
   validateFreezeTransition,
   validateM2ReadyForFreeze,
@@ -290,6 +291,7 @@ describe('evaluation freeze gates', () => {
       referenceOracleComplete: true,
       llmBaselineComplete: true,
       independentReviewStatus: 'COMPLETE',
+      experimentReady: true,
       m2Complete: true,
     });
     expect(deriveM2Completion({ ...evidence, reviewGateStatus: 'PENDING' }).m2Complete).toBe(false);
@@ -473,6 +475,157 @@ describe('evaluation freeze gates', () => {
     });
   });
 
+  it('accepts disclosed AI rationale only under explicit solo mode and keeps artifact bindings', () => {
+    const valid = validLlmGateInput();
+    const ai = {
+      ...valid.rationaleReview,
+      protocolVersion: '0.2',
+      reviewMode: 'SOLO_AI_ASSISTED',
+      status: 'COMPLETE_AI_ASSISTED',
+      reviewerType: 'AI',
+      independenceAttestation: false,
+      finalAuthorApproval: 'PENDING',
+    };
+    expect(evaluateLlmBaselineGate({ ...valid, rationaleReview: ai }).rationaleReview.status).toBe(
+      'PENDING',
+    );
+    const soloInput = { ...valid, reviewMode: 'SOLO_AI_ASSISTED' as const, rationaleReview: ai };
+    expect(evaluateLlmBaselineGate(soloInput).rationaleReview).toMatchObject({
+      status: 'COMPLETE_AI_ASSISTED',
+      reviewerType: 'AI',
+      independenceAttestation: false,
+      blockers: [],
+    });
+    for (const change of [
+      { independenceAttestation: true },
+      { reviewerType: 'HUMAN' },
+      { finalAuthorApproval: 'APPROVED' },
+      { resultSha256: 'f'.repeat(64) },
+      { cases: ai.cases.slice(1) },
+    ]) {
+      expect(
+        evaluateLlmBaselineGate({ ...soloInput, rationaleReview: { ...ai, ...change } })
+          .rationaleReview.status,
+      ).toBe('PENDING');
+    }
+  });
+
+  it('requires explicit solo mode for AI freeze review without claiming human approval', () => {
+    const review = {
+      ...approvedReview,
+      schemaVersion: '0.3',
+      reviewMode: 'SOLO_AI_ASSISTED',
+      status: 'COMPLETE_AI_ASSISTED',
+      reviewerType: 'AI',
+      independenceAttestation: false,
+      finalAuthorApproval: 'PENDING',
+      independentHumanReviewClaim: false,
+    };
+    expect(() => validateApprovedFreezeReview(review, head, tree)).toThrow();
+    expect(() => validateFreezeReviewForProtocol(review, head, tree)).toThrow();
+    expect(validateFreezeReviewForProtocol(review, head, tree, 'SOLO_AI_ASSISTED')).toMatchObject({
+      reviewerType: 'AI',
+      finalAuthorApproval: 'PENDING',
+      independenceAttestation: false,
+    });
+    for (const change of [
+      { reviewedCommit: 'd'.repeat(40) },
+      { independenceAttestation: true },
+      { finalAuthorApproval: 'APPROVED' },
+      { dryRunCases: 19 },
+    ]) {
+      expect(() =>
+        validateFreezeReviewForProtocol({ ...review, ...change }, head, tree, 'SOLO_AI_ASSISTED'),
+      ).toThrow();
+    }
+    expect(() =>
+      validateFreezeReviewForProtocol(approvedReview, head, tree, 'SOLO_AI_ASSISTED'),
+    ).toThrow();
+  });
+
+  it('permits solo reproducibility experiments while keeping M2 and human approval pending', () => {
+    const validation = {
+      ...completedM2,
+      m2Complete: false,
+      experimentReady: true,
+      independentReviewStatus: 'PENDING',
+      reviewProtocol: {
+        schemaVersion: '0.1',
+        mode: 'SOLO_AI_ASSISTED',
+        finalAuthorApproval: 'PENDING',
+        independentHumanReviewClaim: false,
+      },
+      independentReviewEvidence: {
+        recordStatus: 'PENDING',
+        submissionCount: 0,
+        blockers: ['missing'],
+      },
+      aiAssistedReviewEvidence: {
+        recordStatus: 'COMPLETE_AI_ASSISTED',
+        reviewerType: 'AI',
+        independenceAttestation: false,
+        independentHumanReviewClaim: false,
+        finalAuthorApproval: 'PENDING',
+        scope: 'CONTRACT_CONDITIONED_REPRODUCIBILITY',
+        submissionCount: 1,
+        submissionSha256: sha,
+        caseCount: 20,
+        blockers: [],
+      },
+      llmBaselineEvidence: {
+        ...completedLlmBaselineEvidence,
+        rationaleReviewPath: 'experiments/configs/baselines/llm-verifier-20-ai-review-v0.4.0.json',
+        rationaleReview: {
+          ...completedLlmBaselineEvidence.rationaleReview,
+          status: 'COMPLETE_AI_ASSISTED',
+          reviewerType: 'AI',
+          independenceAttestation: false,
+        },
+      },
+    };
+    expect(() => validateM2ReadyForFreeze(validation)).toThrow();
+    expect(validateM2ReadyForFreeze(validation, 'SOLO_AI_ASSISTED')).toMatchObject({
+      experimentReady: true,
+      m2Complete: false,
+      independentReviewStatus: 'PENDING',
+    });
+    for (const change of [
+      { reviewProtocol: undefined },
+      { experimentReady: false },
+      { m2Complete: true },
+      { syntheticReferenceDisagreementCount: 1 },
+      { executedBaseCount: 79 },
+      {
+        aiAssistedReviewEvidence: {
+          ...validation.aiAssistedReviewEvidence,
+          submissionSha256: null,
+        },
+      },
+      { aiAssistedReviewEvidence: { ...validation.aiAssistedReviewEvidence, caseCount: 19 } },
+    ]) {
+      expect(() =>
+        validateM2ReadyForFreeze({ ...validation, ...change }, 'SOLO_AI_ASSISTED'),
+      ).toThrow();
+    }
+    expect(() => validateM2ReadyForFreeze(completedM2, 'SOLO_AI_ASSISTED')).toThrow();
+    const derived = deriveM2Completion({
+      ...completedM2,
+      reviewMode: 'SOLO_AI_ASSISTED',
+      aiBenchmarkReviewStatus: 'COMPLETE_AI_ASSISTED',
+      finalAuthorApproval: 'PENDING',
+      executionEvidenceStatus: 'CLEAN_COMMITTED_CANDIDATE',
+      baseReferenceLabelDisagreementCount: 0,
+      reviewGateStatus: 'PENDING',
+      llmBaselineRunStatus: 'COMPLETE',
+      llmRationaleReviewStatus: 'COMPLETE_AI_ASSISTED',
+    });
+    expect(derived).toMatchObject({
+      experimentReady: true,
+      m2Complete: false,
+      independentReviewStatus: 'PENDING',
+    });
+  });
+
   it('requires real human approval for the exact candidate and at least twenty dry runs', () => {
     expect(validateApprovedFreezeReview(approvedReview, head, tree)).toMatchObject({
       status: 'APPROVED',
@@ -607,6 +760,12 @@ describe('evaluation freeze gates', () => {
 
   it('requires complete clean M2 execution and complete independent review', () => {
     expect(validateM2ReadyForFreeze(completedM2)).toMatchObject({ m2Complete: true });
+    expect(
+      validateM2ReadyForFreeze({
+        ...completedM2,
+        reviewProtocol: { schemaVersion: '0.1', mode: 'DUAL_HUMAN' },
+      }),
+    ).toMatchObject({ m2Complete: true });
     expect(() =>
       validateM2ReadyForFreeze({ ...completedM2, independentReviewStatus: 'PENDING' }),
     ).toThrow('M2 is not freeze-ready');
@@ -669,7 +828,7 @@ describe('evaluation freeze gates', () => {
       readFileSync('experiments/configs/freeze-review.template.json', 'utf8'),
     );
     expect(() => validateM2ReadyForFreeze(currentM2)).toThrow();
-    expect(FreezeReviewRecordSchema.parse(reviewTemplate)).toMatchObject({
+    expect(AnyFreezeReviewRecordSchema.parse(reviewTemplate)).toMatchObject({
       status: 'PENDING',
       dryRunCases: 0,
     });
