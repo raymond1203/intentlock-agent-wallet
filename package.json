@@ -50,7 +50,7 @@
     "submission:audit": "pnpm run build && node dist/scripts/audit-submission.js"
   },
   "dependencies": {
-    "viem": "2.55.16",
+    "viem": "2.56.2",
     "yaml": "2.8.1",
     "zod": "4.4.3"
   },
