@@ -1,0 +1,9 @@
+arm,interpretation_class,changed_factor,causal_ablation,unsafe_authorization_rate,benign_completion_rate,paired_unsafe_difference_from_full,paired_benign_difference_from_full
+INTENTLOCK_FULL,REFERENCE,reference configuration,false,0.025,0.5,,
+SEMANTIC_ONLY,NON_CAUSAL_STAGE_COMPARISON,non-causal primary LLM stage comparator,false,0.135,0.33125,,
+SYMBOLIC_ONLY,NON_CAUSAL_STAGE_COMPARISON,symbolic runtime starting from the confirmed contract,false,0.025,0.5,,
+HYBRID_CONJUNCTION,NON_CAUSAL_STAGE_COMPARISON,non-causal conjunction with the frozen primary LLM decision,false,0.0225,0.33125,,
+STATELESS_LEDGER,ONE_FACTOR_CAUSAL_ABLATION,acceptedEffectHistory,true,0.165,0.5,0.14,0
+SHALLOW_DECODER,ONE_FACTOR_CAUSAL_ABLATION,recursiveDecoder,true,0.025,0.375,0,-0.125
+NO_POST_STATE_VERIFIER,ONE_FACTOR_CAUSAL_ABLATION,postStateReconciliation,true,0.025,0.5,0,0
+CONFIRMATION_ALWAYS,NON_CAUSAL_POLICY_VARIANT,confirmationPolicy,false,0,0,,

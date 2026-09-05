@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img">
+<title>Offline security–utility comparison</title>
+<metadata>IntentLock run primary-solo-v0.4.0-01</metadata>
+<rect width="900" height="560" fill="#ffffff"/>
+<g font-family="sans-serif" font-size="12" fill="#243240">
+<text x="28" y="38" font-size="22" font-weight="700">Offline security–utility comparison</text>
+<text x="28" y="64" font-size="12" fill="#596674">Authored contract-conditioned replay; points and grouped-bootstrap 95% intervals</text>
+<text x="335" y="106" text-anchor="middle" font-weight="700">Unsafe authorization (lower is better)</text>
+<text x="725" y="106" text-anchor="middle" font-weight="700">Benign completion (higher is better)</text>
+<text x="335" y="125" text-anchor="middle" font-size="11" fill="#596674">Denominator: all selected cases</text>
+<text x="725" y="125" text-anchor="middle" font-size="11" fill="#596674">Denominator: benign selected cases</text>
+<line x1="210" y1="136" x2="210" y2="466" stroke="#e5e9ee"/>
+<text x="210" y="487" text-anchor="middle" font-size="11">0.0%</text>
+<line x1="272.5" y1="136" x2="272.5" y2="466" stroke="#e5e9ee"/>
+<text x="272.5" y="487" text-anchor="middle" font-size="11">25.0%</text>
+<line x1="335" y1="136" x2="335" y2="466" stroke="#e5e9ee"/>
+<text x="335" y="487" text-anchor="middle" font-size="11">50.0%</text>
+<line x1="397.5" y1="136" x2="397.5" y2="466" stroke="#e5e9ee"/>
+<text x="397.5" y="487" text-anchor="middle" font-size="11">75.0%</text>
+<line x1="460" y1="136" x2="460" y2="466" stroke="#e5e9ee"/>
+<text x="460" y="487" text-anchor="middle" font-size="11">100.0%</text>
+<line x1="210" y1="466" x2="460" y2="466" stroke="#243240"/>
+<line x1="600" y1="136" x2="600" y2="466" stroke="#e5e9ee"/>
+<text x="600" y="487" text-anchor="middle" font-size="11">0.0%</text>
+<line x1="662.5" y1="136" x2="662.5" y2="466" stroke="#e5e9ee"/>
+<text x="662.5" y="487" text-anchor="middle" font-size="11">25.0%</text>
+<line x1="725" y1="136" x2="725" y2="466" stroke="#e5e9ee"/>
+<text x="725" y="487" text-anchor="middle" font-size="11">50.0%</text>
+<line x1="787.5" y1="136" x2="787.5" y2="466" stroke="#e5e9ee"/>
+<text x="787.5" y="487" text-anchor="middle" font-size="11">75.0%</text>
+<line x1="850" y1="136" x2="850" y2="466" stroke="#e5e9ee"/>
+<text x="850" y="487" text-anchor="middle" font-size="11">100.0%</text>
+<line x1="600" y1="466" x2="850" y2="466" stroke="#243240"/>
+<text x="28" y="167" font-size="13" font-weight="700">GUARD_MODE</text>
+<g data-system="GUARD_MODE" data-metric="unsafe authorization" data-value="0.2325">
+<title>GUARD_MODE: unsafe authorization 23.3% (93/400), 95% interval 22.0% to 24.5%</title>
+<line x1="265" y1="163" x2="271.25" y2="163" stroke="#174f78" stroke-width="2"/>
+<line x1="265" y1="158" x2="265" y2="168" stroke="#174f78" stroke-width="2"/>
+<line x1="271.25" y1="158" x2="271.25" y2="168" stroke="#174f78" stroke-width="2"/>
+<circle cx="268.125" cy="163" r="5" fill="#2878b5" stroke="#174f78" stroke-width="2"/>
+<text x="335" y="187" text-anchor="middle" font-family="monospace">23.3% (93/400)</text>
+</g>
+<g data-system="GUARD_MODE" data-metric="benign completion" data-value="0.5">
+<title>GUARD_MODE: benign completion 50.0% (80/160), 95% interval 50.0% to 50.0%</title>
+<line x1="725" y1="163" x2="725" y2="163" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="158" x2="725" y2="168" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="158" x2="725" y2="168" stroke="#174f78" stroke-width="2"/>
+<circle cx="725" cy="163" r="5" fill="#ffffff" stroke="#174f78" stroke-width="2"/>
+<text x="725" y="187" text-anchor="middle" font-family="monospace">50.0% (80/160)</text>
+</g>
+<text x="28" y="232" font-size="13" font-weight="700">INTENTLOCK</text>
+<g data-system="INTENTLOCK" data-metric="unsafe authorization" data-value="0.025">
+<title>INTENTLOCK: unsafe authorization 2.5% (10/400), 95% interval 2.5% to 2.5%</title>
+<line x1="216.25" y1="228" x2="216.25" y2="228" stroke="#174f78" stroke-width="2"/>
+<line x1="216.25" y1="223" x2="216.25" y2="233" stroke="#174f78" stroke-width="2"/>
+<line x1="216.25" y1="223" x2="216.25" y2="233" stroke="#174f78" stroke-width="2"/>
+<circle cx="216.25" cy="228" r="5" fill="#2878b5" stroke="#174f78" stroke-width="2"/>
+<text x="335" y="252" text-anchor="middle" font-family="monospace">2.5% (10/400)</text>
+</g>
+<g data-system="INTENTLOCK" data-metric="benign completion" data-value="0.5">
+<title>INTENTLOCK: benign completion 50.0% (80/160), 95% interval 50.0% to 50.0%</title>
+<line x1="725" y1="228" x2="725" y2="228" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="223" x2="725" y2="233" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="223" x2="725" y2="233" stroke="#174f78" stroke-width="2"/>
+<circle cx="725" cy="228" r="5" fill="#ffffff" stroke="#174f78" stroke-width="2"/>
+<text x="725" y="252" text-anchor="middle" font-family="monospace">50.0% (80/160)</text>
+</g>
+<text x="28" y="297" font-size="13" font-weight="700">LLM_VERIFIER</text>
+<g data-system="LLM_VERIFIER" data-metric="unsafe authorization" data-value="0.135">
+<title>LLM_VERIFIER: unsafe authorization 13.5% (54/400), 95% interval 11.5% to 15.5%</title>
+<line x1="238.75" y1="293" x2="248.75" y2="293" stroke="#174f78" stroke-width="2"/>
+<line x1="238.75" y1="288" x2="238.75" y2="298" stroke="#174f78" stroke-width="2"/>
+<line x1="248.75" y1="288" x2="248.75" y2="298" stroke="#174f78" stroke-width="2"/>
+<circle cx="243.75" cy="293" r="5" fill="#2878b5" stroke="#174f78" stroke-width="2"/>
+<text x="335" y="317" text-anchor="middle" font-family="monospace">13.5% (54/400)</text>
+</g>
+<g data-system="LLM_VERIFIER" data-metric="benign completion" data-value="0.33125">
+<title>LLM_VERIFIER: benign completion 33.1% (53/160), 95% interval 29.4% to 36.9%</title>
+<line x1="673.4375" y1="293" x2="692.1875" y2="293" stroke="#174f78" stroke-width="2"/>
+<line x1="673.4375" y1="288" x2="673.4375" y2="298" stroke="#174f78" stroke-width="2"/>
+<line x1="692.1875" y1="288" x2="692.1875" y2="298" stroke="#174f78" stroke-width="2"/>
+<circle cx="682.8125" cy="293" r="5" fill="#ffffff" stroke="#174f78" stroke-width="2"/>
+<text x="725" y="317" text-anchor="middle" font-family="monospace">33.1% (53/160)</text>
+</g>
+<text x="28" y="362" font-size="13" font-weight="700">NONE</text>
+<g data-system="NONE" data-metric="unsafe authorization" data-value="0.6">
+<title>NONE: unsafe authorization 60.0% (240/400), 95% interval 60.0% to 60.0%</title>
+<line x1="360" y1="358" x2="360" y2="358" stroke="#174f78" stroke-width="2"/>
+<line x1="360" y1="353" x2="360" y2="363" stroke="#174f78" stroke-width="2"/>
+<line x1="360" y1="353" x2="360" y2="363" stroke="#174f78" stroke-width="2"/>
+<circle cx="360" cy="358" r="5" fill="#2878b5" stroke="#174f78" stroke-width="2"/>
+<text x="335" y="382" text-anchor="middle" font-family="monospace">60.0% (240/400)</text>
+</g>
+<g data-system="NONE" data-metric="benign completion" data-value="0.5">
+<title>NONE: benign completion 50.0% (80/160), 95% interval 50.0% to 50.0%</title>
+<line x1="725" y1="358" x2="725" y2="358" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="353" x2="725" y2="363" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="353" x2="725" y2="363" stroke="#174f78" stroke-width="2"/>
+<circle cx="725" cy="358" r="5" fill="#ffffff" stroke="#174f78" stroke-width="2"/>
+<text x="725" y="382" text-anchor="middle" font-family="monospace">50.0% (80/160)</text>
+</g>
+<text x="28" y="427" font-size="13" font-weight="700">PER_CALL_POLICY</text>
+<g data-system="PER_CALL_POLICY" data-metric="unsafe authorization" data-value="0.165">
+<title>PER_CALL_POLICY: unsafe authorization 16.5% (66/400), 95% interval 15.8% to 17.3%</title>
+<line x1="249.375" y1="423" x2="253.125" y2="423" stroke="#174f78" stroke-width="2"/>
+<line x1="249.375" y1="418" x2="249.375" y2="428" stroke="#174f78" stroke-width="2"/>
+<line x1="253.125" y1="418" x2="253.125" y2="428" stroke="#174f78" stroke-width="2"/>
+<circle cx="251.25" cy="423" r="5" fill="#2878b5" stroke="#174f78" stroke-width="2"/>
+<text x="335" y="447" text-anchor="middle" font-family="monospace">16.5% (66/400)</text>
+</g>
+<g data-system="PER_CALL_POLICY" data-metric="benign completion" data-value="0.5">
+<title>PER_CALL_POLICY: benign completion 50.0% (80/160), 95% interval 50.0% to 50.0%</title>
+<line x1="725" y1="423" x2="725" y2="423" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="418" x2="725" y2="428" stroke="#174f78" stroke-width="2"/>
+<line x1="725" y1="418" x2="725" y2="428" stroke="#174f78" stroke-width="2"/>
+<circle cx="725" cy="423" r="5" fill="#ffffff" stroke="#174f78" stroke-width="2"/>
+<text x="725" y="447" text-anchor="middle" font-family="monospace">50.0% (80/160)</text>
+</g>
+<text x="28" y="517" font-size="12" fill="#596674">Exact counts below each mark. Separate rows preserve ties; unavailable is not zero.</text>
+<text x="450" y="545" text-anchor="middle" font-size="11" fill="#596674">run primary-solo-v0.4.0-01</text>
+</g>
+</svg>

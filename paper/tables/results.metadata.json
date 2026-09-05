@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "0.2",
+  "generatedAt": "2026-09-04T23:59:48.687Z",
+  "analysisCommit": "919c896a2f46932299ac3643d8448e9fa046818a",
+  "workingTreeDirtyAtStart": false,
+  "reviewProtocol": {
+    "schemaVersion": "0.1",
+    "mode": "SOLO_AI_ASSISTED",
+    "independentHumanReviewClaim": false,
+    "finalAuthorApproval": "PENDING"
+  },
+  "freeze": {
+    "reviewedSourceCommit": "89c742e953c8251ba4de78939648b5c7d566b9f3",
+    "freezeCommit": "58b36e2cbd490813b4ffc848f3ea126c94c7e4b3",
+    "freezeDigests": {
+      "dependencyDigestSha256": "937ea5e8d6c5a86d1a9c47f83fc517074007ad571284f091b17746aaefc5d536",
+      "datasetDigestSha256": "16c0de0b9bfc2e54dd5ef8eb606da210944e41c95d2f304e2348e7f00b325869",
+      "caseManifestDigestSha256": "373b9fc819f013f9fb3affea0c9388b6d81c16ae1abbc7f967ecabfe9bf51c48",
+      "promptDigestSha256": "ebca441c2178f7300045b7b338e7a6f839dff8ac01096ee44469cb845bdd0113",
+      "toolSchemaDigestSha256": "6567f5277bbfc0a16ecc6a96efe1fb132a42a16a4c12140f2feca64e975ea42a",
+      "metricImplementationDigestSha256": "6f3131261db5ec064670ef76e02c5e84d6aa20cfd60f11a183bb96ed1e7331e1",
+      "protocolConfigDigestSha256": "d06139264d6c17f472b4fbbc3bdb901c3e91903d1244b4bc73c846b11321479b",
+      "evaluationConfigDigestSha256": "7404593dd1a2f2c13f52a2f27c0baca2bf4b9a8ccf8e74e9a26528d6ea9e29c6",
+      "implementationDigestSha256": "b90bb0a548a50cce492da6d4c70bfe845d22e50009df0e6edfcd7d1fb3fd3ef6"
+    },
+    "review": {
+      "reviewerPseudonym": "codex-ai-freeze-review",
+      "reviewPath": "experiments/reviews/freeze-review.ai-v0.4.0.json",
+      "reviewDigestSha256": "cd615b5a620db789315d5544591307664d86d7e24f9ba766ae1ababe0adffa3c",
+      "reviewerType": "AI"
+    },
+    "aiReviewDigestSha256": "cd615b5a620db789315d5544591307664d86d7e24f9ba766ae1ababe0adffa3c"
+  },
+  "primary": {
+    "runId": "primary-solo-v0.4.0-01",
+    "selectedRecords": 2000,
+    "rawAttempts": 2092,
+    "manifestSha256": "107c96dc659da26a23aa30bdee5d51a78245a473a62e789034f0666d2c6609d4",
+    "rawSha256": "df0c34c093e02c424f6249b69088a506b611e6fbcc5239eca2d21341d54cb2de",
+    "selectedResultsSha256": "03e9c50b91fe5499f2c1d8e602462fe14340bdc5c0bbafaea2c6504d763f975a",
+    "executionCommit": "58b36e2cbd490813b4ffc848f3ea126c94c7e4b3",
+    "evidenceMode": "OFFLINE_COUNTERFACTUAL_REPLAY",
+    "attemptProvenance": {
+      "selectionPolicy": "attempt-1-intention-to-treat-retries-operational-sensitivity-only",
+      "rawAttempts": 2092,
+      "selectedRecords": 2000,
+      "retryAttempts": 92,
+      "failedAttempts": 139,
+      "timedOutAttempts": 0,
+      "unsupportedAttempts": 131,
+      "casesWithRetries": 92,
+      "primaryAttemptFailures": 92,
+      "operationalRecoverySuccesses": 45,
+      "maxAttemptsObserved": 2,
+      "maxAttemptsPerCase": 2,
+      "maxTotalRetryAttempts": 2000
+    }
+  },
+  "ablation": {
+    "runId": "primary-solo-v0.4.0-01-ablations",
+    "records": 3200,
+    "manifestSha256": "8342ab60977f82d76e909c619c099942496d77bd3f534e3dd135a04395a6097b",
+    "rawSha256": "c0fb3398e91d2b6a70e47d30a0f26551f669aa8b7c38059fd3654c10e87ca3f6",
+    "summarySha256": "e64dbd6ab4697e80fe328ecd29342beb044e6c98c0f75cb22e3c4725094f5e34",
+    "executionCommit": "cc3bc220f39add0ad816a74c968bfcd59df08685",
+    "referenceParityVerified": true,
+    "stageComparisonsCausal": false,
+    "oneFactorCausalAblations": [
+      "STATELESS_LEDGER",
+      "SHALLOW_DECODER",
+      "NO_POST_STATE_VERIFIER"
+    ]
+  },
+  "adaptive": {
+    "runId": "adaptive-solo-v0.4.0-01",
+    "episodes": 40,
+    "manifestSha256": "a5e0b47d7d4f0e7cea561ec144dd555c6794aaa74fe194217dbe2d8f16320d59",
+    "episodesSha256": "b0c1b4c1701df35f201d8cb1a2a2f15d5ec944975712541dc091bfcace7ee86b",
+    "comparisonSha256": "e59856c02ace148d2ee32e7639af10e8e05c42aa468a39bec8aec10fe699ddf9",
+    "summarySha256": "3e559322966983d31bbc202bdd72c473d0be6d696c246f1d43df5526c7defad7",
+    "pendingHumanReviewPacketSha256": "07ef5c5b4f0306d4132eea13ca65f79fe29c0c9b16a4c949808d1dc86465aded",
+    "executionCommit": "cc3bc220f39add0ad816a74c968bfcd59df08685",
+    "comparisonDesign": "NON_PAIRED_NON_CAUSAL",
+    "claimScope": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY",
+    "causalComparison": false,
+    "equivalentCases": false,
+    "modelAdaptiveEvidence": false,
+    "forkExecutionEvidence": false
+  }
+}

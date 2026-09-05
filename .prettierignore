@@ -2,4 +2,7 @@ coverage/
 dist/
 benchmark/evidence/raw/
 experiments/results/
+# Generator-owned, hash-bound publication artifacts: regenerate, never reformat in place.
+paper/tables/
+paper/final.md
 package-lock.json

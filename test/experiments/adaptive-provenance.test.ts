@@ -151,7 +151,19 @@ describe('adaptive run provenance gates', () => {
   });
 
   it('rejects candidate/unfrozen evaluation and ablation inputs', () => {
-    expect(() => validateJointAdaptiveFreeze(candidateEvaluation, candidateAblation)).toThrow();
+    const frozen = frozenInputs();
+    expect(() =>
+      validateJointAdaptiveFreeze(
+        { ...candidateEvaluation, status: 'CANDIDATE_UNFROZEN' },
+        frozen.ablation,
+      ),
+    ).toThrow();
+    expect(() =>
+      validateJointAdaptiveFreeze(frozen.evaluation, {
+        ...candidateAblation,
+        status: 'CANDIDATE_UNFROZEN',
+      }),
+    ).toThrow();
   });
 
   it('requires the two manifests to carry the same human-reviewed freeze envelope', () => {
