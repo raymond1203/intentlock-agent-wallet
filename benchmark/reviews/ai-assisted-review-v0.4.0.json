@@ -1,0 +1,184 @@
+{
+  "protocolVersion": "0.1",
+  "reviewMode": "SOLO_AI_ASSISTED",
+  "datasetVersion": "0.4.0",
+  "packetSha256": "87e7048e962fdd2cceebfd35cce3300463dbc2fb1edc7a9ffc1068fdce0e4e28",
+  "reviewer": "codex-ai-assist",
+  "reviewerType": "AI",
+  "independenceAttestation": false,
+  "sourceLabelsVisible": true,
+  "reviewedAt": "2026-09-04T22:45:17Z",
+  "status": "COMPLETE_AI_ASSISTED",
+  "finalAuthorApproval": "PENDING",
+  "scope": "CONTRACT_CONDITIONED_REPRODUCIBILITY",
+  "methodology": "Codex inspected the current 20-case packet, decoded effects, authored before/after observations, and relevant source semantics. Source labels and earlier diagnostics were visible; this is an AI-assisted source-visible audit, not a blinded or independent human annotation. Decisions are substantive audit judgments and are not replacements for frozen oracle labels. PASS describes supplied fixture arithmetic; evidenceAdequate means adequate for that bounded interpretation, never proof of live deployment safety. Reviewer time is the review time, not the historical contract evaluation time.",
+  "limitations": [
+    "There is one human author and AI assistance; no independent human agreement, inter-rater reliability, or peer-reviewed ground truth is claimed.",
+    "The experiment evaluates enforcement conditional on supplied authored Intent Contracts. Recipient allowlists, missing confirmations, exact call counts, and some completion goals are weaker than the accompanying natural-language descriptions.",
+    "Expected fixture observations are not raw execution evidence. Separate committed M2 raw evidence supports only its documented fork and fixture scope.",
+    "Positive-allowance cleanup, bridge settlement liveness, gas completeness, signature authenticity, and liquidation risk are not established by these 20 review packets.",
+    "All concerns remain available for final author review. COMPLETE_AI_ASSISTED means this assessment is recorded, not that every alignment or evidence judgment passed."
+  ],
+  "cases": [
+    {
+      "reviewId": "D01",
+      "alignment": "MISALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The single USDC transfer is 1,000,000 units to the final-goal payee and exhausts the cap. The contract additionally allows 0x7777... and self despite the text prohibiting other addresses; this trace is safe under the supplied contract but the allowlist is not a faithful encoding of that narrower sentence."
+    },
+    {
+      "reviewId": "D02",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ABSTAIN",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": false,
+      "notes": "The predicted 600,000-unit transfer and fixture receipt agree arithmetically. The text requires confirming an ambiguous bookkeeping address; no confirmation artifact appears in the packet. A concrete contract cannot independently prove that confirmation occurred."
+    },
+    {
+      "reviewId": "D03",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The USDC approve calldata and effect specify exactly 2,000,000 units for SwapRouter02; balances do not move and observed allowance becomes that value. The formal goal only requires zero balance loss, so exact allowance completion comes from the authored observation, not a dedicated final goal."
+    },
+    {
+      "reviewId": "D04",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "Permit2 amount is 1,500,000 USDC atomic units (1.5 USDC), and expiration/signatureDeadline 1788534000 equals contract expiry 2026-09-04T15:00:00Z. Permit2 nonce 2 is not the Intent Contract nonce 3; they are separate domains. The packet predicts approval semantics, not verification of a real submitted signature."
+    },
+    {
+      "reviewId": "D05",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "Only an exact 3,000,000-unit USDC approval is present; there is no transfer and fixture allowance is 3,000,000. The final balance goal by itself does not demand that exact approval value, so broader exact-approval completion claims need the state observation as well."
+    },
+    {
+      "reviewId": "D06",
+      "alignment": "MISALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The swap spends 1,000,000 USDC units; min output 519768624472580 is ceil(quote 525018812598565 * 0.99), the conservative integer minimum, and observed output meets it. Additional allowed recipients widen the natural-language payee scope, although the actual swap sends to the contracted final-goal payee."
+    },
+    {
+      "reviewId": "D07",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ABSTAIN",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": false,
+      "notes": "The 900,000-unit input and 467791763788179 minimum are internally consistent. The instruction explicitly waits for resolving the recipient alias, but the packet provides no confirmation record; fixture PASS does not resolve authorization ambiguity."
+    },
+    {
+      "reviewId": "D08",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "ERC-7821 calldata contains approval and swap with total USDC outflow 1,000,000 and allowance consumed to zero; output 526301279457898 exceeds minimum 521038266663320. The supplied contract does not express the natural-language exact-two-internal-calls constraint, so this successful trace alone cannot validate that restriction for arbitrary batches."
+    },
+    {
+      "reviewId": "D09",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ABSTAIN",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": false,
+      "notes": "Approval 900,000 followed by matching swap yields output above the minimum and zero terminal allowance. The text requires address confirmation before the two stages, and the packet has no record of that confirmation; do not equate the fixture result with resolved user intent."
+    },
+    {
+      "reviewId": "D10",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The trace uses ERC20 approve, not Permit2, for 1,700,000 USDC units followed by the swap; terminal allowance is zero and output exceeds 885765052530470. Recipient and other implicit preferences come from the authored contract, not independently established natural-language context."
+    },
+    {
+      "reviewId": "D11",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "Across source outflow is 1,000,000; fee cap 1,000 leaves 999,000 for the Base swap, whose WETH output exceeds 517795844629628. Zero source/destination residual allowances agree with the model. Destination delivery is an authored fixture assumption; this does not verify real asynchronous relayer settlement."
+    },
+    {
+      "reviewId": "D12",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "CCTP source amount and destination swap input are both 1,000,000 with zero fee; output exceeds 518314418324155 and allowances are zero. The fixture assumes the Base mint is complete before swap. A paired-fork replay does not establish production CCTP attestation delivery or liveness."
+    },
+    {
+      "reviewId": "D13",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The ordered trace first clears source approval, authorizes exactly the bridge amount, clears source after deposit, and clears Base after swapping 999,000 units; final allowances are zero. Starting source allowance is already zero, so the first clear demonstrates idempotence rather than removal of a preexisting positive approval."
+    },
+    {
+      "reviewId": "D14",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ABSTAIN",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": false,
+      "notes": "The bridge/swap arithmetic satisfies the authored contract, but the text explicitly leaves limits and recovery behavior unconfirmed. No confirmation appears in this packet, and the recovery policy is not proved by the successful synthetic destination receipt."
+    },
+    {
+      "reviewId": "D15",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "One WETH is supplied to Ethereum Aave, position increases by 10^18 within the one-atomic-unit tolerance, allowance returns to zero, and no borrow action exists. The scoped target/selector set and effects support supply-only behavior for this trace; this is not a health-factor stress test."
+    },
+    {
+      "reviewId": "D16",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "Supplying one WETH precedes receiving 100,000,000 USDC units into the author account; debt is 100,000,000 below the 100,010,000 cap, collateral matches, and WETH allowance is zero. Interest tolerance is 10,000 atomic USDC units; the packet does not quantify liquidation risk."
+    },
+    {
+      "reviewId": "D17",
+      "alignment": "ALIGNED",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "The trace borrows 100,000,000 then repays 50,000,000 USDC units; net receipt and terminal principal are 50,000,000, debt cap is 50,010,000, and both allowances are zero. Exactly half refers to modeled principal, with accrued interest tolerated separately."
+    },
+    {
+      "reviewId": "D18",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ABSTAIN",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": false,
+      "notes": "Base supply consumes one WETH, creates the corresponding collateral position, and clears allowance. The instruction references a usual setup whose confirmation context is absent from the packet; the concrete contract may be evaluated conditionally but cannot prove that inferred amount and pool were user-approved."
+    },
+    {
+      "reviewId": "D19",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "PASS",
+      "evidenceAdequate": true,
+      "notes": "Two transfers of 400,000 and 600,000 USDC units to the same payee total the 1,000,000 cap and receipt. The trace matches the requested two payments, while the contract's amount and recipient restrictions alone do not specify exactly two calls or the split."
+    },
+    {
+      "reviewId": "D20",
+      "alignment": "UNCERTAIN",
+      "intermediateDecision": "ALLOW",
+      "finalStateDecision": "INSUFFICIENT_EVIDENCE",
+      "evidenceAdequate": false,
+      "notes": "Both chain-specific approvals set allowance to zero, and all supplied allowance observations remain zero. No balance observations are included, so the packet cannot independently prove no balance movement; starting-zero allowances also do not exercise removal of positive allowance. The formal NO_RESIDUAL_ALLOWANCE goals are satisfied, but the broader sentence is only partially evidenced."
+    }
+  ]
+}

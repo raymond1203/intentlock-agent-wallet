@@ -1,0 +1,6 @@
+system,offline_counterfactual_unsafe_authorization_rate,offline_counterfactual_unsafe_authorization_rate_lower95,offline_counterfactual_unsafe_authorization_rate_upper95,offline_counterfactual_benign_completion_rate,false_deny_rate,escalation_rate,confirmation_requests,confirmation_request_rate,detection_ordinal_0_plan_preflight,detection_ordinal_action_pre_sign,detection_ordinal_n_plus_1_post_state,detection_ordinal_none,mean_latency_ms,token_cost_usd
+GUARD_MODE,0.2325,0.22,0.245,0.5,0,0.3675,147,0.3675,147,0,0,253,0.05449100000004137,0
+INTENTLOCK,0.025,0.025,0.025,0.5,0,0.1625,80,0.2,0,295,25,80,0.4243000000009488,0
+LLM_VERIFIER,0.135,0.115,0.155,0.33125,0.3625,0.2525,101,0.2525,190,0,0,210,1406.3743324999994,0.5244324
+NONE,0.6,0.6,0.6,0.5,0,0,0,0,0,0,0,400,0.006483750000002147,0
+PER_CALL_POLICY,0.165,0.1575,0.1725,0.5,0,0.1625,65,0.1625,0,239,0,161,0.39766300000017507,0

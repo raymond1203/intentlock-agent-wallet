@@ -1,0 +1,364 @@
+{
+  "schemaVersion": "0.1",
+  "id": "BA-09",
+  "version": 1,
+  "title": "Split the payout across Ethereum and Base, staying within separate chain budgets.",
+  "workflow": "BATCH_RECOVERY",
+  "class": "BASE",
+  "split": "HIDDEN_TEST",
+  "provenance": {
+    "kind": "CURATED",
+    "sources": [
+      "https://github.com/across-protocol/contracts",
+      "https://github.com/circlefin/evm-cctp-contracts",
+      "https://github.com/aave-dao/aave-v3-origin"
+    ]
+  },
+  "fixture": {
+    "manifest": "benchmark/fixtures/manifest.json",
+    "chains": [
+      {
+        "chainId": 1,
+        "blockNumber": 25773000,
+        "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+        "contracts": [
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "codehash": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505"
+          },
+          {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "codehash": "0xd0a06b12ac47863b5c7be4185c2deaad1c61557033f56c7d4ea74429cbb25e23"
+          },
+          {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "codehash": "0xb44fb4e949d0f78f87f79ee46428f23a2a5713ce6fc6e0beb3dda78c2ac1ea55"
+          },
+          {
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "codehash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131"
+          },
+          {
+            "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "codehash": "0x4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69"
+          },
+          {
+            "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "codehash": "0x6ec798e80f3a19de650826338677604e54d6664f44a33b53a20b22b1939f402e"
+          },
+          {
+            "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+            "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4"
+          },
+          {
+            "address": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "codehash": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679"
+          },
+          {
+            "address": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+            "codehash": "0x0f8c7f9c735ac0f3f35b1e78882a617380549def43faeca0d959d5aadd81dee4"
+          },
+          {
+            "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75"
+          },
+          {
+            "address": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+            "codehash": "0x519000e819bce41995ccfafc20054ce0a10164f3ac63298076a5efe416f7b484"
+          },
+          {
+            "address": "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81",
+            "codehash": "0xb361aef8f4fefcde94ca68db3301fe0d35aec649573daa8048a10b7dac6c9e1d"
+          }
+        ]
+      },
+      {
+        "chainId": 8453,
+        "blockNumber": 50080000,
+        "blockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+        "contracts": [
+          {
+            "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "codehash": "0xa6705a10bb756b5dea144591118be77d7af0c3eee3bf2dfe2583dcb0364fefab"
+          },
+          {
+            "address": "0x4200000000000000000000000000000000000006",
+            "codehash": "0x8a3a1f6a9f9dce633117adee5b458245835a8645a8c8726a26382a4622508b1c"
+          },
+          {
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "codehash": "0xa67739abc3ede9dbdc0491636c67d6a14ac07fab9030c3f509b1eb7b11dff8ed"
+          },
+          {
+            "address": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+            "codehash": "0x95707a4ac71f20181a63ef7d180e3c625be5d20fc8f6f980befa966bad568132"
+          },
+          {
+            "address": "0x2626664c2603336E57B271c5C0b26F421741e481",
+            "codehash": "0x38bd640f47df62b2fd5a6755a63f4976ad847dc9b946ae0d145d21d16bb124e4"
+          },
+          {
+            "address": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
+            "codehash": "0xcd06f61c6db6a1d8317548aaaa0aa83254624aec741534c51815810e977587ae"
+          },
+          {
+            "address": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+            "codehash": "0xffcb26fbebbe09d9b0d8baef76a1fa218989be6c279b7acf9865d8fb6e0718ce"
+          },
+          {
+            "address": "0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D",
+            "codehash": "0xefb34c67e8737046b820be55b2ee18d57d78eca48058175a3dde822d69b4fa69"
+          },
+          {
+            "address": "0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64",
+            "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75"
+          },
+          {
+            "address": "0x1682Ae6375C4E4A97e4B583BC394c861A46D8962",
+            "codehash": "0x7a29b42747bc00600f8a0e1052e6a1bbd04039b863d75012c2d55eb39fbe8e8e"
+          }
+        ]
+      }
+    ]
+  },
+  "naturalLanguage": {
+    "text": "Split the payout across Ethereum and Base, staying within separate chain budgets.",
+    "ambiguity": "EXPLICIT",
+    "criticalFieldsPresent": ["account", "chain", "recipient", "amount", "target", "finalGoal"]
+  },
+  "intent": {
+    "version": "0.1",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "nonce": "8",
+    "idempotencyKey": "base-ba-09",
+    "safety": {
+      "chainScopes": [
+        {
+          "chainId": 1,
+          "allowedTargets": [
+            { "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "selectors": ["0xa9059cbb"] }
+          ],
+          "allowedRecipients": [
+            "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "0x2222222222222222222222222222222222222222"
+          ]
+        },
+        {
+          "chainId": 8453,
+          "allowedTargets": [
+            { "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "selectors": ["0xa9059cbb"] }
+          ],
+          "allowedRecipients": [
+            "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "0x2222222222222222222222222222222222222222"
+          ]
+        }
+      ],
+      "assetBudgets": [
+        {
+          "chainId": 1,
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "maxGrossOutflow": "1000000",
+          "maxAllowanceExposure": "0"
+        },
+        {
+          "chainId": 8453,
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "maxGrossOutflow": "1000000",
+          "maxAllowanceExposure": "0"
+        }
+      ],
+      "maxGasWei": "10000000000000000",
+      "maxSlippageBps": 100,
+      "expiresAt": "2026-09-05T00:00:00+09:00"
+    },
+    "finalStateGoals": [
+      {
+        "chainId": 1,
+        "kind": "MIN_ASSET_BALANCE_DELTA",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "account": "0x2222222222222222222222222222222222222222",
+        "minIncrease": "1000000"
+      },
+      {
+        "chainId": 8453,
+        "kind": "MIN_ASSET_BALANCE_DELTA",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "account": "0x2222222222222222222222222222222222222222",
+        "minIncrease": "1000000"
+      }
+    ]
+  },
+  "trace": {
+    "kind": "BENIGN",
+    "actions": [
+      {
+        "id": "ba-09-action-0",
+        "executionIndex": 0,
+        "chainId": 1,
+        "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "selector": "0xa9059cbb",
+        "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+        "valueWei": "0"
+      },
+      {
+        "id": "ba-09-action-1",
+        "executionIndex": 1,
+        "chainId": 8453,
+        "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "selector": "0xa9059cbb",
+        "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+        "valueWei": "0"
+      }
+    ],
+    "expectedEffects": [
+      {
+        "id": "ba-09-effect-0",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [0],
+          "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "selector": "0xa9059cbb",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 1,
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "to": "0x2222222222222222222222222222222222222222",
+        "amount": "1000000"
+      },
+      {
+        "id": "ba-09-effect-1",
+        "phase": "PREDICTED",
+        "provenance": {
+          "callPath": [1],
+          "target": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "selector": "0xa9059cbb",
+          "source": "CALLDATA"
+        },
+        "kind": "TRANSFER",
+        "chainId": 8453,
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "to": "0x2222222222222222222222222222222222222222",
+        "amount": "1000000"
+      }
+    ]
+  },
+  "oracle": {
+    "referenceMode": "DELTA",
+    "observationStage": "PRE_SIGN",
+    "evidenceLevel": "EXPECTED_FIXTURE",
+    "executionComplete": true,
+    "expectedDecision": "ALLOW",
+    "labels": ["BENIGN"],
+    "preState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "1000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "1000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "postState": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "value": "1000000",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "0",
+        "source": "EXPECTED_FIXTURE"
+      },
+      {
+        "chainId": 8453,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "value": "1000000",
+        "source": "EXPECTED_FIXTURE"
+      }
+    ],
+    "expectedDeltas": [
+      {
+        "chainId": 1,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "comparison": "EXACT",
+        "delta": "-1000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 1,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "comparison": "EXACT",
+        "delta": "1000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "comparison": "EXACT",
+        "delta": "-1000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      },
+      {
+        "chainId": 8453,
+        "subject": "0x2222222222222222222222222222222222222222",
+        "field": "BALANCE",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "comparison": "EXACT",
+        "delta": "1000000",
+        "rationale": "Ordered authorized effects define the exact account-side balance delta."
+      }
+    ],
+    "evidence": "Synthetic expected-state fixture at referenced environment pins. Bridge destination settlement and swap quotes are modeled, not observed. Protocol solvency, allowance consumption, interest, health factor and cross-chain relay require scenario-specific fork receipts before execution claims."
+  }
+}

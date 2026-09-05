@@ -67,6 +67,26 @@
             "additionalProperties": false
           }
         },
+        "debtLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "initialDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "maxDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "asset", "account", "initialDebt", "maxDebt"],
+            "additionalProperties": false
+          }
+        },
         "maxGasWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
         "maxSlippageBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
         "expiresAt": {
@@ -83,6 +103,71 @@
       "type": "array",
       "items": {
         "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_POSITION_DELTA" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "protocol", "minIncrease"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_POSITION" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "protocol", "minAmount"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_HEALTH_FACTOR" },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minWad": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "account", "protocol", "minWad"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "kind": { "type": "string", "const": "MIN_ASSET_BALANCE_DELTA" },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": ["chainId", "kind", "asset", "account", "minIncrease"],
+            "additionalProperties": false
+          },
           {
             "type": "object",
             "properties": {

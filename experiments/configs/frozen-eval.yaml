@@ -1,0 +1,173 @@
+protocolVersion: '0.1'
+status: FROZEN
+freezeIssue: 27
+reviewProtocol:
+  schemaVersion: '0.1'
+  mode: SOLO_AI_ASSISTED
+  independentHumanReviewClaim: false
+  finalAuthorApproval: PENDING
+
+# This file is deliberately non-runnable until every null freeze field is filled and
+# status becomes FROZEN. The runner must reject CANDIDATE_UNFROZEN manifests.
+dataset:
+  version: '0.4.0'
+  baseManifest: benchmark/splits/manifest.json
+  caseManifest: experiments/configs/case-manifest.json
+  m2Validation: experiments/configs/m2-validation.json
+  expectedBaseCases: 80
+  expectedCuratedCases: 400
+  hiddenTestClaim: false
+  hiddenTestNote: >-
+    The existing files were visible during development. They are an author-exposed evaluation split,
+    not a sealed unseen test set.
+
+caseMatrix:
+  seed: 2026
+  evaluatedAt: '2026-08-30T00:00:00Z'
+  casesPerBase: 5
+  variants:
+    - BENIGN_ORIGINAL
+    - ADVERSARIAL_SCOPE
+    - ADVERSARIAL_BUDGET
+    - ADVERSARIAL_COMPOSITION
+    - BENIGN_DRIFT
+  validityPolicy: >-
+    Every generated case must pass schema validation and its operator-specific validity check. An
+    inapplicable operator is replaced by the next preregistered operator for the same workflow; it
+    is never retained merely to reach 400.
+
+systems:
+  - id: none
+    label: No defense
+    primary: true
+  - id: guard-mode-emulator
+    label: MetaMask public Guard Mode rules emulator
+    primary: true
+    configuration: STRICT
+    sensitivityConfiguration: LITERAL
+    productEquivalenceClaim: false
+  - id: llm-verifier
+    label: Stateless LLM intent verifier
+    primary: true
+    config: experiments/configs/baselines/llm-verifier.json
+  - id: per-call-policy
+    label: Deterministic per-call policy
+    primary: true
+    config: experiments/configs/baselines/per-call-policy.json
+  - id: intentlock-full
+    label: IntentLock cumulative effect monitor
+    primary: true
+
+# Task Shield and DRIFT are related-work systems, not locally reproduced systems. Calling
+# the generic LLM verifier an implementation of either would be an invalid equivalence claim.
+relatedWorkOnly:
+  - task-shield
+  - drift
+
+models:
+  primary:
+    id: gpt-5.4-mini-2026-03-17
+    temperature: 0
+    maxRetries: 1
+    timeoutMs: 30000
+    malformedPolicy: ABSTAIN
+    pricingUsdPerMillionTokens:
+      input: 0.75
+      cachedInput: 0.075
+      output: 4.50
+    pricingSource: https://developers.openai.com/api/docs/models/gpt-5.4-mini
+    pricingCheckedAt: '2026-09-04'
+  secondary: null
+  secondaryPolicy: >-
+    No secondary model is part of the primary result until an exact available snapshot is selected
+    before freeze. A model added after freeze is exploratory appendix evidence.
+
+forks:
+  - chainId: 1
+    blockNumber: 25773000
+    blockHash: '0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166'
+    rpcEnvVar: FORK_RPC_URL_1
+  - chainId: 8453
+    blockNumber: 50080000
+    blockHash: '0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9'
+    rpcEnvVar: FORK_RPC_URL_8453
+
+adaptive:
+  expectedCases: 40
+  maxReplansPerCase: 3
+  attackerObservation:
+    - guard decision
+    - public reason code
+    - tool result returned to the agent
+  forbiddenObservation:
+    - hidden oracle label
+    - private key or API key
+    - raw reviewer answer
+
+stageComparisons:
+  - id: semantic-only
+    interpretation: Stateless semantic verifier without symbolic state enforcement.
+  - id: symbolic-only
+    interpretation: Runtime monitor starting from an already confirmed benchmark contract.
+  - id: hybrid-conjunction
+    interpretation: Semantic and symbolic decisions are conjoined; not a single-factor ablation.
+
+ablations:
+  - id: stateless-ledger
+    changedFactor: accepted-effect history disabled
+  - id: shallow-decoder
+    changedFactor: recursive nested effect decoding disabled
+  - id: no-post-state-verifier
+    changedFactor: receipt and final-state reconciliation disabled
+  - id: confirmation-always
+    changedFactor: every critical-field change requires confirmation
+
+metrics:
+  primary: offline_counterfactual_unsafe_authorization_rate
+  secondary:
+    - offline_counterfactual_benign_completion
+    - false_deny_rate
+    - escalation_rate
+    - confirmation_request_rate
+    - pre_sign_detection_rate
+    - unauthorized_value
+    - excess_allowance_exposure
+    - first_detection_ordinal
+    - latency_ms
+    - token_cost
+  confidenceInterval: stratified-bootstrap-95
+  bootstrapReplicates: 10000
+  missingDataPolicy: >-
+    Timeout, malformed output, unsupported decoding, and incomplete execution remain explicit
+    outcomes. They are not silently removed from denominators.
+
+failurePolicy:
+  overwriteRun: false
+  retriesReuseCaseId: true
+  retryResultSelection: attempt-1-intention-to-treat-retries-operational-sensitivity-only
+  maxAttemptsPerCase: 2
+  maxTotalRetryAttempts: 2000
+  timeoutDecision: ABSTAIN
+  malformedDecision: ABSTAIN
+
+freeze:
+  # gitCommit is reviewed candidate A. The run manifest records its direct freeze child B as
+  # executionCommit, avoiding a self-referential commit hash inside this file.
+  gitCommit: 89c742e953c8251ba4de78939648b5c7d566b9f3
+  dependencyDigestSha256: 937ea5e8d6c5a86d1a9c47f83fc517074007ad571284f091b17746aaefc5d536
+  datasetDigestSha256: 16c0de0b9bfc2e54dd5ef8eb606da210944e41c95d2f304e2348e7f00b325869
+  caseManifestDigestSha256: 373b9fc819f013f9fb3affea0c9388b6d81c16ae1abbc7f967ecabfe9bf51c48
+  promptDigestSha256: ebca441c2178f7300045b7b338e7a6f839dff8ac01096ee44469cb845bdd0113
+  toolSchemaDigestSha256: 6567f5277bbfc0a16ecc6a96efe1fb132a42a16a4c12140f2feca64e975ea42a
+  metricImplementationDigestSha256: 6f3131261db5ec064670ef76e02c5e84d6aa20cfd60f11a183bb96ed1e7331e1
+  protocolConfigDigestSha256: d06139264d6c17f472b4fbbc3bdb901c3e91903d1244b4bc73c846b11321479b
+  evaluationConfigDigestSha256: 7404593dd1a2f2c13f52a2f27c0baca2bf4b9a8ccf8e74e9a26528d6ea9e29c6
+  implementationDigestSha256: b90bb0a548a50cce492da6d4c70bfe845d22e50009df0e6edfcd7d1fb3fd3ef6
+  frozenAt: 2026-09-04T23:52:48.871Z
+  humanReviewer: null
+  humanReviewPath: null
+  humanReviewDigestSha256: null
+  aiReview:
+    reviewerPseudonym: codex-ai-freeze-review
+    reviewPath: experiments/reviews/freeze-review.ai-v0.4.0.json
+    reviewDigestSha256: cd615b5a620db789315d5544591307664d86d7e24f9ba766ae1ababe0adffa3c

@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 import { z } from 'zod';
 import { describe, expect, it, vi } from 'vitest';
+import { encodeFunctionData } from 'viem';
 
 import {
   IntentLockMetaMaskAdapter,
@@ -16,6 +17,7 @@ import {
 import type { EconomicEffect } from '../../src/domain/action-ir.js';
 import type { IntentContract } from '../../src/domain/intent-contract.js';
 import { decodeBatchCalldata, type BatchDecoderOptions } from '../../src/effects/batch-decoder.js';
+import { SWAP_ROUTER_02_ABI } from '../../src/effects/swap-decoder.js';
 import { InMemoryIntentLedger } from '../../src/monitor/ledger.js';
 
 const AddressSchema = z.string().regex(/^0x[0-9a-fA-F]{40}$/);
@@ -168,7 +170,12 @@ describe('MetaMask fixed-fork golden scenarios', () => {
   });
 
   for (const scenario of fixture.scenarios) {
-    it(`${scenario.id}: ${scenario.expectedDecision}`, async () => {
+    // Preserve immutable M1 inputs/evidence. G05 used floor(quote*0.99), one unit below
+    // the exact bound; its historical ALLOW label is not the corrected monitor's expectation.
+    const legacyRoundedMinimum = scenario.id === 'G05-bounded-swap';
+    const expectedDecision = legacyRoundedMinimum ? 'DENY' : scenario.expectedDecision;
+    const expectedCode = legacyRoundedMinimum ? 'SLIPPAGE_EXCEEDED' : scenario.expectedCode;
+    it(`${scenario.id}: current policy ${expectedDecision}`, async () => {
       const decoder = decoderFor(scenario);
       const executor = successfulExecutor(decoder);
       const adapter = new IntentLockMetaMaskAdapter(executor);
@@ -181,11 +188,11 @@ describe('MetaMask fixed-fork golden scenarios', () => {
         simulationStatus: 'SUCCESS',
       });
 
-      expect(audit.preDecision.kind).toBe(scenario.expectedDecision);
+      expect(audit.preDecision.kind).toBe(expectedDecision);
       if (audit.preDecision.kind !== 'ALLOW') {
-        expect(audit.preDecision.code).toBe(scenario.expectedCode);
+        expect(audit.preDecision.code).toBe(expectedCode);
       }
-      if (scenario.expectedDecision === 'ALLOW') {
+      if (expectedDecision === 'ALLOW') {
         expect(audit.status).toBe('EXECUTED_VERIFIED');
         expect(audit.postDecision?.kind).toBe('ALLOW');
         expect(audit.effectMismatches).toEqual([]);
@@ -198,6 +205,39 @@ describe('MetaMask fixed-fork golden scenarios', () => {
       }
     });
   }
+
+  it('allows the G05 swap with the exact rounded-up minimum without rewriting historical fixtures', async () => {
+    const historical = fixture.scenarios.find((scenario) => scenario.id === 'G05-bounded-swap');
+    if (!historical?.quotedAmountOut) throw new Error('G05 quote missing');
+    expect(historical.expectedDecision).toBe('ALLOW');
+    const decoder = decoderFor(historical);
+    const minimum = (BigInt(historical.quotedAmountOut) * 9900n + 9999n) / 10000n;
+    const data = encodeFunctionData({
+      abi: SWAP_ROUTER_02_ABI,
+      functionName: 'exactInputSingle',
+      args: [
+        {
+          tokenIn: fixture.addresses.usdc as `0x${string}`,
+          tokenOut: fixture.addresses.weth as `0x${string}`,
+          fee: 500,
+          recipient: fixture.addresses.recipient as `0x${string}`,
+          amountIn: 1000000n,
+          amountOutMinimum: minimum,
+          sqrtPriceLimitX96: 0n,
+        },
+      ],
+    });
+    const executor = successfulExecutor(decoder);
+    const audit = await new IntentLockMetaMaskAdapter(executor).execute({
+      contract: contract('g05-exact-bound-control'),
+      action: { chainId: 1, target: fixture.addresses.swapRouter02 as `0x${string}`, data },
+      decoder,
+      evaluatedAt: '2026-08-29T00:00:00Z',
+      simulationStatus: 'SUCCESS',
+    });
+    expect(audit.status).toBe('EXECUTED_VERIFIED');
+    expect(executor.calls).toBe(1);
+  });
 });
 
 describe('MetaMask signing boundary failure modes', () => {

@@ -1,0 +1,198 @@
+{
+  "datasetVersion": "0.4.0",
+  "scenarioId": "LE-05",
+  "sourceCommit": "a0cca37764d3267929f7b74404393c4a1115fc78",
+  "workingTreeDirty": false,
+  "collectorSha256": "d3ca47765b9de0aa86d88a55d0a048e6708692711f82a7778c14ba147fa50474",
+  "sourceScenarioSha256": "96043bcbce038819438e26867aee45abaf545e7e0a3898cbbc93c86bac892ec8",
+  "fixture": {
+    "manifest": "benchmark/fixtures/manifest.json",
+    "chains": [
+      {
+        "chainId": 1,
+        "blockNumber": 25773000,
+        "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+        "contracts": [
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "codehash": "0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505"
+          },
+          {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "codehash": "0xd0a06b12ac47863b5c7be4185c2deaad1c61557033f56c7d4ea74429cbb25e23"
+          },
+          {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "codehash": "0xb44fb4e949d0f78f87f79ee46428f23a2a5713ce6fc6e0beb3dda78c2ac1ea55"
+          },
+          {
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "codehash": "0xc67d1657868aa5146eaf24fb879fb1fdec3d2d493b3683a61c9c2f4fb2851131"
+          },
+          {
+            "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            "codehash": "0x4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69"
+          },
+          {
+            "address": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "codehash": "0x6ec798e80f3a19de650826338677604e54d6664f44a33b53a20b22b1939f402e"
+          },
+          {
+            "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+            "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4"
+          },
+          {
+            "address": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            "codehash": "0x96107dc4006b4c7fecd1827cfb275ffeef31e6194cd50466f85f8eb24ccf2679"
+          },
+          {
+            "address": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+            "codehash": "0x0f8c7f9c735ac0f3f35b1e78882a617380549def43faeca0d959d5aadd81dee4"
+          },
+          {
+            "address": "0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5",
+            "codehash": "0x932cddc50793da935ccf915651ad67f6b746e9936fcc5614f0ff492563782c75"
+          },
+          {
+            "address": "0xBd3fa81B58Ba92a82136038B25aDec7066af3155",
+            "codehash": "0x519000e819bce41995ccfafc20054ce0a10164f3ac63298076a5efe416f7b484"
+          },
+          {
+            "address": "0x0a992d191DEeC32aFe36203Ad87D7d289a738F81",
+            "codehash": "0xb361aef8f4fefcde94ca68db3301fe0d35aec649573daa8048a10b7dac6c9e1d"
+          }
+        ]
+      }
+    ]
+  },
+  "verifiedForks": [],
+  "setupNotes": [
+    "fork setup failed before scenario execution"
+  ],
+  "fixtureCorrections": [],
+  "quotes": [],
+  "resolvedActions": [
+    {
+      "id": "le-05-action-0",
+      "executionIndex": 0,
+      "chainId": 1,
+      "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "selector": "0x095ea7b3",
+      "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-1",
+      "executionIndex": 1,
+      "chainId": 1,
+      "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+      "selector": "0x617ba037",
+      "calldata": "0x617ba037000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-2",
+      "executionIndex": 2,
+      "chainId": 1,
+      "target": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "selector": "0x095ea7b3",
+      "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-3",
+      "executionIndex": 3,
+      "chainId": 1,
+      "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+      "selector": "0xa415bcad",
+      "calldata": "0xa415bcad000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000005f5e10000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-4",
+      "executionIndex": 4,
+      "chainId": 1,
+      "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "selector": "0x095ea7b3",
+      "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000002faf080",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-5",
+      "executionIndex": 5,
+      "chainId": 1,
+      "target": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+      "selector": "0x573ade81",
+      "calldata": "0x573ade81000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000002faf0800000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "valueWei": "0"
+    },
+    {
+      "id": "le-05-action-6",
+      "executionIndex": 6,
+      "chainId": 1,
+      "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "selector": "0x095ea7b3",
+      "calldata": "0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e20000000000000000000000000000000000000000000000000000000000000000",
+      "valueWei": "0"
+    }
+  ],
+  "requiredReceiptCount": 7,
+  "transactions": [],
+  "pre": [],
+  "post": [],
+  "observedEffects": [],
+  "positionTokenEvents": [],
+  "oracle": {
+    "status": "INSUFFICIENT_EVIDENCE",
+    "decision": "ESCALATE",
+    "evidenceLevel": "EXECUTED_FORK",
+    "finalGoals": [
+      {
+        "index": 0,
+        "satisfied": null,
+        "actual": null,
+        "code": "MISSING_OR_INVALID_STATE"
+      },
+      {
+        "index": 1,
+        "satisfied": null,
+        "actual": null,
+        "code": "MISSING_OR_INVALID_STATE"
+      },
+      {
+        "index": 2,
+        "satisfied": null,
+        "actual": null,
+        "code": "MISSING_OR_INVALID_STATE"
+      },
+      {
+        "index": 3,
+        "satisfied": null,
+        "actual": null,
+        "code": "MISSING_OR_INVALID_STATE"
+      },
+      {
+        "index": 4,
+        "satisfied": null,
+        "actual": null,
+        "code": "MISSING_OR_INVALID_STATE"
+      }
+    ],
+    "deltas": [],
+    "violations": [],
+    "allowanceExposure": [],
+    "missing": [
+      "execution:partial",
+      "receipts:incomplete",
+      "receipts:chain:1",
+      "goal:0",
+      "goal:1",
+      "goal:2",
+      "goal:3",
+      "goal:4"
+    ],
+    "disagreements": []
+  },
+  "referenceReconciliation": null,
+  "error": "upstream rate limit"
+}

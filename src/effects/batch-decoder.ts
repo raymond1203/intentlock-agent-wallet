@@ -10,6 +10,12 @@ import {
 import { flattenEffects, type CallFrame, type EconomicEffect } from '../domain/action-ir.js';
 import { decodeErc20Calldata } from './erc20-decoder.js';
 import { decodePermit2Calldata } from './permit2-decoder.js';
+import {
+  decodeAcrossV3,
+  decodeCctpV1,
+  decodeAaveV3,
+  type ProtocolDecoderOptions,
+} from './protocol-decoders.js';
 import { decodeSwapRouterCalldata, SWAP_ROUTER_02_ABI } from './swap-decoder.js';
 import { type DecodeContext, selectorFromData, unknownResult } from './types.js';
 
@@ -19,14 +25,15 @@ export const ERC7821_ABI = parseAbi([
 const ERC7821_CALLS = parseAbiParameters('(address to, uint256 value, bytes data)[]');
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export type DecoderContractKind = 'ERC20' | 'PERMIT2' | 'SWAP_ROUTER_02' | 'ERC7821';
+export type DecoderContractKind =
+  'ERC20' | 'PERMIT2' | 'SWAP_ROUTER_02' | 'ERC7821' | 'ACROSS_V3' | 'CCTP_V1' | 'AAVE_V3';
 
 export interface DecoderContract {
   kind: DecoderContractKind;
   codehash?: `0x${string}`;
 }
 
-export interface BatchDecoderOptions {
+export interface BatchDecoderOptions extends ProtocolDecoderOptions {
   contracts: Readonly<Record<string, DecoderContract>>;
   observedCodehashes?: Readonly<Record<string, `0x${string}`>>;
   requireCodehash?: boolean;
@@ -246,6 +253,20 @@ function decodeFrame(
       return decodeRouter(context, options, registry, budget, depth, inheritedDeadline);
     case 'ERC7821':
       return decode7821(context, options, registry, budget, depth);
+    case 'ACROSS_V3':
+    case 'CCTP_V1':
+    case 'AAVE_V3': {
+      const decode =
+        contract.kind === 'ACROSS_V3'
+          ? decodeAcrossV3
+          : contract.kind === 'CCTP_V1'
+            ? decodeCctpV1
+            : decodeAaveV3;
+      const result = decode(context, options);
+      return result.status === 'COMPLETE'
+        ? frame(context, result.effects)
+        : unknownFrame(context, 'protocol decoder requires supported calldata and pinned context');
+    }
   }
 }
 

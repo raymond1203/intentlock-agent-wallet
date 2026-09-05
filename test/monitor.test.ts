@@ -133,6 +133,27 @@ interface TransitionCase {
 const transitions: TransitionCase[] = [
   { name: 'bounded transfer', kind: 'ALLOW', change: () => undefined },
   {
+    name: 'allowance exposure sums distinct allowed spenders across accepted and candidate effects',
+    kind: 'DENY',
+    code: REASON_CODES.ALLOWANCE_EXPOSURE_EXCEEDED,
+    change: (value) => {
+      value.contract.safety.chainScopes[0]?.allowedTargets.push({
+        target: OTHER,
+        selectors: ['0x095ea7b3'],
+      });
+      value.acceptedEffects = [approval('60')];
+      value.candidateEffects = [{ ...approval('60', OTHER), id: 'second-spender' }];
+    },
+  },
+  {
+    name: 'later revoke cannot hide an excessive prefix approval',
+    kind: 'DENY',
+    code: REASON_CODES.ALLOWANCE_EXPOSURE_EXCEEDED,
+    change: (value) => {
+      value.candidateEffects = [approval('101'), { ...approval('0'), id: 'revoke' }];
+    },
+  },
+  {
     name: 'expired intent',
     kind: 'DENY',
     code: REASON_CODES.INTENT_EXPIRED,
@@ -285,6 +306,40 @@ const transitions: TransitionCase[] = [
     change: (value) => (value.candidateEffects = [swap({ minAmountOut: '989' })]),
   },
   {
+    name: 'swap exact slippage cap is allowed',
+    kind: 'ALLOW',
+    change: (value) => (value.candidateEffects = [swap()]),
+  },
+  {
+    name: 'swap fractional-bps overflow cannot be rounded down',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '10001', minAmountOut: '9900' })]),
+  },
+  {
+    name: 'swap rounded-up minimum respects exact slippage cap',
+    kind: 'ALLOW',
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '10001', minAmountOut: '9901' })]),
+  },
+  {
+    name: 'swap sub-bps violation above safe integer range is denied',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [
+        swap({ quotedAmountOut: '100000000000000000001', minAmountOut: '99000000000000000000' }),
+      ]),
+  },
+  {
+    name: 'swap zero quote cannot satisfy a slippage bound',
+    kind: 'DENY',
+    code: REASON_CODES.SLIPPAGE_EXCEEDED,
+    change: (value) =>
+      (value.candidateEffects = [swap({ quotedAmountOut: '0', minAmountOut: '0' })]),
+  },
+  {
     name: 'swap recipient substituted',
     kind: 'DENY',
     code: REASON_CODES.RECIPIENT_NOT_ALLOWED,
@@ -389,6 +444,53 @@ const transitions: TransitionCase[] = [
 ];
 
 describe('deterministic intent monitor transitions', () => {
+  function debt(delta: string): EconomicEffect {
+    return {
+      id: `debt-${delta}`,
+      phase: 'PREDICTED',
+      provenance: provenance('0xabcdef01'),
+      kind: 'DEBT',
+      chainId: 1,
+      protocol: TARGET,
+      account: ACCOUNT,
+      asset: TOKEN,
+      delta,
+    };
+  }
+
+  it('checks cumulative debt across the accepted prefix', () => {
+    const value = input();
+    value.acceptedEffects = [debt('30')];
+    value.candidateEffects = [debt('30')];
+    expect(evaluateIntent(value)).toMatchObject({
+      kind: 'DENY',
+      code: REASON_CODES.DEBT_CAP_EXCEEDED,
+    });
+  });
+
+  it('does not erase an intermediate debt violation with a later repayment', () => {
+    const value = input();
+    value.candidateEffects = [debt('60'), debt('-60')];
+    expect(evaluateIntent(value)).toMatchObject({
+      kind: 'DENY',
+      code: REASON_CODES.DEBT_CAP_EXCEEDED,
+    });
+  });
+
+  it('separates the intermediate debt limit from the terminal debt goal', () => {
+    const value = input();
+    value.contract.safety.debtLimits = [
+      { chainId: 1, asset: TOKEN, account: ACCOUNT, initialDebt: '10', maxDebt: '100' },
+    ];
+    value.candidateEffects = [debt('90'), debt('-50')];
+    expect(evaluateIntent(value).kind).toBe('ALLOW');
+    value.candidateEffects = [debt('91'), debt('-51')];
+    expect(evaluateIntent(value)).toMatchObject({
+      kind: 'DENY',
+      code: REASON_CODES.DEBT_CAP_EXCEEDED,
+    });
+  });
+
   it('covers at least 25 transition cases', () => {
     expect(transitions.length).toBeGreaterThanOrEqual(25);
   });

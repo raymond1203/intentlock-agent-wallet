@@ -1,5 +1,9 @@
 # 0004 — 보안 보장 경계
 
+2026-09-05: 아래 내용은 초기 설계 제안이다. 현재 구현의 더 좁은 범위는 ADR 0011/0012,
+`paper/final-source.md`와 M4 method AI audit가 우선한다. 특히 외부 검증용 capability,
+분산 ledger, 모든 후속 서명 동결은 구현 완료된 속성이 아니다.
+
 - 상태: 승인 대기
 - 결정일: 2026-08-17 KST
 - Owner: `@raymond1203`

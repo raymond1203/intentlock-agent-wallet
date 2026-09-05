@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "0.1",
+  "datasetVersion": "0.3.0",
+  "source": "PINNED_QUOTER_V2",
+  "maxSlippageBps": 100,
+  "routes": [
+    {
+      "routeId": "ethereum-usdc-weth-3000",
+      "chainId": 1,
+      "blockNumber": 25773000,
+      "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+      "quoter": {
+        "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+        "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+      },
+      "pools": [
+        {
+          "address": "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8",
+          "codehash": "0xf2b8b58f95b1471751302e520a0e7c410ce9846ed46020be253dbd25fbb6da11",
+          "fee": 3000
+        }
+      ],
+      "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000bb8c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "quotes": {
+        "700000": "367513172973879",
+        "900000": "472516933119372",
+        "1000000": "525018812598565",
+        "1300000": "682524448661922",
+        "1600000": "840030081163951",
+        "1800000": "945033834186788",
+        "2200000": "1155041335484024",
+        "3200000": "1680060061027897",
+        "4000000": "2100075012972374"
+      }
+    },
+    {
+      "routeId": "ethereum-usdc-weth-500",
+      "chainId": 1,
+      "blockNumber": 25773000,
+      "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+      "quoter": {
+        "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+        "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+      },
+      "pools": [
+        {
+          "address": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+          "codehash": "0xa981b66c747a3d9fa29d7e200d5faaa2826960523d0e5a0df8148e8868c480b4",
+          "fee": 500
+        }
+      ],
+      "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "quotes": {
+        "800000": "421041023674584",
+        "900000": "473671151573007",
+        "1000000": "526301279457898",
+        "1200000": "631561535187079",
+        "1700000": "894712174273202",
+        "1900000": "999972429812919",
+        "2000000": "1052602557562478"
+      }
+    },
+    {
+      "routeId": "ethereum-usdc-usdt-weth-500",
+      "chainId": 1,
+      "blockNumber": 25773000,
+      "blockHash": "0x5ba6236a201909e02d44893ce4b4b5e66e918a9468878efddf75536673dd5166",
+      "quoter": {
+        "address": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+        "codehash": "0x06148f47d0f41a68d3bc970030a7150e5d608cfbc28d372440a2e41ce543d92b"
+      },
+      "pools": [
+        {
+          "address": "0x7858E59e0C01EA06Df3aF3D20aC7B0003275D4Bf",
+          "codehash": "0x0bbc691b71e4434c4d88d1d77323898403fa654b50ca49ad39a5000c2deac968",
+          "fee": 500
+        },
+        {
+          "address": "0x11b815efB8f581194ae79006d24E0d814B7697F6",
+          "codehash": "0x54f2b4c90d2939269a9d3ea8a3081dce03328c947d54bf3d98b2820922840b35",
+          "fee": 500
+        }
+      ],
+      "path": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4dac17f958d2ee523a2206206994597c13d831ec70001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "quotes": {
+        "1100000": "578843171958939",
+        "1500000": "789331879531245",
+        "2000000": "1052443022873953",
+        "2400000": "1262931723805138"
+      }
+    },
+    {
+      "routeId": "base-usdc-weth-500",
+      "chainId": 8453,
+      "blockNumber": 50080000,
+      "blockHash": "0xcffee47a2b640785500f5fed8a237de18e529418ae92e9b8753b9dcdc128f4d9",
+      "quoter": {
+        "address": "0x3d4e44Eb1374240CE5F1B871ab261CD16335B76a",
+        "codehash": "0xceb5b8bc35e09fc64b1c48c6b920e0d2e37d5710e4f3ef214e1a81f75acee51e"
+      },
+      "pools": [
+        {
+          "address": "0xd0b53D9277642d899DF5C87A3966A349A798F224",
+          "codehash": "0xcd06f61c6db6a1d8317548aaaa0aa83254624aec741534c51815810e977587ae",
+          "fee": 500
+        }
+      ],
+      "path": "0x833589fcd6edb6e08f4c7c32d4f71b54bda029130001f44200000000000000000000000000000000000006",
+      "quotes": {
+        "499500": "261513055528426",
+        "500000": "261774961440134",
+        "999000": "523026105686492",
+        "1000000": "523549917499146",
+        "1998000": "1046052713703336"
+      }
+    }
+  ]
+}

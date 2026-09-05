@@ -131,8 +131,17 @@ export class IntentLockMetaMaskAdapter {
     private readonly ledger: InMemoryIntentLedger = new InMemoryIntentLedger(),
   ) {}
 
-  public async execute(request: GuardedExecutionRequest): Promise<GuardedExecutionAudit> {
-    const contract = IntentContractSchema.parse(request.contract);
+  public async execute(input: GuardedExecutionRequest): Promise<GuardedExecutionAudit> {
+    const contract = IntentContractSchema.parse(input.contract);
+    // Caller-owned values must not change between validation, awaited reservation and settlement.
+    // Decoder options are consumed synchronously below and never read after the first await.
+    const request: GuardedExecutionRequest = {
+      ...input,
+      contract,
+      action: { ...input.action },
+      acceptedEffects: structuredClone(input.acceptedEffects ?? []),
+      simulationEffects: structuredClone(input.simulationEffects ?? []),
+    };
     const intentHash = hashIntentContract(contract);
     const auditLogId = logId(request, intentHash);
     const decoded = decodeBatchCalldata(

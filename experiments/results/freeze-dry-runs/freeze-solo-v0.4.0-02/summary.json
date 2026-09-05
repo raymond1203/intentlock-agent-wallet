@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "freeze-solo-v0.4.0-02",
+  "candidateCommit": "89c742e953c8251ba4de78939648b5c7d566b9f3",
+  "caseCount": 20,
+  "machineMatchCount": 20,
+  "machineMismatchCaseIds": [],
+  "machineFailureCaseIds": [],
+  "allMachineExpectationsMatched": true,
+  "humanReviewStatus": "NOT_PERFORMED",
+  "humanApprovalProvided": false,
+  "reviewerAction": "COPY_AND_COMPLETE_FREEZE_REVIEW_TEMPLATE_SEPARATELY_AFTER_CASE_BY_CASE_HUMAN_REVIEW",
+  "freezeReadinessClaim": false
+}

@@ -14,6 +14,10 @@ const hasUpstream = (process.env[config.rpcEnvVar] ?? '') !== '';
 const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const HOLDER = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
+async function stopIfStarted(value: AnvilFork | undefined): Promise<void> {
+  if (value) await value.stop();
+}
+
 describe.skipIf(!hasUpstream)('AnvilFork against the pinned Ethereum fork', () => {
   let fork: AnvilFork;
 
@@ -22,7 +26,7 @@ describe.skipIf(!hasUpstream)('AnvilFork against the pinned Ethereum fork', () =
   }, 120_000);
 
   afterAll(async () => {
-    await fork.stop();
+    await stopIfStarted(fork);
   });
 
   it('matches the frozen chain, block, and manifest codehashes', async () => {

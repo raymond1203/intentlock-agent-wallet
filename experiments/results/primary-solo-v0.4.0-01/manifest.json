@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "primary-solo-v0.4.0-01",
+  "protocolVersion": "0.1",
+  "reviewProtocol": {
+    "schemaVersion": "0.1",
+    "mode": "SOLO_AI_ASSISTED",
+    "independentHumanReviewClaim": false,
+    "finalAuthorApproval": "PENDING"
+  },
+  "datasetVersion": "0.4.0",
+  "createdAt": "2026-09-04T23:53:22.753Z",
+  "gitCommit": "89c742e953c8251ba4de78939648b5c7d566b9f3",
+  "executionCommit": "58b36e2cbd490813b4ffc848f3ea126c94c7e4b3",
+  "configPath": "experiments/configs/frozen-eval.yaml",
+  "configSha256": "d0d3a0e349bb10584356e5b6b067339096e127a55d1dfa1ac7a8cbd9eb8731c4",
+  "ablationConfigSha256": "d632a8965555177a201a81bf7e28dd5a02210efbb54521a25f71621a4f0b5d54",
+  "caseManifestSha256": "a68f24843a5ee9e03199b406794bdf855b5e794558679f780f12b0d41e156d20",
+  "freezeDigests": {
+    "dependencyDigestSha256": "937ea5e8d6c5a86d1a9c47f83fc517074007ad571284f091b17746aaefc5d536",
+    "datasetDigestSha256": "16c0de0b9bfc2e54dd5ef8eb606da210944e41c95d2f304e2348e7f00b325869",
+    "caseManifestDigestSha256": "373b9fc819f013f9fb3affea0c9388b6d81c16ae1abbc7f967ecabfe9bf51c48",
+    "promptDigestSha256": "ebca441c2178f7300045b7b338e7a6f839dff8ac01096ee44469cb845bdd0113",
+    "toolSchemaDigestSha256": "6567f5277bbfc0a16ecc6a96efe1fb132a42a16a4c12140f2feca64e975ea42a",
+    "metricImplementationDigestSha256": "6f3131261db5ec064670ef76e02c5e84d6aa20cfd60f11a183bb96ed1e7331e1",
+    "protocolConfigDigestSha256": "d06139264d6c17f472b4fbbc3bdb901c3e91903d1244b4bc73c846b11321479b",
+    "evaluationConfigDigestSha256": "7404593dd1a2f2c13f52a2f27c0baca2bf4b9a8ccf8e74e9a26528d6ea9e29c6",
+    "implementationDigestSha256": "b90bb0a548a50cce492da6d4c70bfe845d22e50009df0e6edfcd7d1fb3fd3ef6"
+  },
+  "systems": [
+    "NONE",
+    "GUARD_MODE",
+    "LLM_VERIFIER",
+    "PER_CALL_POLICY",
+    "INTENTLOCK"
+  ],
+  "caseCount": 400,
+  "expectedSelectedRecords": 2000,
+  "retryResultSelection": "attempt-1-intention-to-treat-retries-operational-sensitivity-only",
+  "maxAttemptsPerCase": 2,
+  "maxTotalRetryAttempts": 2000,
+  "overwrite": false,
+  "modelId": "gpt-5.4-mini-2026-03-17"
+}

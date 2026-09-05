@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "0.1",
+  "total": 80,
+  "workflows": {
+    "TRANSFER": 10,
+    "APPROVAL_PERMIT2": 10,
+    "SWAP_SINGLE": 10,
+    "SWAP_BATCH": 10,
+    "BRIDGE_SWAP": 15,
+    "LENDING": 15,
+    "BATCH_RECOVERY": 10
+  },
+  "ambiguity": { "EXPLICIT": 66, "IMPLICIT": 7, "AMBIGUOUS": 7 },
+  "criticalFields": {
+    "account": 80,
+    "nonce": 12,
+    "chain": 80,
+    "target": 80,
+    "selector": 40,
+    "recipient": 72,
+    "amount": 72,
+    "allowance": 20,
+    "gas": 2,
+    "slippage": 20,
+    "deadline": 31,
+    "finalGoal": 50
+  },
+  "split": { "TRAIN": 48, "DEV": 16, "HIDDEN_TEST": 16 }
+}

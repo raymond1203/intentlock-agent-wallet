@@ -10,6 +10,10 @@ export const UnsignedIntegerStringSchema = z
   .string()
   .regex(/^(0|[1-9]\d*)$/, 'expected a canonical unsigned integer string');
 
+export const SignedIntegerStringSchema = z
+  .string()
+  .regex(/^(0|-?[1-9]\d*)$/, 'expected a canonical signed integer string');
+
 export const AssetIdSchema = EvmAddressSchema.or(z.literal('native'));
 
 export const TargetPermissionSchema = z
@@ -40,6 +44,19 @@ export const SafetyInvariantsSchema = z
   .object({
     chainScopes: z.array(ChainScopeSchema).min(1),
     assetBudgets: z.array(AssetBudgetSchema).min(1),
+    debtLimits: z
+      .array(
+        z
+          .object({
+            chainId: z.number().int().positive(),
+            asset: AssetIdSchema,
+            account: EvmAddressSchema,
+            initialDebt: UnsignedIntegerStringSchema,
+            maxDebt: UnsignedIntegerStringSchema,
+          })
+          .strict(),
+      )
+      .optional(),
     maxGasWei: UnsignedIntegerStringSchema,
     maxSlippageBps: z.number().int().min(0).max(10_000),
     expiresAt: z.iso.datetime({ offset: true }),
@@ -51,6 +68,32 @@ const GoalBaseSchema = z.object({
 });
 
 export const FinalStateGoalSchema = z.discriminatedUnion('kind', [
+  GoalBaseSchema.extend({
+    kind: z.literal('MIN_POSITION_DELTA'),
+    asset: AssetIdSchema,
+    account: EvmAddressSchema,
+    protocol: EvmAddressSchema,
+    minIncrease: UnsignedIntegerStringSchema,
+  }).strict(),
+  GoalBaseSchema.extend({
+    kind: z.literal('MIN_POSITION'),
+    asset: AssetIdSchema,
+    account: EvmAddressSchema,
+    protocol: EvmAddressSchema,
+    minAmount: UnsignedIntegerStringSchema,
+  }).strict(),
+  GoalBaseSchema.extend({
+    kind: z.literal('MIN_HEALTH_FACTOR'),
+    account: EvmAddressSchema,
+    protocol: EvmAddressSchema,
+    minWad: UnsignedIntegerStringSchema,
+  }).strict(),
+  GoalBaseSchema.extend({
+    kind: z.literal('MIN_ASSET_BALANCE_DELTA'),
+    asset: AssetIdSchema,
+    account: EvmAddressSchema,
+    minIncrease: UnsignedIntegerStringSchema,
+  }).strict(),
   GoalBaseSchema.extend({
     kind: z.literal('MIN_ASSET_BALANCE'),
     asset: AssetIdSchema,
@@ -129,6 +172,23 @@ export const IntentContractSchema = z
           path: ['finalStateGoals', index, 'chainId'],
         });
       }
+    }
+
+    const debtKeys = new Set<string>();
+    for (const [index, limit] of (contract.safety.debtLimits ?? []).entries()) {
+      const key = `${String(limit.chainId)}:${limit.asset.toLowerCase()}:${limit.account.toLowerCase()}`;
+      if (
+        !chainIds.has(limit.chainId) ||
+        debtKeys.has(key) ||
+        BigInt(limit.initialDebt) > BigInt(limit.maxDebt)
+      ) {
+        context.addIssue({
+          code: 'custom',
+          message: 'debt limit must be unique, in scope, and cover initial debt',
+          path: ['safety', 'debtLimits', index],
+        });
+      }
+      debtKeys.add(key);
     }
   });
 

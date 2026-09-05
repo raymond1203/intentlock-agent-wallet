@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-09-03",
+  "kind": "REPRESENTATIVE_NOT_BASE_SCENARIO_REPLAY",
+  "suite": "test/integration",
+  "passed": 14,
+  "failed": 0,
+  "scenarioSpecificExecutedCount": 0,
+  "execution": "Local Anvil forks only; no public-chain transactions",
+  "representatives": [
+    {
+      "chainId": 1,
+      "pinnedBlock": 25773000,
+      "operation": "USDC approval and Aave supply",
+      "successfulReceipts": 2,
+      "inputUnits": "10000000",
+      "accountBalanceBefore": "100000000",
+      "accountBalanceAfter": "90000000",
+      "positionBefore": "0",
+      "positionAfter": "9999998",
+      "oracleStatus": "PASS",
+      "oracleGoal": "Exact remaining underlying balance and positive position, not exact nominal position equality",
+      "rawArtifact": "experiments/results/m2/ethereum-25773000-aave-smoke.json",
+      "rawSha256": "b8005d26985c16674ea12bcf98f747e9c0060eea8f71209d8dddf0cb2fa3aca3"
+    },
+    {
+      "chainId": 8453,
+      "pinnedBlock": 50080000,
+      "operation": "USDC approval and Aave supply",
+      "successfulReceipts": 2,
+      "inputUnits": "10000000",
+      "accountBalanceBefore": "100000000",
+      "accountBalanceAfter": "90000000",
+      "positionBefore": "0",
+      "positionAfter": "9999999",
+      "oracleStatus": "PASS",
+      "oracleGoal": "Exact remaining underlying balance and positive position, not exact nominal position equality",
+      "rawArtifact": "experiments/results/m2/base-50080000-aave-smoke.json",
+      "rawSha256": "cbb55f4e81a1266d492f8c648c14be1158606eecdf62212ed7472b0473438185"
+    }
+  ],
+  "limitations": [
+    "The 80 generated bases remain EXPECTED_FIXTURE and are not certified by representative tests.",
+    "Actual Aave position rounding differs from nominal input by 1-2 units in these runs.",
+    "Fork receipt gas is local EVM execution cost, not a production Base L1-data-fee measurement.",
+    "No bridge destination settlement or real Permit2 signatures were validated by these smoke tests."
+  ]
+}

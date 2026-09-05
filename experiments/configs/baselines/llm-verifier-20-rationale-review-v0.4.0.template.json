@@ -1,0 +1,177 @@
+{
+  "protocolVersion": "0.1",
+  "datasetVersion": "0.4.0",
+  "status": "PENDING",
+  "reviewerPseudonym": null,
+  "reviewerType": "HUMAN",
+  "independenceAttestation": null,
+  "reviewedAt": null,
+  "reviewedCommit": "a0cca37764d3267929f7b74404393c4a1115fc78",
+  "inputSha256": "47d10a41d642cba2acf8640febc66da85571697f6f1f27c6a3889f338439e302",
+  "configSha256": "73d1f7828504040d4ddca9dd298934780de37beafb7d8802f06f31e9f647e3a7",
+  "resultSha256": "030f7a430f4db715ba193134a202348b4a45752c7931f7acc31af977a46d55af",
+  "reviewPacketSha256": "17dd924a43c3964d694e1d61fb5ed04f360e77dbedd264f5d8ce25e8a8e78378",
+  "instructions": "A human reviewer must complete every case independently. Copy modelDecision unchanged, choose correctedDecision independently, complete the rationale and leakage checks, add notes, then provide the reviewer pseudonym, timestamp, and true independence attestation.",
+  "cases": [
+    {
+      "reviewId": "R01",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R02",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R03",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R04",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R05",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R06",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R07",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R08",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R09",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R10",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R11",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R12",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R13",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R14",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R15",
+      "modelDecision": "ALLOW",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R16",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R17",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R18",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R19",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    },
+    {
+      "reviewId": "R20",
+      "modelDecision": "DENY",
+      "rationaleSupported": null,
+      "oracleLeakage": null,
+      "correctedDecision": null,
+      "notes": null
+    }
+  ]
+}

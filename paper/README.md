@@ -1,3 +1,52 @@
 # Paper
 
-제출 원고, 표 설명, 참고 문헌 메모를 관리합니다. 최종 Notion 변환 전에 개인 이름, 이메일, GitHub 주소, 로컬 경로와 문서 메타데이터를 제거합니다.
+제출 원고, 표 설명, 참고 문헌 메모를 관리합니다. 최종 Notion 변환 전에 개인 이름, 이메일,
+GitHub 주소, 로컬 경로와 문서 메타데이터를 제거합니다.
+
+## 결과 이후 조립 순서
+
+`draft-*.md`는 결과 전 연구 초안이며 그 자체가 제출본이 아니다. 동결된 primary·ablation·adaptive
+실행을 한 뒤 `pnpm evaluation:analyze ...`가 9개 표 파일, 결과 metadata와 4개 SVG를 함께 생성한다.
+`paper/final-source.md`는 단일 저자 주도·AI 보조 검토 절차에 맞춘 제출용 조립 원문이다. 결과 수치는
+실행 전 추정하지 않으며 아래 slot으로만 연결한다. 이 파일이 존재해도 최종 저자 승인을 뜻하지 않는다.
+분석 결과를 commit한 뒤 결과 서술을 해당 원문과 대조하고, 필요한 위치에
+다음 slot을 각각 정확히 한 번 둔다.
+
+- `{{ARCHITECTURE_FIGURE}}`
+- `{{PRIMARY_RESULTS_TABLE}}`
+- `{{SECURITY_UTILITY_FIGURE}}`
+- `{{ERROR_TAXONOMY_FIGURE}}`
+- `{{LATENCY_FIGURE}}`
+- `{{ABLATION_RESULTS_TABLE}}`
+- `{{ADAPTIVE_RESULTS_TABLE}}`
+- `{{NEGATIVE_RESULTS}}`
+- `{{ANALYSIS_PROVENANCE}}`
+
+다음 명령은 9개 표·4개 그림·metadata의 run identity, 개수와 claim scope를 먼저 검증하고 slot을
+실제 산출물로 바꾼다. placeholder, 금지 형식, 공개 식별자 또는 로컬 단어 수 한도를 위반하면
+`paper/final.md`를 쓰지 않는다.
+
+```text
+pnpm paper:assemble --source=paper/final-source.md
+```
+
+결과가 없을 때 이 명령이 실행 가능하다고 표시하거나 수치를 미리 채우지 않는다. `paper/final.md`와
+`artifacts/submission-manifest.json`이 생성되어도 사람 검수 완료를 뜻하지 않는다.
+
+## 13,000단어와 익명성
+
+제공된 공식 안내는 국문 원고를 **13,000단어** 이내로 제한하고 Notion의 단어 수 표시를 확인하라고
+한다. 로컬 감사의 Unicode token count는 사전 경고용 추정치이며 실제 Notion 확인을 대체하지 않는다.
+
+저장소 원고에는 팀의 대회용 EVM 주소를 넣지 않는다. 실제 Notion export까지 자동 감사할 때는 저장소
+밖 파일에 신규 대회용 주소만 넣고 `--allowed-evm-address-file=<private-path>`로 전달할 수 있다. 이
+주소와 forbidden-term 파일의 내용은 출력하거나 commit하지 않는다. allowlist에 없는 다른 전체 EVM
+주소는 계속 실패 처리한다.
+
+```text
+pnpm submission:audit --file=paper/final.md --forbidden-terms-file=<private-path>
+```
+
+현재 절차는 `SOLO_AI_ASSISTED`다. 최종 권위는 저자의 명시적 승인, Notion preview·단어 수·댓글
+권한 확인과 private 제출 기록이다. AI 보조 검토를 두 번째 독립 인간으로 세지 않는다. 제출 조립 파일의
+제작 완료와 실제 제출 완료는 분리하며, 최종 저자 승인 대기는 내부 제출 기록에 둔다.

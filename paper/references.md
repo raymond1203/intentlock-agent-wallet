@@ -1,5 +1,9 @@
 # References working list
 
+제출 조립 원문 [`final-source.md`](final-source.md)의 인용은 2026-09-05에 원문 버전과 직접 대조했다.
+이번 확인 범위는 [`claim-to-citation.md`](claim-to-citation.md) G절에 기록한다. 아래 목록은 더 넓은
+역사적 후보 목록이며, 모든 후보가 최종 원고에 사용되거나 이번에 다시 확인된 것은 아니다.
+
 - 기준일: 2026-08-17 KST
 - 목적: 제출 원고의 인용 후보와 사용 위치를 고정한다. 최종 서지 형식은 Notion 원고 단계에서 통일한다.
 - 원칙: arXiv version이 바뀌면 인용 수치와 limitation을 다시 확인한다.
@@ -92,7 +96,7 @@
 - Haoyu Wang, Christopher M. Poskitt, Jun Sun.
 - _AgentSpec: Customizable Runtime Enforcement for Safe and Reliable LLM Agents._ ICSE 2026. arXiv v3, 2025.
 - URL: https://arxiv.org/abs/2503.18666
-- Use: generic runtime rule DSL and stateless checkpoint baseline
+- Use: generic runtime rule DSL, including trajectory predicates; not a reproduced or stateless-only baseline
 
 ### DEF-05 — CaMeL
 
@@ -114,6 +118,14 @@
 - _Capability Gates Are Not Authorization: Confused-Deputy Failures in LLM Agent Frameworks._ arXiv v1, 2026.
 - URL: https://arxiv.org/abs/2606.28679
 - Use: fail-closed concrete-argument value authorization, money ceiling and idempotency
+
+### DEF-08 — Authority–Inference Separation (AIS)
+
+- Hui Gong, Michail Samawi, Francesca Medda.
+- _Authority-Inference Separation in Agentic Finance: First-Line Control, Blockchain Enforcement, and Replayable Assurance._ arXiv v1, 2026-08-31, preprint.
+- URL: https://arxiv.org/abs/2608.30519v1
+- Checked: 2026-09-05; full-text sections 3.4, 4.2, 7, 8.5.
+- Use: close financial-intent authorization prior work; constrains novelty claims. Not locally reproduced.
 
 ## Formal monitoring
 

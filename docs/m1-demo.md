@@ -14,6 +14,10 @@ pnpm exec vitest run test/e2e/golden-scenarios.e2e.test.ts
 pnpm run check
 ```
 
+위 Vitest Golden 10은 monitor와 signing boundary의 빠른 결정 회귀 테스트다. executor와 receipt는
+테스트 대역이므로 고정 포크 실행 증거로 인용하지 않는다. 실제 ALLOW receipt/post-state와 차단 시 signer
+미도달 증거는 `docs/m1-independent-validation.md`의 `m1:golden:run` 절차로 수집한다.
+
 고정 포크까지 확인하려면 archive-capable endpoint를 로컬 환경변수에만 넣는다.
 
 ```bash
@@ -39,3 +43,6 @@ private key는 저장소나 로그에 기록하지 않는다. 테스트 signer�
 
 개인 이름, 팀 등록 정보, RPC URL은 기록하지 않는다. 두 실행의 decision이 다르면 merge하지 않고
 fixture·toolchain·fork fingerprint 차이부터 확인한다.
+
+컴파일러 10개 독립 라벨링과 fixed-fork Golden 10 증거의 구체적인 패킷·검증 명령은
+`docs/m1-independent-validation.md`를 따른다.

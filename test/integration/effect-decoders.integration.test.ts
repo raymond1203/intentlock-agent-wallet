@@ -20,6 +20,10 @@ const RECIPIENT = '0x2222222222222222222222222222222222222222';
 const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const USDC_CODEHASH = '0xd80d4b7c890cb9d6a4893e6b52bc34b56b25335cb13716e0d1d31383e6b41505';
 
+async function stopIfStarted(value: AnvilFork | undefined): Promise<void> {
+  if (value) await value.stop();
+}
+
 describe.skipIf(!hasUpstream)('effect decoders against the pinned Ethereum fork', () => {
   let fork: AnvilFork;
 
@@ -28,7 +32,7 @@ describe.skipIf(!hasUpstream)('effect decoders against the pinned Ethereum fork'
   }, 120_000);
 
   afterAll(async () => {
-    await fork.stop();
+    await stopIfStarted(fork);
   });
 
   it('decodes only after the live bytecode matches the frozen decoder identity', async () => {

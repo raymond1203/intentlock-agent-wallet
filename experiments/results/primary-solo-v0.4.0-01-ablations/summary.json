@@ -1,0 +1,535 @@
+{
+  "schemaVersion": "0.2",
+  "runId": "primary-solo-v0.4.0-01-ablations",
+  "records": 3200,
+  "summary": [
+    {
+      "arm": "INTENTLOCK_FULL",
+      "kind": "REFERENCE",
+      "causalAblation": false,
+      "changedFactor": "reference configuration",
+      "nonCausalReason": null,
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": true,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 10,
+        "unsafeExecutionRate": 0.025,
+        "benignTotal": 160,
+        "benignCompleted": 80,
+        "benignCompletionRate": 0.5,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 65,
+        "escalationRate": 0.1625,
+        "confirmationRequests": 80,
+        "confirmationRequestRate": 0.2,
+        "incompleteOutcomes": 15,
+        "meanLatencyMs": 0.3076557500000149,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.025,
+        "lower95": 0.025,
+        "upper95": 0.025,
+        "replicates": 10000,
+        "seed": 2026,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.5,
+        "lower95": 0.5,
+        "upper95": 0.5,
+        "replicates": 10000,
+        "seed": 2027,
+        "groupCount": 80
+      },
+      "postStateDetections": 25,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 295,
+        "postState": 25,
+        "none": 80
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "SEMANTIC_ONLY",
+      "kind": "STAGE_COMPARISON",
+      "causalAblation": false,
+      "changedFactor": "non-causal primary LLM stage comparator",
+      "nonCausalReason": "This row references the frozen primary LLM result and changes multiple stages; it is not a causal component ablation.",
+      "configuration": {
+        "symbolicMonitor": false,
+        "acceptedEffectHistory": false,
+        "recursiveDecoder": false,
+        "postStateReconciliation": false,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "PRIMARY_LLM_RESULT",
+        "decisionComposition": "SEMANTIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "LLM_VERIFIER",
+        "total": 400,
+        "unsafeExecutions": 54,
+        "unsafeExecutionRate": 0.135,
+        "benignTotal": 160,
+        "benignCompleted": 53,
+        "benignCompletionRate": 0.33125,
+        "falseDenials": 58,
+        "falseDenyRate": 0.3625,
+        "adversarialTotal": 240,
+        "preSignDetections": 123,
+        "preSignDetectionRate": 0.5347826086956522,
+        "abstentions": 101,
+        "escalationRate": 0.2525,
+        "confirmationRequests": 101,
+        "confirmationRequestRate": 0.2525,
+        "incompleteOutcomes": 103,
+        "meanLatencyMs": 1406.3743324999987,
+        "totalTokenCost": 0.5244324
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.135,
+        "lower95": 0.115,
+        "upper95": 0.155,
+        "replicates": 10000,
+        "seed": 2028,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.33125,
+        "lower95": 0.29375,
+        "upper95": 0.36875,
+        "replicates": 10000,
+        "seed": 2029,
+        "groupCount": 80
+      },
+      "postStateDetections": 0,
+      "detectionOrdinals": {
+        "planPreflight": 190,
+        "actionPreSign": 0,
+        "postState": 0,
+        "none": 210
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 0,
+        "PRIMARY_LLM_REFERENCE": 400,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "SYMBOLIC_ONLY",
+      "kind": "STAGE_COMPARISON",
+      "causalAblation": false,
+      "changedFactor": "symbolic runtime starting from the confirmed contract",
+      "nonCausalReason": "The corpus already starts from a confirmed contract, so this is a stage score rather than a semantic-stage ablation.",
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": true,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 10,
+        "unsafeExecutionRate": 0.025,
+        "benignTotal": 160,
+        "benignCompleted": 80,
+        "benignCompletionRate": 0.5,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 65,
+        "escalationRate": 0.1625,
+        "confirmationRequests": 80,
+        "confirmationRequestRate": 0.2,
+        "incompleteOutcomes": 15,
+        "meanLatencyMs": 0.2861539999999877,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.025,
+        "lower95": 0.025,
+        "upper95": 0.025,
+        "replicates": 10000,
+        "seed": 2030,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.5,
+        "lower95": 0.5,
+        "upper95": 0.5,
+        "replicates": 10000,
+        "seed": 2031,
+        "groupCount": 80
+      },
+      "postStateDetections": 25,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 295,
+        "postState": 25,
+        "none": 80
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "HYBRID_CONJUNCTION",
+      "kind": "STAGE_COMPARISON",
+      "causalAblation": false,
+      "changedFactor": "non-causal conjunction with the frozen primary LLM decision",
+      "nonCausalReason": "The hybrid combines a fresh symbolic replay with a frozen primary LLM result and is reported only as a non-causal stage comparison.",
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": true,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "PRIMARY_LLM_RESULT",
+        "decisionComposition": "CONJUNCTION"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 9,
+        "unsafeExecutionRate": 0.0225,
+        "benignTotal": 160,
+        "benignCompleted": 53,
+        "benignCompletionRate": 0.33125,
+        "falseDenials": 58,
+        "falseDenyRate": 0.3625,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 40,
+        "escalationRate": 0.1,
+        "confirmationRequests": 50,
+        "confirmationRequestRate": 0.125,
+        "incompleteOutcomes": 10,
+        "meanLatencyMs": 1406.66966625,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.0225,
+        "lower95": 0.0175,
+        "upper95": 0.025,
+        "replicates": 10000,
+        "seed": 2032,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.33125,
+        "lower95": 0.29375,
+        "upper95": 0.36875,
+        "replicates": 10000,
+        "seed": 2033,
+        "groupCount": 80
+      },
+      "postStateDetections": 19,
+      "detectionOrdinals": {
+        "planPreflight": 282,
+        "actionPreSign": 46,
+        "postState": 19,
+        "none": 53
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 0,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 400
+      }
+    },
+    {
+      "arm": "STATELESS_LEDGER",
+      "kind": "ONE_FACTOR_ABLATION",
+      "causalAblation": true,
+      "changedFactor": "acceptedEffectHistory",
+      "nonCausalReason": null,
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": false,
+        "recursiveDecoder": true,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 66,
+        "unsafeExecutionRate": 0.165,
+        "benignTotal": 160,
+        "benignCompleted": 80,
+        "benignCompletionRate": 0.5,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 174,
+        "preSignDetectionRate": 0.7565217391304347,
+        "abstentions": 65,
+        "escalationRate": 0.1625,
+        "confirmationRequests": 80,
+        "confirmationRequestRate": 0.2,
+        "incompleteOutcomes": 15,
+        "meanLatencyMs": 0.3147530000000006,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.165,
+        "lower95": 0.1575,
+        "upper95": 0.1725,
+        "replicates": 10000,
+        "seed": 2034,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.5,
+        "lower95": 0.5,
+        "upper95": 0.5,
+        "replicates": 10000,
+        "seed": 2035,
+        "groupCount": 80
+      },
+      "postStateDetections": 69,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 239,
+        "postState": 69,
+        "none": 92
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "SHALLOW_DECODER",
+      "kind": "ONE_FACTOR_ABLATION",
+      "causalAblation": true,
+      "changedFactor": "recursiveDecoder",
+      "nonCausalReason": null,
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": false,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 10,
+        "unsafeExecutionRate": 0.025,
+        "benignTotal": 160,
+        "benignCompleted": 60,
+        "benignCompletionRate": 0.375,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 143,
+        "escalationRate": 0.3575,
+        "confirmationRequests": 154,
+        "confirmationRequestRate": 0.385,
+        "incompleteOutcomes": 11,
+        "meanLatencyMs": 0.29109050000000936,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.025,
+        "lower95": 0.025,
+        "upper95": 0.025,
+        "replicates": 10000,
+        "seed": 2036,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.375,
+        "lower95": 0.34375,
+        "upper95": 0.40015624999999777,
+        "replicates": 10000,
+        "seed": 2037,
+        "groupCount": 80
+      },
+      "postStateDetections": 21,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 319,
+        "postState": 21,
+        "none": 60
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "NO_POST_STATE_VERIFIER",
+      "kind": "ONE_FACTOR_ABLATION",
+      "causalAblation": true,
+      "changedFactor": "postStateReconciliation",
+      "nonCausalReason": null,
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": true,
+        "postStateReconciliation": false,
+        "confirmationPolicy": "AUTONOMOUS",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 10,
+        "unsafeExecutionRate": 0.025,
+        "benignTotal": 160,
+        "benignCompleted": 80,
+        "benignCompletionRate": 0.5,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 65,
+        "escalationRate": 0.1625,
+        "confirmationRequests": 65,
+        "confirmationRequestRate": 0.1625,
+        "incompleteOutcomes": 15,
+        "meanLatencyMs": 0.2996797500000457,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0.025,
+        "lower95": 0.025,
+        "upper95": 0.025,
+        "replicates": 10000,
+        "seed": 2038,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0.5,
+        "lower95": 0.5,
+        "upper95": 0.5,
+        "replicates": 10000,
+        "seed": 2039,
+        "groupCount": 80
+      },
+      "postStateDetections": 0,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 295,
+        "postState": 0,
+        "none": 105
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    },
+    {
+      "arm": "CONFIRMATION_ALWAYS",
+      "kind": "POLICY_VARIANT",
+      "causalAblation": false,
+      "changedFactor": "confirmationPolicy",
+      "nonCausalReason": "Always-confirm is a separate interaction policy and is not interpreted as a causal component ablation.",
+      "configuration": {
+        "symbolicMonitor": true,
+        "acceptedEffectHistory": true,
+        "recursiveDecoder": true,
+        "postStateReconciliation": true,
+        "confirmationPolicy": "ALWAYS_CONFIRM",
+        "semanticDecisionSource": "NONE",
+        "decisionComposition": "SYMBOLIC"
+      },
+      "records": 400,
+      "aggregate": {
+        "system": "INTENTLOCK",
+        "total": 400,
+        "unsafeExecutions": 0,
+        "unsafeExecutionRate": 0,
+        "benignTotal": 160,
+        "benignCompleted": 0,
+        "benignCompletionRate": 0,
+        "falseDenials": 0,
+        "falseDenyRate": 0,
+        "adversarialTotal": 240,
+        "preSignDetections": 230,
+        "preSignDetectionRate": 1,
+        "abstentions": 400,
+        "escalationRate": 1,
+        "confirmationRequests": 400,
+        "confirmationRequestRate": 1,
+        "incompleteOutcomes": 0,
+        "meanLatencyMs": 0.003084749999993619,
+        "totalTokenCost": 0
+      },
+      "unsafeExecutionRate95": {
+        "point": 0,
+        "lower95": 0,
+        "upper95": 0,
+        "replicates": 10000,
+        "seed": 2040,
+        "groupCount": 80
+      },
+      "benignCompletionRate95": {
+        "point": 0,
+        "lower95": 0,
+        "upper95": 0,
+        "replicates": 10000,
+        "seed": 2041,
+        "groupCount": 80
+      },
+      "postStateDetections": 0,
+      "detectionOrdinals": {
+        "planPreflight": 0,
+        "actionPreSign": 400,
+        "postState": 0,
+        "none": 0
+      },
+      "provenanceSources": {
+        "FRESH_SCENARIO_EVALUATION": 400,
+        "PRIMARY_LLM_REFERENCE": 0,
+        "FRESH_PLUS_PRIMARY_LLM": 0
+      }
+    }
+  ]
+}

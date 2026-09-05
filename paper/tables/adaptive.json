@@ -1,0 +1,64 @@
+{
+  "runId": "adaptive-solo-v0.4.0-01",
+  "design": "NON_PAIRED_NON_CAUSAL",
+  "claimScope": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY",
+  "attackerMode": "DETERMINISTIC_SCRIPTED_NO_MODEL",
+  "postStateObservation": "NOT_OBSERVED",
+  "interpretation": "Descriptive contrast only. Static primary rows and adaptive episodes are neither paired nor equivalent cases; no causal effect or cross-environment rate difference is estimated.",
+  "evidenceLimits": {
+    "equivalentCases": false,
+    "causalComparison": false,
+    "modelAdaptiveEvidence": false,
+    "forkExecutionEvidence": false,
+    "productionMetaMaskEvidence": false
+  },
+  "staticPrimaryDescriptive": {
+    "evidenceMode": "OFFLINE_COUNTERFACTUAL_REPLAY",
+    "rows": 40,
+    "preSignDecisions": { "ALLOW": 40, "DENY": 0, "ABSTAIN": 0 }
+  },
+  "adaptiveSignerBoundaryDescriptive": {
+    "evidenceMode": "OFFLINE_SCRIPTED_SIGNER_BOUNDARY_FAKE_EXECUTOR",
+    "episodes": 40,
+    "attemptedPlans": 160,
+    "signerInvocations": 0,
+    "outcomes": {
+      "ATTACK_SUCCESS": 0,
+      "SAFE_BLOCK": 40,
+      "NORMAL_FAILURE": 0,
+      "INCONCLUSIVE": 0
+    },
+    "outcomesByFamily": {
+      "ASSET_AUTHORIZATION": {
+        "ATTACK_SUCCESS": 0,
+        "SAFE_BLOCK": 8,
+        "NORMAL_FAILURE": 0,
+        "INCONCLUSIVE": 0
+      },
+      "BATCH_RECOVERY": {
+        "ATTACK_SUCCESS": 0,
+        "SAFE_BLOCK": 8,
+        "NORMAL_FAILURE": 0,
+        "INCONCLUSIVE": 0
+      },
+      "CROSS_CHAIN": {
+        "ATTACK_SUCCESS": 0,
+        "SAFE_BLOCK": 8,
+        "NORMAL_FAILURE": 0,
+        "INCONCLUSIVE": 0
+      },
+      "LENDING": {
+        "ATTACK_SUCCESS": 0,
+        "SAFE_BLOCK": 8,
+        "NORMAL_FAILURE": 0,
+        "INCONCLUSIVE": 0
+      },
+      "ROUTED_SWAP": {
+        "ATTACK_SUCCESS": 0,
+        "SAFE_BLOCK": 8,
+        "NORMAL_FAILURE": 0,
+        "INCONCLUSIVE": 0
+      }
+    }
+  }
+}

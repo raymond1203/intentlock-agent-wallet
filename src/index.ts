@@ -71,3 +71,50 @@ export {
   type DecoderContractKind,
 } from './effects/batch-decoder.js';
 export * from './adapters/metamask/index.js';
+export {
+  BenchmarkDatasetSchema,
+  BenchmarkScenarioSchema,
+  createBenchmarkScenarioJsonSchema,
+  SplitManifestSchema,
+  ViolationLabelSchema,
+  type BenchmarkDataset,
+  type BenchmarkScenario,
+  type ScenarioSplit,
+  type ViolationLabel,
+} from './benchmark/scenario.js';
+export { findDuplicateScenarios, type DuplicateFinding } from './benchmark/dedup.js';
+export {
+  applyMutation,
+  MUTATION_OPERATOR_IDS,
+  type MutationOperatorId,
+} from './benchmark/mutations/index.js';
+export { evaluateLlmVerifier } from './baselines/llm-verifier.js';
+export { OpenAiResponsesClient } from './baselines/openai-responses-client.js';
+export { evaluatePerCallPolicy } from './baselines/per-call-policy.js';
+export {
+  evaluateGuardMode,
+  GUARD_REASON_CODES,
+  GuardModeConfigSchema,
+  GuardModeEmulator,
+  guardModeConfigFromScenario,
+  ROLLING_WINDOW_SECONDS,
+  type GuardModeConfig,
+  type GuardModeEvaluation,
+  type GuardReasonCode,
+} from './baselines/guard-mode-emulator.js';
+export type { BaselineDecision, BaselineVerdict } from './baselines/types.js';
+export {
+  AAVE_V3_ABI,
+  ACROSS_V3_ABI,
+  CCTP_V1_ABI,
+  decodeAaveV3,
+  decodeAcrossV3,
+  decodeCctpV1,
+} from './effects/protocol-decoders.js';
+export { scoreDecision } from './benchmark/scoring.js';
+export {
+  evaluatePostState,
+  observationKey,
+  type OracleInput,
+  type OracleResult,
+} from './oracle/post-state-oracle.js';

@@ -240,8 +240,10 @@ function evaluateEffectSpecificRules(
         }
         const quoted = BigInt(effect.quotedAmountOut);
         const minimum = BigInt(effect.minAmountOut);
-        const slippageBps = quoted === 0n ? 10_001n : ((quoted - minimum) * 10_000n) / quoted;
-        if (minimum > quoted || slippageBps > BigInt(input.contract.safety.maxSlippageBps)) {
+        // Cross-multiply: flooring the bps ratio can allow a fractional-bps violation.
+        const exceedsSlippage =
+          (quoted - minimum) * 10_000n > quoted * BigInt(input.contract.safety.maxSlippageBps);
+        if (quoted === 0n || minimum > quoted || exceedsSlippage) {
           return deny(
             input,
             REASON_CODES.SLIPPAGE_EXCEEDED,
@@ -250,7 +252,7 @@ function evaluateEffectSpecificRules(
             evidence(
               'effect.minAmountOut',
               `slippage <= ${String(input.contract.safety.maxSlippageBps)} bps`,
-              `${slippageBps.toString()} bps`,
+              `minimum ${minimum.toString()}; quote ${quoted.toString()}`,
               'ACTION_IR',
             ),
           );
@@ -287,6 +289,12 @@ function evaluateEffectSpecificRules(
         }
         break;
       case 'DEBT': {
+        const limit = input.contract.safety.debtLimits?.find(
+          (entry) =>
+            entry.chainId === effect.chainId &&
+            entry.asset.toLowerCase() === effect.asset.toLowerCase() &&
+            entry.account.toLowerCase() === effect.account.toLowerCase(),
+        );
         const maxDebt = input.contract.finalStateGoals.find(
           (goal) =>
             goal.kind === 'MAX_DEBT' &&
@@ -294,14 +302,28 @@ function evaluateEffectSpecificRules(
             goal.asset.toLowerCase() === effect.asset.toLowerCase() &&
             goal.account.toLowerCase() === effect.account.toLowerCase(),
         );
-        const maxAmount = maxDebt?.kind === 'MAX_DEBT' ? maxDebt.maxAmount : '0';
-        if (BigInt(effect.delta) > BigInt(maxAmount)) {
+        const maxAmount =
+          limit?.maxDebt ?? (maxDebt?.kind === 'MAX_DEBT' ? maxDebt.maxAmount : '0');
+        let debt = BigInt(limit?.initialDebt ?? '0');
+        let peak = debt;
+        for (const candidate of [...input.acceptedEffects, ...input.candidateEffects]) {
+          if (
+            candidate.kind !== 'DEBT' ||
+            candidate.chainId !== effect.chainId ||
+            candidate.asset.toLowerCase() !== effect.asset.toLowerCase() ||
+            candidate.account.toLowerCase() !== effect.account.toLowerCase()
+          )
+            continue;
+          debt += BigInt(candidate.delta);
+          if (debt > peak) peak = debt;
+        }
+        if (peak > BigInt(maxAmount)) {
           return deny(
             input,
             REASON_CODES.DEBT_CAP_EXCEEDED,
             'finalStateGoals.MAX_DEBT',
             'Debt increase exceeds the contracted cap.',
-            evidence('effect.delta', maxAmount, effect.delta, 'ACTION_IR'),
+            evidence('cumulativeDebtPeak', maxAmount, peak.toString(), 'ACTION_IR'),
           );
         }
         break;

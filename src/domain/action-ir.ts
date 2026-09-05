@@ -64,6 +64,9 @@ export const EconomicEffectSchema = z.discriminatedUnion('kind', [
     amount: UnsignedIntegerStringSchema,
     maxFee: UnsignedIntegerStringSchema,
     recipient: EvmAddressSchema,
+    destinationAsset: AssetIdSchema.optional(),
+    minAmountOut: UnsignedIntegerStringSchema.optional(),
+    deadline: UnsignedIntegerStringSchema.optional(),
   }).strict(),
   EffectBaseSchema.extend({
     kind: z.literal('DEBT'),
@@ -72,6 +75,14 @@ export const EconomicEffectSchema = z.discriminatedUnion('kind', [
     account: EvmAddressSchema,
     asset: AssetIdSchema,
     delta: z.string().regex(/^-?(0|[1-9]\d*)$/, 'expected a canonical signed integer string'),
+  }).strict(),
+  EffectBaseSchema.extend({
+    kind: z.literal('POSITION'),
+    chainId: z.number().int().positive(),
+    protocol: EvmAddressSchema,
+    account: EvmAddressSchema,
+    asset: AssetIdSchema,
+    delta: z.string().regex(/^-?(0|[1-9]\d*)$/),
   }).strict(),
   EffectBaseSchema.extend({
     kind: z.literal('OWNERSHIP'),
@@ -162,6 +173,7 @@ export function aggregateEffects(
   const grossOutflow = new Map<string, bigint>();
   const netDelta = new Map<string, bigint>();
   const allowanceExposure = new Map<string, bigint>();
+  const allowancesBySpender = new Map<string, Map<string, bigint>>();
   let gasWei = 0n;
   let hasUnknown = false;
 
@@ -179,7 +191,18 @@ export function aggregateEffects(
       }
       case 'APPROVAL':
         if (effect.owner.toLowerCase() === normalizedAccount) {
-          allowanceExposure.set(effectKey(effect.chainId, effect.asset), BigInt(effect.amount));
+          const key = effectKey(effect.chainId, effect.asset);
+          const spenders = allowancesBySpender.get(key) ?? new Map<string, bigint>();
+          spenders.set(effect.spender.toLowerCase(), BigInt(effect.amount));
+          allowancesBySpender.set(key, spenders);
+          const total = [...spenders.values()].reduce((sum, amount) => sum + amount, 0n);
+          // Enforce the peak across every observed prefix, not just the final approval.
+          // Transfer consumption is not inferred here: explicit revocations can lower the
+          // current exposure, but cannot erase a previously excessive authorization.
+          allowanceExposure.set(
+            key,
+            total > (allowanceExposure.get(key) ?? 0n) ? total : (allowanceExposure.get(key) ?? 0n),
+          );
         }
         break;
       case 'BRIDGE':
@@ -192,6 +215,7 @@ export function aggregateEffects(
         hasUnknown = true;
         break;
       case 'DEBT':
+      case 'POSITION':
       case 'OWNERSHIP':
       case 'SWAP':
         break;

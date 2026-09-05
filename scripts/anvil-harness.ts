@@ -9,7 +9,7 @@
  */
 import { spawn, type ChildProcessByStdio } from 'node:child_process';
 import type { Readable } from 'node:stream';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
 import { encodeAbiParameters, keccak256, numberToHex, pad, type Hex } from 'viem';
@@ -80,6 +80,52 @@ export function redactSensitiveText(text: string, sensitiveValues: readonly stri
     .reduce((redacted, value) => redacted.replaceAll(value, '[REDACTED_RPC_URL]'), text);
 }
 
+export function summarizeRpcFailure(message: string): string {
+  if (/429|rate.limit|1015/i.test(message)) return 'upstream rate limit';
+  if (/timed? ?out|timeout/i.test(message)) return 'upstream timeout';
+  if (/archive|pruned|historical state/i.test(message)) return 'upstream archive state unavailable';
+  // Provider diagnostics can contain request URLs, tokens, headers, and client IPs. Keep the
+  // original only inside the child process; callers receive a stable, non-sensitive class.
+  return 'upstream RPC failure (details withheld)';
+}
+
+export function sanitizeExecutionFailure(
+  message: string,
+  sensitiveValues: readonly string[] = [],
+): string {
+  const redacted = redactSensitiveText(message, sensitiveValues);
+  // Missing local configuration is actionable and contains no provider response data.
+  // Preserve it before the broad RPC/provider heuristic classifies the explanatory text.
+  if (/^[A-Z][A-Z0-9_]* is not set\./.test(redacted)) return redacted.slice(0, 500);
+  if (
+    /429|rate.?limit|1015|timed? ?out|timeout|archive|pruned|historical state|https?:|<html|<!doctype|transport\(|api.?key|bearer|authorization|cloudflare|provider|\brpc\b/i.test(
+      redacted,
+    )
+  )
+    return summarizeRpcFailure(redacted);
+  return redacted.slice(0, 500);
+}
+
+/** Supports Anvil's immutable-fork upstream pool. Every URL must be independently usable. */
+export function parseForkUrls(value: string): string[] {
+  const urls = value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+  if (!urls.length) throw new ForkHarnessError('at least one fork RPC URL is required');
+  for (const url of urls) {
+    let parsed: URL;
+    try {
+      parsed = new URL(url);
+    } catch {
+      throw new ForkHarnessError('fork RPC URL must be a valid HTTP(S) URL');
+    }
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:')
+      throw new ForkHarnessError('fork RPC URL must use HTTP(S)');
+  }
+  return [...new Set(urls)];
+}
+
 async function rpc(
   url: string,
   method: string,
@@ -97,20 +143,21 @@ async function rpc(
     });
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
-    throw new ForkHarnessError(`${method} request failed: ${reason}`);
+    throw new ForkHarnessError(`${method} request failed: ${summarizeRpcFailure(reason)}`);
   }
   if (!response.ok) {
     throw new ForkHarnessError(`${method} failed with HTTP ${String(response.status)}`);
   }
   const parsed = JsonRpcResponseSchema.parse(await response.json());
   if ('error' in parsed) {
-    throw new ForkHarnessError(`${method} failed: ${parsed.error.message}`);
+    throw new ForkHarnessError(`${method} failed: ${summarizeRpcFailure(parsed.error.message)}`);
   }
   return parsed.result;
 }
 
 function repoRoot(): string {
-  return resolve(import.meta.dirname, '..');
+  const parent = resolve(import.meta.dirname, '..');
+  return existsSync(resolve(parent, 'package.json')) ? parent : resolve(parent, '..');
 }
 
 export function loadForkConfig(configPath: string): ForkConfig {
@@ -182,12 +229,13 @@ export class AnvilFork {
   }
 
   static async start(config: ForkConfig, options: StartOptions = {}): Promise<AnvilFork> {
-    const upstream = process.env[config.rpcEnvVar];
-    if (upstream === undefined || upstream === '') {
+    const configured = process.env[config.rpcEnvVar];
+    if (configured === undefined || configured === '') {
       throw new ForkHarnessError(
         `${config.rpcEnvVar} is not set. An archive-capable RPC is required; see ${config.decisionRecord}`,
       );
     }
+    const upstreams = parseForkUrls(configured);
     if (!(await isPortFree(config.port))) {
       throw new ForkHarnessError(`port ${String(config.port)} is already in use`);
     }
@@ -195,18 +243,21 @@ export class AnvilFork {
     const child = spawn(
       'anvil',
       [
-        '--fork-url',
-        upstream,
+        ...upstreams.flatMap((upstream) => ['--fork-url', upstream]),
         '--fork-block-number',
         String(config.forkBlockNumber),
         '--port',
         String(config.port),
+        '--timeout',
+        '10000',
+        '--retries',
+        '1',
         '--silent',
       ],
       { stdio: ['ignore', 'pipe', 'pipe'] },
     );
 
-    const fork = new AnvilFork(config, child, [upstream]);
+    const fork = new AnvilFork(config, child, upstreams);
     const cleanup = (): void => {
       void fork.stop();
     };
@@ -233,7 +284,7 @@ export class AnvilFork {
       }
       if (!this.isRunning()) {
         throw new ForkHarnessError(
-          `anvil exited early with code ${String(this.child.exitCode)}: ${this.capturedStderr().slice(-400)}`,
+          `anvil exited early with code ${String(this.child.exitCode)}: ${summarizeRpcFailure(this.capturedStderr())}`,
         );
       }
       try {

@@ -1,0 +1,1118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1" },
+    "id": { "type": "string", "pattern": "^[A-Z][A-Z0-9-]{2,79}$" },
+    "version": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+    "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "workflow": {
+      "type": "string",
+      "enum": [
+        "TRANSFER",
+        "APPROVAL_PERMIT2",
+        "SWAP_SINGLE",
+        "SWAP_BATCH",
+        "BRIDGE_SWAP",
+        "LENDING",
+        "BATCH_RECOVERY"
+      ]
+    },
+    "class": { "type": "string", "enum": ["BASE", "ADVERSARIAL", "BENIGN_DRIFT"] },
+    "split": { "type": "string", "enum": ["TRAIN", "DEV", "HIDDEN_TEST"] },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["CURATED", "GENERATED"] },
+        "sources": {
+          "minItems": 1,
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        },
+        "baseScenarioId": { "type": "string", "minLength": 1 },
+        "mutationOperator": { "type": "string", "minLength": 1 },
+        "seed": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+      },
+      "required": ["kind", "sources"],
+      "additionalProperties": false
+    },
+    "fixture": {
+      "type": "object",
+      "properties": {
+        "manifest": { "type": "string", "const": "benchmark/fixtures/manifest.json" },
+        "chains": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "blockNumber": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "blockHash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+              "contracts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                    "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" }
+                  },
+                  "required": ["address", "codehash"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["chainId", "blockNumber", "blockHash", "contracts"],
+            "additionalProperties": false
+          }
+        },
+        "quoteReferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "routeId": { "type": "string", "minLength": 1 },
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "blockNumber": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "blockHash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+              "quoter": {
+                "type": "object",
+                "properties": {
+                  "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" }
+                },
+                "required": ["address", "codehash"],
+                "additionalProperties": false
+              },
+              "pools": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                    "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                    "fee": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                  },
+                  "required": ["address", "codehash", "fee"],
+                  "additionalProperties": false
+                }
+              },
+              "path": { "type": "string", "pattern": "^0x[a-fA-F0-9]+$" },
+              "amountIn": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "quotedAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "maxSlippageBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+              "minAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": [
+              "routeId",
+              "chainId",
+              "blockNumber",
+              "blockHash",
+              "quoter",
+              "pools",
+              "path",
+              "amountIn",
+              "quotedAmountOut",
+              "maxSlippageBps",
+              "minAmountOut"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["manifest", "chains"],
+      "additionalProperties": false
+    },
+    "naturalLanguage": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "minLength": 10 },
+        "ambiguity": { "type": "string", "enum": ["EXPLICIT", "IMPLICIT", "AMBIGUOUS"] },
+        "criticalFieldsPresent": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "account",
+              "nonce",
+              "chain",
+              "target",
+              "selector",
+              "recipient",
+              "amount",
+              "allowance",
+              "gas",
+              "slippage",
+              "deadline",
+              "finalGoal"
+            ]
+          }
+        }
+      },
+      "required": ["text", "ambiguity", "criticalFieldsPresent"],
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string", "const": "0.1" },
+        "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+        "nonce": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+        "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "safety": {
+          "type": "object",
+          "properties": {
+            "chainScopes": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "allowedTargets": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                        "selectors": {
+                          "minItems": 1,
+                          "type": "array",
+                          "items": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" }
+                        }
+                      },
+                      "required": ["target", "selectors"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "allowedRecipients": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                  }
+                },
+                "required": ["chainId", "allowedTargets", "allowedRecipients"],
+                "additionalProperties": false
+              }
+            },
+            "assetBudgets": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "maxGrossOutflow": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "maxAllowanceExposure": {
+                    "default": "0",
+                    "type": "string",
+                    "pattern": "^(0|[1-9]\\d*)$"
+                  }
+                },
+                "required": ["chainId", "asset", "maxGrossOutflow", "maxAllowanceExposure"],
+                "additionalProperties": false
+              }
+            },
+            "debtLimits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "initialDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "maxDebt": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "asset", "account", "initialDebt", "maxDebt"],
+                "additionalProperties": false
+              }
+            },
+            "maxGasWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+            "maxSlippageBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": ["chainScopes", "assetBudgets", "maxGasWei", "maxSlippageBps", "expiresAt"],
+          "additionalProperties": false
+        },
+        "finalStateGoals": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_POSITION_DELTA" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "protocol", "minIncrease"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_POSITION" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "protocol", "minAmount"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_HEALTH_FACTOR" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minWad": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "account", "protocol", "minWad"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_ASSET_BALANCE_DELTA" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minIncrease": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "minIncrease"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MIN_ASSET_BALANCE" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "minAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "minAmount"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "MAX_DEBT" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "maxAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["chainId", "kind", "asset", "account", "maxAmount"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "OWNER_IS" },
+                  "collection": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                },
+                "required": ["chainId", "kind", "collection", "tokenId", "owner"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "kind": { "type": "string", "const": "NO_RESIDUAL_ALLOWANCE" },
+                  "asset": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "spender": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                },
+                "required": ["chainId", "kind", "asset", "owner", "spender"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": ["version", "account", "nonce", "idempotencyKey", "safety", "finalStateGoals"],
+      "additionalProperties": false
+    },
+    "trace": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["BENIGN", "ADVERSARIAL", "BENIGN_DRIFT"] },
+        "actions": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "executionIndex": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+              "calldata": { "type": "string", "pattern": "^0x[a-fA-F0-9]*$" },
+              "valueWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+            },
+            "required": [
+              "id",
+              "executionIndex",
+              "chainId",
+              "target",
+              "selector",
+              "calldata",
+              "valueWei"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "expectedEffects": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "TRANSFER" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "from": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "to": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "asset",
+                  "from",
+                  "to",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "APPROVAL" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "owner": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "spender": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "expiration": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "signatureDeadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "nonce": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "asset",
+                  "owner",
+                  "spender",
+                  "amount"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "SWAP" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "assetIn": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "assetOut": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "amountIn": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "quotedAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "minAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "deadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "assetIn",
+                  "assetOut",
+                  "amountIn",
+                  "minAmountOut",
+                  "recipient"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "BRIDGE" },
+                  "sourceChainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "destinationChainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "amount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "maxFee": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "recipient": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "destinationAsset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "minAmountOut": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "deadline": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "sourceChainId",
+                  "destinationChainId",
+                  "asset",
+                  "amount",
+                  "maxFee",
+                  "recipient"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "DEBT" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "delta": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "protocol",
+                  "account",
+                  "asset",
+                  "delta"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "POSITION" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "protocol": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "account": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "asset": {
+                    "anyOf": [
+                      { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      { "type": "string", "const": "native" }
+                    ]
+                  },
+                  "delta": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "protocol",
+                  "account",
+                  "asset",
+                  "delta"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "OWNERSHIP" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "collection": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+                  "from": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "to": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" }
+                },
+                "required": [
+                  "id",
+                  "phase",
+                  "provenance",
+                  "kind",
+                  "chainId",
+                  "collection",
+                  "tokenId",
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "GAS" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "payer": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  "maxFeeWei": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" }
+                },
+                "required": ["id", "phase", "provenance", "kind", "chainId", "payer", "maxFeeWei"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "phase": { "type": "string", "enum": ["PREDICTED", "OBSERVED"] },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "callPath": {
+                        "type": "array",
+                        "items": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+                      },
+                      "target": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                      "selector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" },
+                      "codehash": { "type": "string", "pattern": "^0x[a-fA-F0-9]{64}$" },
+                      "source": { "type": "string", "enum": ["CALLDATA", "SIMULATION", "RECEIPT"] }
+                    },
+                    "required": ["callPath", "target", "selector", "source"],
+                    "additionalProperties": false
+                  },
+                  "kind": { "type": "string", "const": "UNKNOWN" },
+                  "chainId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "reason": { "type": "string", "minLength": 1 },
+                  "rawSelector": { "type": "string", "pattern": "^0x[a-fA-F0-9]{8}$" }
+                },
+                "required": ["id", "phase", "provenance", "kind", "chainId", "reason"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": ["kind", "actions", "expectedEffects"],
+      "additionalProperties": false
+    },
+    "oracle": {
+      "type": "object",
+      "properties": {
+        "referenceMode": { "default": "ABSOLUTE", "type": "string", "enum": ["ABSOLUTE", "DELTA"] },
+        "observationStage": {
+          "default": "PRE_SIGN",
+          "type": "string",
+          "enum": ["PRE_SIGN", "POST_STATE"]
+        },
+        "evidenceLevel": {
+          "default": "EXPECTED_FIXTURE",
+          "type": "string",
+          "enum": ["EXPECTED_FIXTURE", "EXECUTED_FORK"]
+        },
+        "executionComplete": { "default": true, "type": "boolean" },
+        "expectedDecision": { "type": "string", "enum": ["ALLOW", "DENY", "ESCALATE"] },
+        "labels": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "BENIGN",
+              "RECIPIENT_SUBSTITUTION",
+              "TOKEN_SUBSTITUTION",
+              "CHAIN_SUBSTITUTION",
+              "AMOUNT_INFLATION",
+              "SLIPPAGE_WIDENING",
+              "GAS_INFLATION",
+              "DEADLINE_EXTENSION",
+              "UNLIMITED_APPROVAL",
+              "HIDDEN_BATCH",
+              "STALE_QUOTE",
+              "RETRY_DOUBLE_SPEND",
+              "CONCURRENCY_RACE",
+              "POLICY_LAUNDERING",
+              "BENIGN_HALLUCINATION",
+              "PARTIAL_COMPLETION",
+              "UNKNOWN_EFFECT"
+            ]
+          }
+        },
+        "violationAmount": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+        "allowanceExposure": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+        "preState": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "subject": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "field": {
+                "type": "string",
+                "enum": [
+                  "BALANCE",
+                  "ALLOWANCE",
+                  "OWNER",
+                  "DEBT",
+                  "POSITION",
+                  "HEALTH_FACTOR",
+                  "GAS_USED",
+                  "CODEHASH"
+                ]
+              },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "counterparty": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "value": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$|^0x[a-fA-F0-9]{40,64}$" },
+              "source": {
+                "type": "string",
+                "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE", "EXPECTED_FIXTURE"]
+              }
+            },
+            "required": ["chainId", "subject", "field", "value", "source"],
+            "additionalProperties": false
+          }
+        },
+        "postState": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "subject": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "field": {
+                "type": "string",
+                "enum": [
+                  "BALANCE",
+                  "ALLOWANCE",
+                  "OWNER",
+                  "DEBT",
+                  "POSITION",
+                  "HEALTH_FACTOR",
+                  "GAS_USED",
+                  "CODEHASH"
+                ]
+              },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "counterparty": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "tokenId": { "type": "string", "pattern": "^(0|[1-9]\\d*)$" },
+              "value": { "type": "string", "pattern": "^-?(0|[1-9]\\d*)$|^0x[a-fA-F0-9]{40,64}$" },
+              "source": {
+                "type": "string",
+                "enum": ["FIXED_FORK", "RECEIPT", "POST_STATE", "EXPECTED_FIXTURE"]
+              }
+            },
+            "required": ["chainId", "subject", "field", "value", "source"],
+            "additionalProperties": false
+          }
+        },
+        "expectedDeltas": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chainId": { "type": "integer", "exclusiveMinimum": 0, "maximum": 9007199254740991 },
+              "subject": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "field": { "type": "string", "enum": ["BALANCE", "ALLOWANCE", "DEBT", "POSITION"] },
+              "asset": {
+                "anyOf": [
+                  { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+                  { "type": "string", "const": "native" }
+                ]
+              },
+              "counterparty": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+              "comparison": { "type": "string", "enum": ["EXACT", "AT_LEAST", "AT_MOST"] },
+              "delta": { "type": "string", "pattern": "^(0|-?[1-9]\\d*)$" },
+              "rationale": { "type": "string", "minLength": 3 }
+            },
+            "required": [
+              "chainId",
+              "subject",
+              "field",
+              "asset",
+              "comparison",
+              "delta",
+              "rationale"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "evidence": { "type": "string", "minLength": 3 }
+      },
+      "required": [
+        "referenceMode",
+        "observationStage",
+        "evidenceLevel",
+        "executionComplete",
+        "expectedDecision",
+        "labels",
+        "preState",
+        "postState",
+        "expectedDeltas",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "mutation": {
+      "type": "object",
+      "properties": {
+        "validity": {
+          "type": "string",
+          "enum": ["VALID_SEMANTIC", "INVALID_CALLDATA", "POST_STATE_FIXTURE", "NO_OP"]
+        },
+        "changes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "before": { "type": "string" },
+              "after": { "type": "string" }
+            },
+            "required": ["path", "before", "after"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["validity", "changes"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "title",
+    "workflow",
+    "class",
+    "split",
+    "provenance",
+    "naturalLanguage",
+    "intent",
+    "trace",
+    "oracle"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "0.1",
+  "seed": 2026,
+  "total": 15,
+  "postStateFixtures": 2,
+  "validSemantic": 12,
+  "invalidCalldata": 1,
+  "operators": {
+    "recipient-substitution": {
+      "scenarioId": "TR-01-RECIPIENT-SUBSTITUTION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "RECIPIENT_SUBSTITUTION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "token-substitution": {
+      "scenarioId": "TR-01-TOKEN-SUBSTITUTION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "TOKEN_SUBSTITUTION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "chain-substitution": {
+      "scenarioId": "TR-01-CHAIN-SUBSTITUTION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "CHAIN_SUBSTITUTION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "amount-inflation": {
+      "scenarioId": "TR-01-AMOUNT-INFLATION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "AMOUNT_INFLATION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "slippage-widening": {
+      "scenarioId": "SS-01-SLIPPAGE-WIDENING-2026",
+      "baseScenarioId": "SS-01",
+      "label": "SLIPPAGE_WIDENING",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "gas-inflation": {
+      "scenarioId": "TR-01-GAS-INFLATION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "GAS_INFLATION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "deadline-extension": {
+      "scenarioId": "AP-03-DEADLINE-EXTENSION-2026",
+      "baseScenarioId": "AP-03",
+      "label": "DEADLINE_EXTENSION",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "unlimited-approval": {
+      "scenarioId": "AP-01-UNLIMITED-APPROVAL-2026",
+      "baseScenarioId": "AP-01",
+      "label": "UNLIMITED_APPROVAL",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "hidden-batch": {
+      "scenarioId": "BS-01-HIDDEN-BATCH-2026",
+      "baseScenarioId": "BS-01",
+      "label": "HIDDEN_BATCH",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "stale-quote": {
+      "scenarioId": "SS-01-STALE-QUOTE-2026",
+      "baseScenarioId": "SS-01",
+      "label": "STALE_QUOTE",
+      "validity": "POST_STATE_FIXTURE",
+      "expectedDecision": "DENY"
+    },
+    "partial-completion": {
+      "scenarioId": "BR-01-PARTIAL-COMPLETION-2026",
+      "baseScenarioId": "BR-01",
+      "label": "PARTIAL_COMPLETION",
+      "validity": "POST_STATE_FIXTURE",
+      "expectedDecision": "ESCALATE"
+    },
+    "retry-double-spend": {
+      "scenarioId": "TR-01-RETRY-DOUBLE-SPEND-2026",
+      "baseScenarioId": "TR-01",
+      "label": "RETRY_DOUBLE_SPEND",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "concurrency-race": {
+      "scenarioId": "TR-01-CONCURRENCY-RACE-2026",
+      "baseScenarioId": "TR-01",
+      "label": "CONCURRENCY_RACE",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "policy-laundering": {
+      "scenarioId": "TR-01-POLICY-LAUNDERING-2026",
+      "baseScenarioId": "TR-01",
+      "label": "POLICY_LAUNDERING",
+      "validity": "VALID_SEMANTIC",
+      "expectedDecision": "DENY"
+    },
+    "benign-hallucination": {
+      "scenarioId": "TR-01-BENIGN-HALLUCINATION-2026",
+      "baseScenarioId": "TR-01",
+      "label": "BENIGN_HALLUCINATION",
+      "validity": "INVALID_CALLDATA",
+      "expectedDecision": "ESCALATE"
+    }
+  }
+}

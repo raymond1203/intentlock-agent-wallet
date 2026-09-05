@@ -34,7 +34,10 @@
 | `https://gateway.tenderly.co/public/mainnet` | 성공                          |
 | `https://eth.merkle.io`                      | 성공                          |
 | `https://eth-mainnet.public.blastapi.io`     | 성공                          |
+| `https://eth-mainnet.g.alchemy.com/public`   | 성공                          |
 | `https://base-mainnet.public.blastapi.io`    | 성공                          |
+| `https://base-mainnet.g.alchemy.com/public`  | 성공                          |
+| `https://mainnet.base.org`                   | 성공                          |
 | `https://ethereum-rpc.publicnode.com`        | 실패 — 토큰 요구              |
 | `https://eth.drpc.org`                       | 부분 성공 — 무료 플랜 timeout |
 | `https://1rpc.io/eth`                        | 실패 — historical state 없음  |
@@ -42,6 +45,14 @@
 - 실험 실행 환경은 **archive 조회가 가능한 RPC**를 요구한다. `.env`의 `RPC_URL`은 로컬 Anvil을 가리키고, 포크 upstream은 `FORK_RPC_URL_1`, `FORK_RPC_URL_8453`로 분리한다.
 - Foundry는 포크 데이터를 `~/.foundry/cache/rpc/<chain>/<block>`에 캐시한다. 따라서 최초 워밍업만 archive 접근이 필요하고, 이후 반복 평가는 무료 엔드포인트나 오프라인에서도 가능하다.
 - RPC URL과 키는 커밋하지 않는다.
+
+2026-09-04 재검증에서 Tenderly public endpoint는 고정 블록에 대해 maximum proof window 오류를
+반환했다. 위 표는 최초 고정 당시의 기록으로 유지하되 현재 실행 후보에서는 제외한다. 같은 날
+Ethereum은 Merkle·Blast·Alchemy public, Base는 Blast·Alchemy public·Base 공식 endpoint에서
+고정 상태 조회를 확인했다. 같은 날 다섯 워크플로 대표 시나리오(TR-01, SS-01, BR-01, LE-01,
+BA-01)를 Alchemy public과 Base 공식 endpoint 조합의 로컬 포크에서 실행해 모두 PASS를
+재현했다. 공개 endpoint는 언제든 rate limit이 걸릴 수 있으므로 최종 증거 실행에서는 URL
+pool과 append-only attempt 기록을 유지한다.
 
 ### 3. MVP 워크플로 4개
 

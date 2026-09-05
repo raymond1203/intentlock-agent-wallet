@@ -18,13 +18,18 @@
     },
     "verifiedArchiveEndpoints": {
       "1": [
-        "https://gateway.tenderly.co/public/mainnet",
         "https://eth.merkle.io",
-        "https://eth-mainnet.public.blastapi.io"
+        "https://eth-mainnet.public.blastapi.io",
+        "https://eth-mainnet.g.alchemy.com/public"
       ],
-      "8453": ["https://base-mainnet.public.blastapi.io"]
+      "8453": [
+        "https://base-mainnet.public.blastapi.io",
+        "https://base-mainnet.g.alchemy.com/public",
+        "https://mainnet.base.org"
+      ]
     },
     "rejectedEndpoints": {
+      "https://gateway.tenderly.co/public/mainnet": "2026-09-04 recheck: historical state proof exceeds the provider maximum proof window",
       "https://ethereum-rpc.publicnode.com": "archive requests require a token",
       "https://1rpc.io/eth": "historical state not available",
       "https://eth.drpc.org": "free plan request timeout on archive calls"

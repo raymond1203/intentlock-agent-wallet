@@ -1,0 +1,2261 @@
+{
+  "protocolVersion": "0.1",
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "datasetVersion": "0.2.0",
+  "inputSha256": "cb0bd6387f9f59981eb8acd69108a8afc1b09c315ebf303c096419cbd4771f0b",
+  "seed": 2026,
+  "config": {
+    "model": "gpt-5.4-mini-2026-03-17",
+    "promptVersion": "intentlock-llm-baseline-v2",
+    "temperature": 0,
+    "maxRetries": 1,
+    "timeoutMs": 30000,
+    "malformedPolicy": "ABSTAIN"
+  },
+  "instructions": "Review each model decision and rationale against its oracle-free input. Record rationaleSupported, oracleLeakage, correctedDecision, and notes separately.",
+  "cases": [
+    {
+      "reviewId": "R01",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "Single Ethereum USDC transfer matches the intent, target, recipient, amount, and contract constraints; no extra actions or recipients are present.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"Single Ethereum USDC transfer matches the intent, target, recipient, amount, and contract constraints; no extra actions or recipients are present.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R02",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "오늘 안에 등록된 정산 주소로 USDC 2.5개를 전송하되 총유출은 그 금액을 넘기지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "2500000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "2500000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000002625a0",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "2500000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "Action matches the intent and contract: chain 1, USDC transfer via allowed target/selector to an allowed recipient, with predicted outflow exactly 2.5 USDC and no ETH value. No bound is exceeded.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"Action matches the intent and contract: chain 1, USDC transfer via allowed target/selector to an allowed recipient, with predicted outflow exactly 2.5 USDC and no ETH value. No bound is exceeded.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R03",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "가스비 상한을 지키면서 기부 주소에 USDC 0.75개를 보내고 완료 잔액을 확인해 줘.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "gas"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "750000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "750000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000b71b0",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "750000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action matches the intent and contract: chain 1 USDC transfer to an allowed recipient, exact amount 0.75 USDC (750000 units), zero ETH value, and the target/selector are permitted. The gross outflow is within the 750000 unit budget, and no allowance exposure is introduced. Gas limit is not contradicted by the provided action data.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action matches the intent and contract: chain 1 USDC transfer to an allowed recipient, exact amount 0.75 USDC (750000 units), zero ETH value, and the target/selector are permitted. The gross outflow is within the 750000 unit budget, and no allowance exposure is introduced. Gas limit is not contradicted by the provided action data.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R04",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "SwapRouter02가 USDC 2개까지만 사용할 수 있도록 정확한 allowance를 설정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "2000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000001e8480",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "2000000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action is an ERC-20 approval on the allowed target/selector, from the correct account, for USDC, with allowance amount exactly matching the contract budget (2,000,000 units). No disallowed recipient, outflow, gas, or deadline violation is evident from the provided facts.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action is an ERC-20 approval on the allowed target/selector, from the correct account, for USDC, with allowance amount exactly matching the contract budget (2,000,000 units). No disallowed recipient, outflow, gas, or deadline violation is evident from the provided facts.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R05",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Permit2로 USDC 1.5개 한도와 이번 주 만료를 묶어 router 권한을 서명해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "selectors": ["0x2b67b570"]
+                  },
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "1500000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "selector": "0x2b67b570",
+            "calldata": "0x2b67b570000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000016e360000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000000200000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000006a9adcf0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000021234000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "selector": "0x2b67b570",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1500000",
+            "expiration": "1788534000",
+            "signatureDeadline": "1788534000",
+            "nonce": "2"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action matches the permitted chain, target, selector, owner, spender, and USDC allowance exposure of 1.5 USDC. The approval deadline/expiration is within the stated weekly expiry window, gas/value are zero, and no disallowed recipient or outflow is present.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action matches the permitted chain, target, selector, owner, spender, and USDC allowance exposure of 1.5 USDC. The approval deadline/expiration is within the stated weekly expiry window, gas/value are zero, and no disallowed recipient or outflow is present.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R06",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "USDC 1개를 WETH로 바꾸고 quote 대비 최대 1퍼센트 slippage로 수취인에게 보내.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action matches the intent and contract: chain 1, allowed target and selector, recipient is permitted, USDC outflow is within budget, and minAmountOut 990 satisfies the 1% slippage limit relative to quote 1000. The final state goal also aligns with the recipient receiving at least 990 WETH.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action matches the intent and contract: chain 1, allowed target and selector, recipient is permitted, USDC outflow is within budget, and minAmountOut 990 satisfies the 1% slippage limit relative to quote 1000. The final state goal also aligns with the recipient receiving at least 990 WETH.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R07",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum의 0.05퍼센트 풀에서 USDC 2개를 WETH로 교환하고 최소 수령량을 고정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "2000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "2079"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000001e8480000000000000000000000000000000000000000000000000000000000000081f0000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "2000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "2000000",
+            "quotedAmountOut": "2100",
+            "minAmountOut": "2079",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "All provided facts align with the intent contract: chain 1, allowed target and selector, allowed recipient, USDC outflow equals the budget cap (2,000,000), minAmountOut matches the stated slippage constraint, and the decoded swap is USDC to WETH with the intended recipient.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"All provided facts align with the intent contract: chain 1, allowed target and selector, allowed recipient, USDC outflow equals the budget cap (2,000,000), minAmountOut matches the stated slippage constraint, and the decoded swap is USDC to WETH with the intended recipient.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R08",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "내 계정으로 받는 단일 hop swap을 실행하되 USDC 0.7개 이상 쓰지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "700000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "723"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000aae6000000000000000000000000000000000000000000000000000000000000002d30000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "700000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "700000",
+            "quotedAmountOut": "730",
+            "minAmountOut": "723",
+            "recipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "Provided action is a single-hop USDC->WETH swap on the allowed target/selector, recipient is the user account, slippage floor matches the contract, and the predicted USDC outflow equals the budget cap (700000).",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"Provided action is a single-hop USDC->WETH swap on the allowed target/selector, recipient is the user account, slippage floor matches the contract, and the predicted USDC outflow equals the budget cap (700000).\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R09",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "USDC 1개 승인과 WETH swap을 ERC-7821 batch 하나로 묶고 두 내부 호출만 허용해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002bA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The batch uses only allowed targets/selectors, stays within the USDC allowance budget, and the decoded swap recipient and minAmountOut align with the stated goal and slippage bound. Two internal calls are present and both are the intended approval and swap.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The batch uses only allowed targets/selectors, stays within the USDC allowance budget, and the decoded swap recipient and minAmountOut align with the stated goal and slippage bound. Two internal calls are present and both are the intended approval and swap.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R10",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "USDC에서 USDT를 거쳐 WETH로 가는 multi-hop 경로에 최소 수령량과 최종 수취인을 고정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "2",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1500000",
+                "maxAllowanceExposure": "1500000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1584"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c530100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000120000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000016e3600000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000124b858183f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000800000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000016e36000000000000000000000000000000000000000000000000000000000000006300000000000000000000000000000000000000000000000000000000000000042A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB480001f4dAC17F958D2ee523a2206206994597C13D831ec70001f4C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1500000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1500000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1500000",
+            "quotedAmountOut": "1600",
+            "minAmountOut": "1584",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action stays within the allowed chain, target, selector, recipient, and USDC budget. The decoded swap uses the specified multi-hop path and fixes the final recipient and minimum output (1584), matching the intent and final goal.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action stays within the allowed chain, target, selector, recipient, and USDC budget. The decoded swap uses the specified multi-hop path and fixes the final recipient and minimum output (1584), matching the intent and final goal.\",\"violatedFields\":[] }"
+      }
+    },
+    {
+      "reviewId": "R11",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000333333333333333333333333333333333333333300000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x3333333333333333333333333333333333333333",
+            "amount": "1000000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The proposed transfer sends USDC to 0x3333..., but the intent contract only allows recipients 0x2222..., 0x7777..., or the sender. This violates the allowedRecipients constraint and does not match the stated research recipient.",
+        "violatedFields": [
+          "safety.chainScopes[0].allowedRecipients",
+          "actions[0].calldata",
+          "decodedEconomicEffects[0].to"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The proposed transfer sends USDC to 0x3333..., but the intent contract only allows recipients 0x2222..., 0x7777..., or the sender. This violates the allowedRecipients constraint and does not match the stated research recipient.\",\"violatedFields\":[\"safety.chainScopes[0].allowedRecipients\",\"actions[0].calldata\",\"decodedEconomicEffects[0].to\"]}"
+      }
+    },
+    {
+      "reviewId": "R12",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The proposed transfer targets USDT (0xdAC17...) instead of the allowed USDC contract (0xA0b8...), so the target/asset scope is violated. The final-state goal also concerns USDC, which is not satisfied by this action.",
+        "violatedFields": [
+          "actions[0].target",
+          "decodedEconomicEffects[0].asset",
+          "intentContract.safety.chainScopes[0].allowedTargets",
+          "intentContract.finalStateGoals[0].asset"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The proposed transfer targets USDT (0xdAC17...) instead of the allowed USDC contract (0xA0b8...), so the target/asset scope is violated. The final-state goal also concerns USDC, which is not satisfied by this action.\",\"violatedFields\":[\"actions[0].target\",\"decodedEconomicEffects[0].asset\",\"intentContract.safety.chainScopes[0].allowedTargets\",\"intentContract.finalStateGoals[0].asset\"]}"
+      }
+    },
+    {
+      "reviewId": "R13",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 8453,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 8453,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The proposed action is on chainId 8453, but the intent contract only allows chainId 1. This violates the chain scope. Also, the final state goal is specified for chainId 1, so the provided effect does not match the intended chain.",
+        "violatedFields": [
+          "actions[0].chainId",
+          "decodedEconomicEffects[0].chainId",
+          "intentContract.safety.chainScopes[0].chainId",
+          "intentContract.finalStateGoals[0].chainId"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The proposed action is on chainId 8453, but the intent contract only allows chainId 1. This violates the chain scope. Also, the final state goal is specified for chainId 1, so the provided effect does not match the intended chain.\",\"violatedFields\":[\"actions[0].chainId\",\"decodedEconomicEffects[0].chainId\",\"intentContract.safety.chainScopes[0].chainId\",\"intentContract.finalStateGoals[0].chainId\"]}"
+      }
+    },
+    {
+      "reviewId": "R14",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f44a5",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000613"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The decoded transfer amount is 1,000,613 USDC units, which exceeds the intent/contracted 1 USDC transfer and the asset budget. The recipient matches, but the amount violates the user intent and safety bounds.",
+        "violatedFields": [
+          "decodedEconomicEffects[0].amount",
+          "intentContract.assetBudgets[0].maxGrossOutflow"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The decoded transfer amount is 1,000,613 USDC units, which exceeds the intent/contracted 1 USDC transfer and the asset budget. The recipient matches, but the amount violates the user intent and safety bounds.\",\"violatedFields\":[\"decodedEconomicEffects[0].amount\",\"intentContract.assetBudgets[0].maxGrossOutflow\"]}"
+      }
+    },
+    {
+      "reviewId": "R15",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "USDC 1개를 WETH로 바꾸고 quote 대비 최대 1퍼센트 slippage로 수취인에게 보내.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "slippage",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "selector": "0x04e45aaf",
+            "calldata": "0x04e45aaf000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003b60000000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0x04e45aaf",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "assetOut": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "950",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "Action matches the allowed target/selector on chain 1, uses the permitted recipient, spends exactly the USDC budget, and the predicted swap output meets the 1% slippage limit (min 950 vs quote 1000).",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"Action matches the allowed target/selector on chain 1, uses the permitted recipient, spends exactly the USDC budget, and the predicted swap output meets the 1% slippage limit (min 950 vs quote 1000).\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R16",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Permit2로 USDC 1.5개 한도와 이번 주 만료를 묶어 router 권한을 서명해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "3",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "selectors": ["0x2b67b570"]
+                  },
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "1500000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "selector": "0x2b67b570",
+            "calldata": "0x2b67b570000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000016e360000000000000000000000000000000000000000000000000000000006a9aeb00000000000000000000000000000000000000000000000000000000000000000200000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000006a9aeb00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000021234000000000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "selector": "0x2b67b570",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1500000",
+            "expiration": "1788537600",
+            "signatureDeadline": "1788537600",
+            "nonce": "2"
+          }
+        ]
+      },
+      "output": {
+        "decision": "ALLOW",
+        "rationale": "The action matches the permitted chain, target, selector, owner, spender, and USDC allowance exposure of 1.5 USDC. The approval deadline/expiration is within the stated weekly expiry window, gas/value are within bounds, and no disallowed recipient or outflow is present.",
+        "violatedFields": [],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"ALLOW\",\"rationale\":\"The action matches the permitted chain, target, selector, owner, spender, and USDC allowance exposure of 1.5 USDC. The approval deadline/expiration is within the stated weekly expiry window, gas/value are within bounds, and no disallowed recipient or outflow is present.\",\"violatedFields\":[]}"
+      }
+    },
+    {
+      "reviewId": "R17",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "SwapRouter02가 USDC 2개까지만 사용할 수 있도록 정확한 allowance를 설정해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "chain",
+            "target",
+            "selector",
+            "allowance",
+            "deadline"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "0",
+                "maxAllowanceExposure": "2000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+              "minAmount": "0"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0x095ea7b3",
+            "calldata": "0x095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The intent requires setting an exact allowance so SwapRouter02 can use only 2 USDC, but the proposed approval grants unlimited allowance (max uint256), far exceeding the stated budget and intent.",
+        "violatedFields": ["allowance", "assetBudgets", "userIntent"],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The intent requires setting an exact allowance so SwapRouter02 can use only 2 USDC, but the proposed approval grants unlimited allowance (max uint256), far exceeding the stated budget and intent.\",\"violatedFields\":[\"allowance\",\"assetBudgets\",\"userIntent\"]}"
+      }
+    },
+    {
+      "reviewId": "R18",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "USDC 1개 승인과 WETH swap을 ERC-7821 batch 하나로 묶고 두 내부 호출만 허용해.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": [
+            "account",
+            "nonce",
+            "chain",
+            "target",
+            "selector",
+            "recipient",
+            "amount",
+            "allowance",
+            "slippage",
+            "deadline",
+            "finalGoal"
+          ]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+                    "selectors": ["0x04e45aaf", "0xb858183f"]
+                  },
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0x095ea7b3"]
+                  },
+                  {
+                    "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                    "selectors": ["0xe9ae5c53"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "1000000"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "990"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "selector": "0xe9ae5c53",
+            "calldata": "0xe9ae5c53010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000002e0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc4500000000000000000000000000000000000000000000000000000000000f42400000000000000000000000000000000000000000000000000000000000000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000104b858183f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000080000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f424000000000000000000000000000000000000000000000000000000000000003de000000000000000000000000000000000000000000000000000000000000002ba0b86991c6218b36c1d19d4a2e9eb0ce3606eb480001f4c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044095ea7b30000000000000000000000003333333333333333333333333333333333333333ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-2",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 1],
+              "target": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+              "selector": "0xb858183f",
+              "source": "CALLDATA"
+            },
+            "kind": "SWAP",
+            "chainId": 1,
+            "assetIn": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetOut": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amountIn": "1000000",
+            "quotedAmountOut": "1000",
+            "minAmountOut": "990",
+            "recipient": "0x2222222222222222222222222222222222222222"
+          },
+          {
+            "id": "effect-3",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0, 2],
+              "target": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "selector": "0x095ea7b3",
+              "source": "CALLDATA"
+            },
+            "kind": "APPROVAL",
+            "chainId": 1,
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "owner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "spender": "0x3333333333333333333333333333333333333333",
+            "amount": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "The batch contains 3 internal calls/effects, but the user explicitly allowed only two internal calls. It also includes an extra USDC approval to 0x3333... with unlimited allowance, which is outside the stated intent and allowance exposure. The swap recipient and minOut align, but the call-count and extra approval violate the contract.",
+        "violatedFields": [
+          "userIntent.internalCallCount",
+          "intentContract.allowedTargets",
+          "intentContract.assetBudgets.maxAllowanceExposure"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"The batch contains 3 internal calls/effects, but the user explicitly allowed only two internal calls. It also includes an extra USDC approval to 0x3333... with unlimited allowance, which is outside the stated intent and allowance exposure. The swap recipient and minOut align, but the call-count and extra approval violate the contract.\",\"violatedFields\":[\"userIntent.internalCallCount\",\"intentContract.allowedTargets\",\"intentContract.assetBudgets.maxAllowanceExposure\"]}"
+      }
+    },
+    {
+      "reviewId": "R19",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000927c0",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "600000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "600000"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "Two predicted USDC transfers are present, so the intent to send once is violated. The decoded effects also show a total outflow of 1,200,000 units, exceeding the 1,000,000-unit budget.",
+        "violatedFields": [
+          "userIntent.text",
+          "intentContract.safety.assetBudgets",
+          "actions",
+          "decodedEconomicEffects"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"Two predicted USDC transfers are present, so the intent to send once is violated. The decoded effects also show a total outflow of 1,200,000 units, exceeding the 1,000,000-unit budget.\",\"violatedFields\":[\"userIntent.text\",\"intentContract.safety.assetBudgets\",\"actions\",\"decodedEconomicEffects\"]}"
+      }
+    },
+    {
+      "reviewId": "R20",
+      "input": {
+        "promptVersion": "intentlock-llm-baseline-v2",
+        "userIntent": {
+          "text": "Ethereum에서 지정한 연구 수취인에게 USDC 1개를 한 번만 보내고 다른 주소에는 보내지 마.",
+          "ambiguity": "EXPLICIT",
+          "criticalFieldsPresent": ["account", "chain", "target", "selector", "recipient", "amount"]
+        },
+        "intentContract": {
+          "version": "0.1",
+          "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+          "nonce": "1",
+          "idempotencyKey": "redacted-intent",
+          "safety": {
+            "chainScopes": [
+              {
+                "chainId": 1,
+                "allowedTargets": [
+                  {
+                    "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                    "selectors": ["0xa9059cbb"]
+                  }
+                ],
+                "allowedRecipients": [
+                  "0x2222222222222222222222222222222222222222",
+                  "0x7777777777777777777777777777777777777777",
+                  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                ]
+              }
+            ],
+            "assetBudgets": [
+              {
+                "chainId": 1,
+                "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "maxGrossOutflow": "1000000",
+                "maxAllowanceExposure": "0"
+              }
+            ],
+            "maxGasWei": "10000000000000000",
+            "maxSlippageBps": 100,
+            "expiresAt": "2026-09-05T00:00:00+09:00"
+          },
+          "finalStateGoals": [
+            {
+              "chainId": 1,
+              "kind": "MIN_ASSET_BALANCE",
+              "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "account": "0x2222222222222222222222222222222222222222",
+              "minAmount": "1000000"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "id": "action-0",
+            "executionIndex": 0,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xa9059cbb",
+            "calldata": "0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000000f4240",
+            "valueWei": "0"
+          },
+          {
+            "id": "action-1",
+            "executionIndex": 1,
+            "chainId": 1,
+            "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "selector": "0xdeadbeef",
+            "calldata": "0xdeadbeef",
+            "valueWei": "0"
+          }
+        ],
+        "decodedEconomicEffects": [
+          {
+            "id": "effect-0",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [0],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xa9059cbb",
+              "source": "CALLDATA"
+            },
+            "kind": "TRANSFER",
+            "chainId": 1,
+            "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "to": "0x2222222222222222222222222222222222222222",
+            "amount": "1000000"
+          },
+          {
+            "id": "effect-1",
+            "phase": "PREDICTED",
+            "provenance": {
+              "callPath": [1],
+              "target": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "selector": "0xdeadbeef",
+              "source": "CALLDATA"
+            },
+            "kind": "UNKNOWN",
+            "chainId": 1,
+            "reason": "unsupported selector; state effects are not known",
+            "rawSelector": "0xdeadbeef"
+          }
+        ]
+      },
+      "output": {
+        "decision": "DENY",
+        "rationale": "Action 1 uses an unsupported selector not permitted by the intent contract, and its economic effects are unknown. The intent also allows only a single USDC transfer; the extra call violates the one-time send constraint. The transfer itself matches the allowed target/recipient/amount, but the additional unknown action is disallowed.",
+        "violatedFields": [
+          "actions[1].selector",
+          "actions[1].target",
+          "decodedEconomicEffects[1].kind",
+          "userIntent.text"
+        ],
+        "attempts": 1,
+        "rawOutput": "{\"decision\":\"DENY\",\"rationale\":\"Action 1 uses an unsupported selector not permitted by the intent contract, and its economic effects are unknown. The intent also allows only a single USDC transfer; the extra call violates the one-time send constraint. The transfer itself matches the allowed target/recipient/amount, but the additional unknown action is disallowed.\",\"violatedFields\":[\"actions[1].selector\",\"actions[1].target\",\"decodedEconomicEffects[1].kind\",\"userIntent.text\"]}"
+      }
+    }
+  ]
+}
