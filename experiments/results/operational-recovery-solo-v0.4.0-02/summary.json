@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "operational-recovery-solo-v0.4.0-02",
+  "studyType": "POST_HOC_OPERATIONAL_RECOVERY_NETWORK_RESUMPTION",
+  "completedAt": "2026-09-05T00:30:01.090Z",
+  "stopReason": "ALL_TARGETS_RECOVERED",
+  "targetCases": 15,
+  "recoveredCases": 15,
+  "unresolvedCases": 0,
+  "availableOutputsAcrossPrimaryAndBothRecoveryRuns": 400,
+  "primaryFirstAttemptFailuresUnchanged": 92,
+  "previousRecoveryArtifactsUnchanged": true,
+  "previousRecoveryArtifactHashes": {
+    "experiments/results/operational-recovery-solo-v0.4.0-01/manifest.json": "c1b3da6554e6eb2e6f2bf8e96c8f395fc7701b21a0c4c8bb4edda951188f9043",
+    "experiments/results/operational-recovery-solo-v0.4.0-01/raw.jsonl": "062c902d133a5acd0ed55c622e4a33ca82b6c1e8ca79b9ebeb19bc09b2fe13a6",
+    "experiments/results/operational-recovery-solo-v0.4.0-01/summary.json": "be7f2fee5694357b81b9c697a588f7e9d72ece75dedb460598563c1111c60e6a"
+  },
+  "additionalEvaluations": 15,
+  "additionalHttpAttempts": 15,
+  "failedAdditionalEvaluations": 0,
+  "preservedFailureHttpResponses": 0,
+  "observedUsage": {
+    "inputTokens": 72725,
+    "cachedInputTokens": 16896,
+    "outputTokens": 1773,
+    "totalTokens": 74498
+  },
+  "observedUsageCostUsd": 0.051117449999999995,
+  "responsesWithoutReportedUsage": 0,
+  "tokenCostCaveat": "Cost is computed only from reported response usage at the frozen price schedule; absent usage is unknown, not proof of zero billed cost.",
+  "excludedFromPrimaryResults": true,
+  "excludedFromCausalResults": true,
+  "latencyBenchmarkEligible": false,
+  "originalArtifactsUnchanged": true,
+  "originalPrimaryArtifactHashes": {
+    "experiments/results/primary-solo-v0.4.0-01/manifest.json": "107c96dc659da26a23aa30bdee5d51a78245a473a62e789034f0666d2c6609d4",
+    "experiments/results/primary-solo-v0.4.0-01/raw.jsonl": "df0c34c093e02c424f6249b69088a506b611e6fbcc5239eca2d21341d54cb2de",
+    "experiments/results/primary-solo-v0.4.0-01/summary.json": "50a3248a9c7ea27ec3a22717ee3397b482b5331852a1ca6fe7c903b7e0356df9",
+    "experiments/results/primary-solo-v0.4.0-01/summary.csv": "f83a87307053269a865538488a270d2c7f6b85205dbb794ca0ffbf09633866d4"
+  },
+  "manifestSha256": "b4016b59b99d6147827c298be41d023ad9eaf6bed1e46e259626930b490a3024",
+  "rawSha256": "4a1767a62176c1521d35c753d8d8ba8080fe5d9a17c0bcd2198ec45621e1e2f3",
+  "recoveredCaseIds": [
+    "LE-09--ADVERSARIAL_BUDGET",
+    "LE-09--ADVERSARIAL_COMPOSITION",
+    "LE-11--ADVERSARIAL_BUDGET",
+    "LE-11--ADVERSARIAL_COMPOSITION",
+    "LE-11--ADVERSARIAL_SCOPE",
+    "LE-11--BENIGN_ORIGINAL",
+    "LE-12--ADVERSARIAL_COMPOSITION",
+    "LE-13--ADVERSARIAL_BUDGET",
+    "LE-13--ADVERSARIAL_COMPOSITION",
+    "LE-13--ADVERSARIAL_SCOPE",
+    "LE-13--BENIGN_ORIGINAL",
+    "LE-15--ADVERSARIAL_BUDGET",
+    "LE-15--ADVERSARIAL_COMPOSITION",
+    "LE-15--ADVERSARIAL_SCOPE",
+    "LE-15--BENIGN_ORIGINAL"
+  ],
+  "unresolvedCaseIds": []
+}

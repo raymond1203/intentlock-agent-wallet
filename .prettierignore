@@ -5,4 +5,7 @@ experiments/results/
 # Generator-owned, hash-bound publication artifacts: regenerate, never reformat in place.
 paper/tables/
 paper/final.md
+paper/submission-ko.md
+figures/ko/
+artifacts/submission-ko-manifest.json
 package-lock.json

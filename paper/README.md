@@ -7,7 +7,7 @@ GitHub 주소, 로컬 경로와 문서 메타데이터를 제거합니다.
 
 `draft-*.md`는 결과 전 연구 초안이며 그 자체가 제출본이 아니다. 동결된 primary·ablation·adaptive
 실행을 한 뒤 `pnpm evaluation:analyze ...`가 9개 표 파일, 결과 metadata와 4개 SVG를 함께 생성한다.
-`paper/final-source.md`는 단일 저자 주도·AI 보조 검토 절차에 맞춘 제출용 조립 원문이다. 결과 수치는
+`paper/final-source.md`는 검수 담당자 1명·AI 보조 검토 절차에 맞춘 제출용 조립 원문이다. 참가 팀은 2명이다. 결과 수치는
 실행 전 추정하지 않으며 아래 slot으로만 연결한다. 이 파일이 존재해도 최종 저자 승인을 뜻하지 않는다.
 분석 결과를 commit한 뒤 결과 서술을 해당 원문과 대조하고, 필요한 위치에
 다음 slot을 각각 정확히 한 번 둔다.
@@ -32,6 +32,17 @@ pnpm paper:assemble --source=paper/final-source.md
 
 결과가 없을 때 이 명령이 실행 가능하다고 표시하거나 수치를 미리 채우지 않는다. `paper/final.md`와
 `artifacts/submission-manifest.json`이 생성되어도 사람 검수 완료를 뜻하지 않는다.
+
+## 국문 제출본
+
+`paper/submission-ko.md`가 Notion에 옮길 국문 편집본이다. 원본 분석표와 그림의 해시를 바꾸지 않고
+별도 출판 변환기로 국문화하며, 출처와 산출물 해시는 `artifacts/submission-ko-manifest.json`에 보존한다.
+국문 그림은 `figures/ko/`의 PNG를 사용한다. 상대 경로 이미지는 Notion으로 직접 업로드해야 한다.
+실행 방법은 `docs/experiments/audits/localize-submission.mjs`를 참고한다.
+
+확정 제출 조건은 **2명 / MetaMask / 2026-09-06**이다. 공식 템플릿 일치, Notion 실제 단어 수,
+댓글·익명 공유와 최종 제출은 `artifacts/submission-checklist.md`에 따라 팀이 확인한다.
+이 체크리스트에 없는 식별 정보를 공개 저장소에 채우지 않는다.
 
 ## 13,000단어와 익명성
 

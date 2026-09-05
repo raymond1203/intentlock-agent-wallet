@@ -1,0 +1,403 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "operational-recovery-solo-v0.4.0-01",
+  "studyType": "POST_HOC_OPERATIONAL_RECOVERY",
+  "excludedFromPrimaryResults": true,
+  "excludedFromCausalResults": true,
+  "latencyBenchmarkEligible": false,
+  "latencyCaveat": "Other local analyses run concurrently; these timings are operational diagnostics only.",
+  "createdAt": "2026-09-05T00:12:03.031Z",
+  "executionCommit": "919c896a2f46932299ac3643d8448e9fa046818a",
+  "frozenCandidateCommit": "89c742e953c8251ba4de78939648b5c7d566b9f3",
+  "frozenExecutionCommit": "58b36e2cbd490813b4ffc848f3ea126c94c7e4b3",
+  "originalPrimaryRunId": "primary-solo-v0.4.0-01",
+  "originalPrimaryArtifactHashes": {
+    "experiments/results/primary-solo-v0.4.0-01/manifest.json": "107c96dc659da26a23aa30bdee5d51a78245a473a62e789034f0666d2c6609d4",
+    "experiments/results/primary-solo-v0.4.0-01/raw.jsonl": "df0c34c093e02c424f6249b69088a506b611e6fbcc5239eca2d21341d54cb2de",
+    "experiments/results/primary-solo-v0.4.0-01/summary.json": "50a3248a9c7ea27ec3a22717ee3397b482b5331852a1ca6fe7c903b7e0356df9",
+    "experiments/results/primary-solo-v0.4.0-01/summary.csv": "f83a87307053269a865538488a270d2c7f6b85205dbb794ca0ffbf09633866d4"
+  },
+  "configSha256": "d0d3a0e349bb10584356e5b6b067339096e127a55d1dfa1ac7a8cbd9eb8731c4",
+  "caseManifestSha256": "a68f24843a5ee9e03199b406794bdf855b5e794558679f780f12b0d41e156d20",
+  "freezeDigests": {
+    "dependencyDigestSha256": "937ea5e8d6c5a86d1a9c47f83fc517074007ad571284f091b17746aaefc5d536",
+    "datasetDigestSha256": "16c0de0b9bfc2e54dd5ef8eb606da210944e41c95d2f304e2348e7f00b325869",
+    "caseManifestDigestSha256": "373b9fc819f013f9fb3affea0c9388b6d81c16ae1abbc7f967ecabfe9bf51c48",
+    "promptDigestSha256": "ebca441c2178f7300045b7b338e7a6f839dff8ac01096ee44469cb845bdd0113",
+    "toolSchemaDigestSha256": "6567f5277bbfc0a16ecc6a96efe1fb132a42a16a4c12140f2feca64e975ea42a",
+    "metricImplementationDigestSha256": "6f3131261db5ec064670ef76e02c5e84d6aa20cfd60f11a183bb96ed1e7331e1",
+    "protocolConfigDigestSha256": "d06139264d6c17f472b4fbbc3bdb901c3e91903d1244b4bc73c846b11321479b",
+    "evaluationConfigDigestSha256": "7404593dd1a2f2c13f52a2f27c0baca2bf4b9a8ccf8e74e9a26528d6ea9e29c6",
+    "implementationDigestSha256": "b90bb0a548a50cce492da6d4c70bfe845d22e50009df0e6edfcd7d1fb3fd3ef6"
+  },
+  "runnerSha256": "32ee9dd61ee9b65b2e2b76ef75395c0c30588a5ff66a895187a7fb1eeb934f24",
+  "runtimeDistSourceHashes": {
+    "dist/src/adapters/metamask/adapter.js": "3d2e2158cb3595273f7b235df38c4067da15ab15a3e421e0fa2a586a49ec0f42",
+    "dist/src/adapters/metamask/cli.js": "96ea7c54260c0e5961ef94c32173aad28a74a3344f7326fe4944760b75af1a5b",
+    "dist/src/adapters/metamask/index.js": "0b0668d186cb1aa5f21cf920dde46fd7a722828d1a809556bf4aefb67bc6ccda",
+    "dist/src/baselines/guard-mode-emulator.js": "c0e95d35ac80daf9e7129092746b365d5012bd3eb2e712ef71c7caf711d1ab54",
+    "dist/src/baselines/llm-baseline-input.js": "31be07b4e8970060f093f1dd347b8ce8a4bb1a15bf71044d0e4279b7dfa38b78",
+    "dist/src/baselines/llm-verifier.js": "0a9d5108f3fb3836c5b5095d5d6150267aa52990f73219b29463fe7024d72b56",
+    "dist/src/baselines/openai-responses-client.js": "ed08de0ec18a0e7e70f8221de7c473cf51ce03152d6736bf1870b6e2770e73e5",
+    "dist/src/baselines/per-call-policy.js": "8221e9cee5f395a719687a11a66f6149ea1d0fbc8b88e9c8be2278ec4b8c980b",
+    "dist/src/baselines/types.js": "cd5db85ee88689c63b374413b0eeb656dce761d20f8d4e3abe3918a1ea23dbfb",
+    "dist/src/benchmark/dedup.js": "9fbb650de104ec9ddc085b4df42a9547134a50d1205afe8a2e727ae987fef6e6",
+    "dist/src/benchmark/execution-funding.js": "ef4045add49dcf4db3328af83560e88b1959a79d8969f6c54ac744a4b069bd30",
+    "dist/src/benchmark/m1-golden-evidence.js": "5b6e115eac5193dd2b113fc5fd0058bac125f063ce541b037d32c4f549839599",
+    "dist/src/benchmark/mutations/index.js": "1929835815dfd4d576ecc6ccda6eb896ccf45fb31585b89a48744521d970c514",
+    "dist/src/benchmark/review-gate.js": "51baea2aef87c5db3598bc145424b38ca9406635730e6993e1484f972cab2d31",
+    "dist/src/benchmark/scenario.js": "d5534475bd177faa5f9d0546866a223ea543a697684eea42ae87a9c1ab19fd9e",
+    "dist/src/benchmark/scoring.js": "db03b2b6738ab3474c8ece71b931e28955ca4d1b981587d3713729f114929f87",
+    "dist/src/benchmark/version.js": "81f0796f53b10eb1a25d3359f8093696f14c21319600e004ec1f1429717889cd",
+    "dist/src/domain/action-ir.js": "78095fbc6797f181a0781ea243d6023bbddb70231530c8cc38b8c17e1849e04c",
+    "dist/src/domain/guard-decision.js": "dba671944019ea54bf58145a4aeba6466b2ffe298c1ea8c4f04634af389df35e",
+    "dist/src/domain/intent-contract.js": "afd53f226479e013a83c56541f74b0e24b41b15010426a2dac1dc5b75e382d64",
+    "dist/src/domain/intent-hash.js": "a97a74fac071b8279cd150970400ca203476b1b08e14e685d454ceb550a3bb90",
+    "dist/src/domain/required.js": "05f294ba283e98b33d6499f0cfd3bd8f2cb830051085800d7fa50da8f5a8c019",
+    "dist/src/effects/batch-decoder.js": "39e87776adc6899ae8fd268e811101049323ea853ba6dc4d031ccb2837473ba2",
+    "dist/src/effects/erc20-decoder.js": "64c4c51a58aa125009ff4b28c3b747ec50e8f8fa44e90b130e3e60c3b51a44ea",
+    "dist/src/effects/permit2-decoder.js": "2f5e81646d06eddf5e823fb57c5cb65628b358533f427584ffc28aae689be868",
+    "dist/src/effects/protocol-decoders.js": "679c583b1e6807f07e7915c2821c6a21fb2f81f109dd694ec8d51f075edd06b7",
+    "dist/src/effects/swap-decoder.js": "1bd41f07a4839de245f0b2a81d2553d59b6afcdd29bab0216515e0d1e5762e5f",
+    "dist/src/effects/types.js": "5074c733ac30571c7cbeaac3c76cf3014c7ea4e38c5eed36a7a0fd26cf4e6533",
+    "dist/src/evm/client.js": "12ca665093fbe15e293433f214a933691fc53a5276af46d24fba53ef1b2da531",
+    "dist/src/experiments/ablations.js": "21954f0a30f67d390dd2c40b6a659029486aa97cf98ed516fe2757570fcb223d",
+    "dist/src/experiments/adaptive-provenance.js": "f66120aa50abade5c689e83d5f820882502af6f3f110b37f573fec1cf6aa3b45",
+    "dist/src/experiments/adaptive.js": "a1b9978d6b77a0cfb2154a026206697e344e69ea673afce7a209703a58f467f6",
+    "dist/src/experiments/analysis.js": "3a890968ea1cc89223a31fc836d599af245fb3b93741c5cd7bcd108e773ae3e7",
+    "dist/src/experiments/bootstrap.js": "fbd12b0a57802fc21e50843eb3d68a860366e17e184834e25a9bef4bd4ac05b6",
+    "dist/src/experiments/case-manifest.js": "710e4da89731a299168baaed7a6ccb4c97ae969679579b67981277087e59cb2e",
+    "dist/src/experiments/case-matrix.js": "0ab3609fe0c26e60607d6f47bbd000ad7b5f4d50f21c6833d740a8b277d9b2eb",
+    "dist/src/experiments/evaluate-case.js": "6b29ecaeeb52395467e0aa21283f3b75e4abddd35f8d5e1f2538f213ea3ea0df",
+    "dist/src/experiments/figures.js": "bd066f51cd538e0acacb4fc3f564141be8be40fd90f9dbb3ea6fdd2cf812a0e3",
+    "dist/src/experiments/freeze-digests.js": "471c3573088843d4732fcafd31677055e64638e4745e479f2363a8cc2dd14545",
+    "dist/src/experiments/freeze-dry-run.js": "facef3c6c2f2d91a6d2bbd192c25b9e8419e963bc36e6d85ade0ef88796ee42a",
+    "dist/src/experiments/freeze-gates.js": "cbacecf771c29069deb50f8d51f0eb53f3ae486c0b08f06e5bb5f98ffdb6a8f8",
+    "dist/src/experiments/metrics.js": "28529f04453f265cb06080ffc40aa28b10a9e6b4a004ec4b269986064b515163",
+    "dist/src/experiments/protocol.js": "aa3b8e67d4a85d5e4ceb9ec110739740321a41a0645746833415efdbff12b8de",
+    "dist/src/experiments/run-artifacts.js": "4e3e16454308334fe6d3ef5c2387d120617b1ee23b58e44066a3443ee99b5aa0",
+    "dist/src/experiments/secondary-analysis.js": "d3b5e67594c42b3ec1de34e16acb0f5e23b5c395e5d036d6b10e20884e72a8cc",
+    "dist/src/experiments/sequential-symbolic.js": "b041e5692b2d2bf7da4fb20add7d2cbf5fbbd25461bbe6c353406a44f94c4284",
+    "dist/src/index.js": "c4d4a3041c4fc44a1413714ad2ec878c2451ef84de494d88c1ce50cd508645bd",
+    "dist/src/intent/compiler-review.js": "19688806a1c5aa3d21feb7b77975a739f8d5b51c553ebd42234c54a18f02bf80",
+    "dist/src/intent/compiler.js": "69c9f0d8353f94e4b569a7041c9b3551948312d7128725e7c64ab09178aa3580",
+    "dist/src/monitor/ledger.js": "73c8b96ec507e406afb0bbdfd603f224cbd685eeaf7accf85dc87eefa06f602d",
+    "dist/src/monitor/monitor.js": "ec86f589bcc2439eb29e6ac988850ab4078dbf09e30351de71641323bbf261c2",
+    "dist/src/monitor/reason-codes.js": "a8c1f126f657c4d901d62d4c473715e8493a4c9dde1132d7feae325a2c1ba673",
+    "dist/src/monitor/reservation.js": "3a847a6cb65c42e3c34977eb0ca15b3e0f56efb5c3e33606c722261df715ae73",
+    "dist/src/oracle/post-state-oracle.js": "e24ece949550cb174f0c7ff32c207e963eef5ea402e38210e2fc26d300a1cc9e",
+    "dist/src/oracle/receipt-accounting.js": "fe348bf7b279c1f847703ec16b84dca813e3c421b95c601931a91402002fd3d6",
+    "dist/src/submission/audit.js": "9355a4d2da88e55de3de0f65d0a49da8df45367d7cd6d1d562c23a396aa8f464",
+    "dist/src/submission/paper-assembly.js": "eec89e49b9cc11daa5e80b58735b6f2f6d726f81d0e7bd25bfe16aa843ef4cb9"
+  },
+  "policy": {
+    "concurrency": 1,
+    "minimumPauseAfterEvaluationMs": 4000,
+    "maximumAdditionalEvaluationsPerCase": 2,
+    "maximumHttpAttemptsPerEvaluation": 2,
+    "observedRetryAfterAndRateResetHeadersAppliedBetweenEvaluations": true,
+    "maximumSleepChunkMs": 60000,
+    "failedAttemptsPreserved": true,
+    "originalArtifactsUntouched": true,
+    "frozenInternalRetryPolicyUnchanged": true,
+    "decisionPolicyUnchanged": true,
+    "insufficientQuotaOrAuthenticationFailureStopsNewCalls": true
+  },
+  "llmConfig": {
+    "model": "gpt-5.4-mini-2026-03-17",
+    "promptVersion": "intentlock-llm-baseline-v2",
+    "temperature": 0,
+    "maxRetries": 1,
+    "timeoutMs": 30000,
+    "malformedPolicy": "ABSTAIN"
+  },
+  "pricingUsdPerMillionTokens": {
+    "input": 0.75,
+    "cachedInput": 0.075,
+    "output": 4.5
+  },
+  "targets": [
+    {
+      "caseId": "BR-12--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "2a96a84c138cfa4573ae7708ade0d9f71467dc1356285704c910c07fe3a77073",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BR-13--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "b3b6e2f9a22ebe1d1b67bf1fcef5d4c7533c1887ffe3786f15dc4ed662ae5799",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BR-14--BENIGN_DRIFT",
+      "scenarioSha256": "be4c2d76b0aa9cfe9b7ad8fca02bce81e5dc4535c4eebaa64706ed8f7d8149c0",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BR-15--BENIGN_ORIGINAL",
+      "scenarioSha256": "01ec8934947a9e716db220ade60da839fcdc449cbff34eba29be9f4089f51529",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BR-15--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "6240c15ff7c78bb4a00b01c0768e51cd66f7132519a70d5889bef8dda3fbce99",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BR-15--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "103b569ebd71fb641700ff13d6b0d12c4adac40ad562dd125d598ccaba4e092d",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-01--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "c2b0449ff0e132123c998bc15b4617749babdbb1a89fb2da9ec709bb745d4150",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-02--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "52ab2010696979e623a7259807f3315ebc61fe8c89b1a320f18272f9e726391c",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-02--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "11bb34b4c346f4739cea2ef73d45aec76a9b4efa4e9f3608442661a04d33889b",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-02--BENIGN_DRIFT",
+      "scenarioSha256": "eb0a02dfaee06cec5d261d993f3294defa427fba08d596c4d7fcd2f70c8b98cc",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-03--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "24a08d099cba8cc0679b89fa111be1d3d4b9535fd6ed17a15f49318f1cfa46ed",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-04--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "e78745d59a07559075a7e8c9dff32ebe1594b6cb0e43d11890f6ec10928035b9",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-06--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "069368306475fd2aee570cbed80d7e7a9387f05f2217a4f1ef0dec6ab19fe385",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-06--BENIGN_DRIFT",
+      "scenarioSha256": "4f5fb0fb2d9378a1a70f8267b74be975166be8d1d28098b1778fb964884dd989",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-06--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "3a1ffb44d8497c15b02e0b808d2c6437b9e71f417972c4f48254f91375993396",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-07--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "d9db462c304cb8e620f0d9dca6b514537a44140f88415fff5c80f9e3de757214",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-09--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "6c45c97f669506638b7edbab305ea76fb0d2a3117d6c7d537d9e1264d42b5e65",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-09--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "999b7c4f0064e682a2ee5a459eb925802cd01dba8082902d8b10179875830437",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-09--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "9318120cdb5cd0adbd2fe7c4c1323c52b99a7a8c9c1314053c74b3fa092e3fbf",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "BS-10--BENIGN_DRIFT",
+      "scenarioSha256": "0d087e84b6208058dfc0d2966c2cef50908302af2b099de55b3f442274039fd9",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-02--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "bd7bed1bac9d33228e7b60d92ab0b33fc34db958de7b4ad37946280b26cc2ace",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-04--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "2fbb9853f33388fb9d8ad59e47ffe8f3d079ea9dc32db21430f58dbf1431e349",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-03--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "c1258115cf5ad126ad7d7743d4eedcdb32b19e30885c99b954209c09f4268f57",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-04--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "f265ce1cdb6398570c816495ece5ce5eb2bd30bdad949e55ee22ec9038cb02bf",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-04--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "096b48515c15c52b74af0cc3ab4d774b4d9e833361346104078cd5f351b917f6",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-05--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "fe02b670689839e4c9a6c562d34139b550b1f6f1d4cc62a053c510f8b5d81d52",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-05--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "5b4a992c9dd021c1765ee2701599526f66f5ed6a435cf9dadfb035826753a776",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-05--BENIGN_ORIGINAL",
+      "scenarioSha256": "96043bcbce038819438e26867aee45abaf545e7e0a3898cbbc93c86bac892ec8",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-06--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "41fb77f7d12dff5d7eb66b579cfba7b3ef5affdfd38d67a8c684d85d6b28fa6b",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-06--BENIGN_DRIFT",
+      "scenarioSha256": "c0569581cf9e4c44a10c6f13a577f48a0518ad0942845657d16e41c90036be38",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-08--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "02b8ab8442ac146e1ef759458a04b040a66c88dd889cd30a560153d640f38d02",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-09--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "73125994a35cbb97a99dde8000764026e737bf32b616db9e81873c2c8fc6beef",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-09--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "1a570fb79def290f9c97a41ec153428db3bc0a3792387c1652778fde6fda3152",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-09--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "6e90b44b9c33e9c039b89b3b5218fcce4cc2700ed1c7c578950a189354453025",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-11--BENIGN_ORIGINAL",
+      "scenarioSha256": "8389236fa82f010be3d4d819a1d5e014b390e0bc6da60eaf9cf3d939f0ec9d21",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-11--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "de38414e98750b040958d36e5f842c86dc21f8603ebe76833392152f35a2526b",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-11--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "d49bbe3ceafb7bfe9ab711ef5a9b0a850b8bc105177b2f5f96c8eed364d6469b",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-11--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "7d852522a826a78d035a9608ddec3216f4db9a3523d67036f58f2d1860d9251e",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-12--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "b1f101a93791fb6c9b4e3bc7ec7b00ba553af89efa32a9036a62299c142654e8",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-13--BENIGN_ORIGINAL",
+      "scenarioSha256": "b8776299188cfa574c4f43ca15f0cbaa554195cefc6725252cc962154d911313",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-13--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "cec9ff726db0af10ca69c5c63387b2e5024c69bb4cfad0122cd12f0dc725947f",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-13--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "0f903648ca5db387d482590d6326e6fd7a88b30ee93b269df960ae77cee23255",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-13--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "11638df0506e3a77a77c1ace4d4f98c2055a7451215fa69769178d996391e8e5",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-15--BENIGN_ORIGINAL",
+      "scenarioSha256": "9aca5c87979ae95a88b130499fdf81814f06e6698d81bb05773d81629af574fb",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-15--ADVERSARIAL_COMPOSITION",
+      "scenarioSha256": "282a234035d643dea6314e631d0d714248543a3474243dfc2ade8ffcc464b4b9",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-15--ADVERSARIAL_BUDGET",
+      "scenarioSha256": "fb46f3644a7f3d8c5b70288e7401fcda54843cb53c68b08ee6f7e8f5ff53d650",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    },
+    {
+      "caseId": "LE-15--ADVERSARIAL_SCOPE",
+      "scenarioSha256": "5cd4fd0a343213368aa0753beba3a290b25e5393c10a4fca0b71573534c1fd8f",
+      "originalLatestAttempt": 2,
+      "originalLatestExecutionStatus": "FAILED"
+    }
+  ]
+}

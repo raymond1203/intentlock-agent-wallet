@@ -1,5 +1,31 @@
 # Research issue closeout map
 
+## Current checkpoint — 2026-09-05
+
+PR [#46](https://github.com/raymond1203/intentlock-agent-wallet/pull/46) was merged into `main`
+at `8e8d97ec9e7f6ddfab75fbc5e57de75cecffc978` after both CI jobs passed. The merge preserves
+the M2 collector source, candidate A, freeze B, and primary/secondary result commit ancestry.
+M2 machine execution and the selected AI-assisted review workflow are complete; M3's primary,
+ablation, scripted adaptive and statistical artifacts are also merged.
+
+`m2Complete: false` remains a legacy final-human-approval indicator, not evidence that 80-case
+execution or the selected-mode experiment-readiness checks failed. `experimentReady: true`
+is validated independently. No person has been marked as having approved the final paper.
+
+- Current criterion-by-criterion evidence: [M2–M3 closeout audit](m2-m3-closeout-audit.md).
+- Arithmetic and sampling: [primary audit](m3-primary-metrics-ai-audit.md) and
+  [secondary audit](m3-secondary-ai-audit.md).
+- Current procedure: [AI-assisted playbook](solo-closeout-playbook.md) and ADR 0011.
+- Manuscript entry point: [paper README](../../paper/README.md).
+- Actual Notion template/preview, private identity review, final author approval and submission
+  remain separate gates in #35. The user confirmed two registered participants, MetaMask,
+  and delivery of the research article by 2026-09-06. One human reviewer is not sole authorship.
+
+## Historical plan below — superseded, not current blockers
+
+The following tables preserve the original dual-human plan for traceability. Do not use their
+remaining-gate column as the status of the selected AI-assisted workflow.
+
 Current workflow: `SOLO_AI_ASSISTED`, selected by the user on 2026-09-05. ADR 0011 and the
 [current playbook](solo-closeout-playbook.md) supersede the legacy two-person gates listed below.
 The table retains the original issue plan for traceability. Current reporting must distinguish

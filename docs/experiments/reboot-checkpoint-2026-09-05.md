@@ -1,5 +1,9 @@
 # Reboot checkpoint — 2026-09-05
 
+This is a historical pause record, not the current work status. The subsequent completed M2/M3
+run and merge are described in [research-closeout.md](research-closeout.md). Do not repeat this
+checkpoint's resume instructions or infer that its old blockers are still present.
+
 The author requested a safe pause before rebooting the laptop. No experiment or API request is
 running. The build was interrupted intentionally; rebuild before using `dist/`.
 

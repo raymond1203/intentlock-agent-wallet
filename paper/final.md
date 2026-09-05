@@ -55,7 +55,7 @@ ScopeGate 역시 tool 접근 가능성과 구체적인 인자·금액에 대한 
 
 ## 4. IntentLock의 설계와 구현
 
-{{ARCHITECTURE_FIGURE}}
+![IntentLock 검증 구조](../figures/architecture.svg)
 
 ### 4.1. 확인된 경제 의도 계약
 
@@ -159,9 +159,19 @@ timeout·malformed output·unsupported·불충분 증거는 독립 outcome으로
 
 아래 표는 동일 case manifest의 2,000개 system-case 기록을 분석한다. 수치의 분모와 구간, operational failure와 확인 요구를 함께 읽어야 한다. 낮은 unsafe rate가 높은 정상 완료율을 뜻하지 않으며, 모두 거부하는 정책도 별도의 utility 손실을 만든다.
 
-{{PRIMARY_RESULTS_TABLE}}
+| System | Offline counterfactual unsafe authorization rate | 95% CI | Offline counterfactual benign completion | 95% CI | False deny | Escalation | Confirmation requests (rate) | Detection ordinals 0 / 1..N / N+1 / none | Mean latency | Token cost |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| GUARD_MODE | 23.25% | 22.00%–24.50% | 50.00% | 50.00%–50.00% | 0.00% | 36.75% | 147 (36.75%) | 147/0/0/253 | 0.054 ms | $0.000000 |
+| INTENTLOCK | 2.50% | 2.50%–2.50% | 50.00% | 50.00%–50.00% | 0.00% | 16.25% | 80 (20.00%) | 0/295/25/80 | 0.424 ms | $0.000000 |
+| LLM_VERIFIER | 13.50% | 11.50%–15.50% | 33.13% | 29.38%–36.88% | 36.25% | 25.25% | 101 (25.25%) | 190/0/0/210 | 1406.374 ms | $0.524432 |
+| NONE | 60.00% | 60.00%–60.00% | 50.00% | 50.00%–50.00% | 0.00% | 0.00% | 0 (0.00%) | 0/0/0/400 | 0.006 ms | $0.000000 |
+| PER_CALL_POLICY | 16.50% | 15.75%–17.25% | 50.00% | 50.00%–50.00% | 0.00% | 16.25% | 65 (16.25%) | 0/239/0/161 | 0.398 ms | $0.000000 |
 
-{{SECURITY_UTILITY_FIGURE}}
+Run: `primary-solo-v0.4.0-01`; frozen source A: `89c742e953c8251ba4de78939648b5c7d566b9f3`; freeze commit B: `58b36e2cbd490813b4ffc848f3ea126c94c7e4b3`; primary intention-to-treat records: 2000; raw attempts: 2092.
+
+Evidence mode: offline counterfactual replay. This table is not a fixed-fork transaction UER measurement.
+
+![보안과 정상 완료의 관계](../figures/security-utility.svg)
 
 이 비교가 직접 답하는 것은 작성된 trace에서 어느 정책이 어떤 범위의 위반을 승인했는가이다. system 간 차이는 해당 입력 효과·계약·관측 단계에 대한 결과이며, 비교 논문 전체나 운영 서비스의 우열을 뜻하지 않는다. Guard Mode emulator의 해석 민감도와 pre-sign에서 관측할 수 없는 사례는 같은 결과 안에서도 별도로 해석한다.
 
@@ -175,17 +185,42 @@ IntentLock의 2.50%–2.50%와 여러 완료율의 50.00%–50.00% 구간은 이
 
 주 분석 종료 후에는 미복구 사례의 출력 확보만을 목적으로 별도 사후 운영 복구를 수행했다. 남은 47건 중 첫 복구 실행에서 32건의 출력을 확보했고, 나머지 15건은 전송 오류 후 네트워크가 재개된 별도 실행에서 모두 출력을 얻었다. 두 복구 실행의 추가 평가는 총 77회, 전송 시도는 107회였으며 47회 정상 응답과 60회 전송 실패를 모두 보존했다. 이에 따라 서로 다른 시점에 400개 LLM 사례 모두의 출력은 확보했지만, 이것은 같은 조건의 성공한 주 실험 400건을 뜻하지 않는다. 최초 시도 실패 92건, 첫 시도만을 사용한 표·그림·신뢰구간은 변경하지 않았다. 사후 복구는 주 성능·인과·지연시간 비교에서 제외한다. 관측 토큰 사용량 기준 추가 추정 비용은 총 0.1479204달러이며 청구서 검증 금액은 아니다. 당시 전송 오류의 저수준 원인은 수집하지 못해 확정하지 않는다.
 
-{{ERROR_TAXONOMY_FIGURE}}
+![시스템별 오류 유형](../figures/error-taxonomy.svg)
 
 오류 그림의 분류는 원시 outcome·reason에 따른 기술 통계다. specification error, extraction error, enforcement error, protocol semantics와 transport failure의 원인을 모두 독립적으로 실증한 비율은 아니다. 현재 채점에는 작성 라벨 결함을 자동으로 제외하는 별도 판정 절차가 없으므로, 라벨 부정확성이 system 점수에 섞일 수 있다. source-visible 검토에서 발견한 문제는 라벨을 사후 교체하지 않고 해석 한계로 남겼다.
 
-{{LATENCY_FIGURE}}
+![시스템별 지연 시간](../figures/latency.svg)
 
 비용은 guard 평가 경로의 wall-clock과 사용량 기록이다. RPC 혼잡, transaction inclusion, 사용자 확인과 실제 bridge 완료 시간까지 포함한 운영 latency가 아니므로 지갑 사용자 체감으로 외삽하지 않는다.
 
 ### 6.2. 구성요소 결과
 
-{{ABLATION_RESULTS_TABLE}}
+All rows are offline counterfactual replay. Only the three rows under “one-factor causal ablations” receive paired causal-ablation estimates against `INTENTLOCK_FULL`.
+
+## One-factor causal ablations
+
+| Arm | Changed factor | Unsafe authorization | Paired difference vs full (95% CI) | Benign completion | Paired difference vs full (95% CI) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| STATELESS_LEDGER | acceptedEffectHistory | 16.50% | +14.00 pp (+13.25 pp–+14.75 pp) | 50.00% | +0.00 pp (+0.00 pp–+0.00 pp) |
+| SHALLOW_DECODER | recursiveDecoder | 2.50% | +0.00 pp (+0.00 pp–+0.00 pp) | 37.50% | -12.50 pp (-15.63 pp–-10.00 pp) |
+| NO_POST_STATE_VERIFIER | postStateReconciliation | 2.50% | +0.00 pp (+0.00 pp–+0.00 pp) | 50.00% | +0.00 pp (+0.00 pp–+0.00 pp) |
+
+## Non-causal stage comparisons
+
+| Arm | Unsafe authorization | Benign completion | Interpretation |
+| --- | ---: | ---: | --- |
+| SEMANTIC_ONLY | 13.50% | 33.13% | This row references the frozen primary LLM result and changes multiple stages; it is not a causal component ablation. |
+| SYMBOLIC_ONLY | 2.50% | 50.00% | The corpus already starts from a confirmed contract, so this is a stage score rather than a semantic-stage ablation. |
+| HYBRID_CONJUNCTION | 2.25% | 33.13% | The hybrid combines a fresh symbolic replay with a frozen primary LLM result and is reported only as a non-causal stage comparison. |
+
+## Reference and non-causal policy variant
+
+| Arm | Class | Unsafe authorization | Benign completion |
+| --- | --- | ---: | ---: |
+| INTENTLOCK_FULL | REFERENCE | 2.50% | 50.00% |
+| CONFIRMATION_ALWAYS | NON_CAUSAL_POLICY_VARIANT | 0.00% | 0.00% |
+
+Run: `primary-solo-v0.4.0-01-ablations`; records: 3,200; primary reference parity: verified case by case.
 
 accepted-effect history 제거 시 위반 허용은 10/400건에서 66/400건으로 늘었고, 차이는 +14.00 percentage points, paired 95% 구간은 [+13.25, +14.75]였다. 이는 누적 효과와 중복 이력 검사의 결합 기여다. shallow 설정은 위반 허용을 줄이지 않으면서 완료를 80/160건에서 60/160건으로 낮췄다. 중첩 효과를 PARTIAL로 표시한 보수적 중단의 비용이지, 숨겨진 효과를 놓쳐 발생한 손실률이 아니다.
 
@@ -193,7 +228,16 @@ post-state verifier 제거 후에도 위반 허용 10/400건과 정상 완료 80
 
 ### 6.3. Scripted signer-boundary 결과
 
-{{ADAPTIVE_RESULTS_TABLE}}
+**Design:** `NON_PAIRED_NON_CAUSAL`. These are deterministic scripted, offline signer-boundary episodes with a fake executor and no post-state observation. They are not model-adaptive, fork-execution, production MetaMask, paired-case, equivalent-case, or causal evidence.
+
+| Evidence source | Scope | Rows | Descriptive counts |
+| --- | --- | ---: | --- |
+| Frozen static primary | OFFLINE_COUNTERFACTUAL_REPLAY | 40 | ALLOW 40; DENY 0; ABSTAIN 0 |
+| Adaptive signer boundary | OFFLINE_SCRIPTED_SIGNER_BOUNDARY_ONLY | 40 | ATTACK_SUCCESS 0; SAFE_BLOCK 40; NORMAL_FAILURE 0; INCONCLUSIVE 0 |
+
+No cross-row rate difference is computed because the two evidence sources are neither paired nor equivalent experimental cases.
+
+Run: `adaptive-solo-v0.4.0-01`; attempted plans: 160; signer invocations: 0.
 
 이 표의 성공·차단·실패는 등록된 스크립트와 노출 정보·재계획 예산에 조건부다. safe block은 해당 스크립트의 실패를 뜻하며 가능한 모든 공격의 실패를 뜻하지 않는다. 주 offline 지표와의 차이는 입력 집합과 실행 경계가 다른 기술 비교로만 제시한다.
 
@@ -201,7 +245,7 @@ post-state verifier 제거 후에도 위반 허용 10/400건과 정상 완료 80
 
 ### 6.4. 개선되지 않은 결과
 
-{{NEGATIVE_RESULTS}}
+사전 정의된 음의 결과(negative result) 판정 규칙에 해당하는 항목은 없었다. 이 문장은 등록된 규칙의 판정만 뜻하며, 모든 비교와 하위 집단에서 우월하다는 뜻은 아니다.
 
 이 항목은 strongest measured baseline 대비 주 unsafe rate와 정상 완료율에서 개선되지 않은 결과를 같은 분석에서 생성한다. 여기에 항목이 없더라도 모든 workflow·확인 부담·비용에서 우수하다는 결론은 따르지 않는다. false denial, ABSTAIN과 작은 subgroup의 불확실성은 앞의 표와 함께 남는다.
 
@@ -233,7 +277,7 @@ post-state verifier 제거 후에도 위반 허용 10/400건과 정상 완료 80
 
 실행 코드, 데이터, prompt, metric 구현과 설정의 hash를 동결 기록과 연결하고, 각 실행을 고유 run ID로 보존한다. 아래 출처 정보는 표·그림이 어느 실행에서 생성되었는지를 명시한다. 기본 포크 검증의 재시도 진단과 주 비교의 attempt 선택 규칙을 섞지 않으며, 실패한 실행을 성공 결과로 덮어쓰지 않는다.
 
-{{ANALYSIS_PROVENANCE}}
+주 비교 실행은 `primary-solo-v0.4.0-01`, 제거 실험은 `primary-solo-v0.4.0-01-ablations`, 적응형 서명 경계 실행은 `adaptive-solo-v0.4.0-01`이며 분석 커밋은 `919c896a2f46932299ac3643d8448e9fa046818a`이다. 주 비교는 오프라인 반사실 재생이고, 적응형 표는 비대응·비인과 기술 통계다.
 
 IntentLock은 지갑의 의도 이탈을 도구 이름의 허용 여부에서 누적 경제 효과와 최종 목표의 문제로 구체화한다. 본 연구가 제공하는 것은 확인 계약과 효과 표현을 잇는 프로토타입, 범위가 고정된 비교 결과, 그리고 명세·관측·집행 경계를 드러내는 재현 자료다. 운영 배포의 다음 과제는 자연어 계약의 사용자 검증, 실제 지원 protocol 확대, 영속적인 다중 signer 예약과 recovery의 검증이다. 그 과정에서도 보안 수치와 정상 작업의 완료 가능성을 같은 분모와 명확한 관측 범위에서 함께 평가해야 한다.
 
@@ -255,3 +299,6 @@ IntentLock은 지갑의 의도 이탈을 도구 이름의 허용 여부에서 �
 12. MetaMask. [Outflow Policy](https://docs.metamask.io/agent-wallet/reference/outflow-policy/). Developer documentation.
 13. Hui Gong, Michail Samawi, Francesca Medda. [Authority-Inference Separation in Agentic Finance: First-Line Control, Blockchain Enforcement, and Replayable Assurance](https://arxiv.org/abs/2608.30519v1). arXiv:2608.30519v1, 2026. Preprint.
 14. David Mellafe Zuvic. [Capability Gates Are Not Authorization: Confused-Deputy Failures in LLM Agent Frameworks](https://arxiv.org/abs/2606.28679v1). arXiv:2606.28679v1, 2026. Preprint.
+
+
+검증 절차는 단일 저자가 주도하고 AI가 보조했다. 두 사람의 독립 검수나 맹검 평가를 수행했다는 주장은 하지 않는다.

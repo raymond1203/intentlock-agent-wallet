@@ -1,6 +1,8 @@
 # Current M2–M4 execution procedure
 
-The user selected one author with AI-assisted review on 2026-09-05. ADR 0011 supersedes the previous
+The user selected one human reviewer with AI-assisted review on 2026-09-05, not a one-member team.
+The user subsequently confirmed a two-member team, the MetaMask track, and a 2026-09-06 submission
+deadline. ADR 0011 supersedes the previous
 two-person operational plan for this run. The historical human playbook remains a description of
 the legacy procedure, not a claim that its reviews occurred.
 
