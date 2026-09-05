@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "0.1",
+  "generatedAt": "2026-09-05T00:32:37.050Z",
+  "reviewProtocol": {
+    "schemaVersion": "0.1",
+    "mode": "SOLO_AI_ASSISTED",
+    "independentHumanReviewClaim": false,
+    "finalAuthorApproval": "PENDING"
+  },
+  "source": {
+    "path": "paper/final-source.md",
+    "sha256": "134b320de3579c0c31db2f4f4ffc7755101ce1aae4fdd9fbc834026cdc10aa14"
+  },
+  "output": {
+    "path": "paper/final.md",
+    "sha256": "43108b97a49616527f66f6cb9161abe8edaee0a72d880d0830bf5f11c9a1e02e",
+    "wordCount": 5606,
+    "maxWords": 13000,
+    "wordCountMethod": "LOCAL_UNICODE_TOKEN_ESTIMATE",
+    "notionWordCountConfirmationRequired": true
+  },
+  "analysis": {
+    "primaryRunId": "primary-solo-v0.4.0-01",
+    "ablationRunId": "primary-solo-v0.4.0-01-ablations",
+    "adaptiveRunId": "adaptive-solo-v0.4.0-01",
+    "analysisCommit": "919c896a2f46932299ac3643d8448e9fa046818a",
+    "artifacts": {
+      "paper/tables/results.md": "cbd4c5cbb9b9d160c59f5bbbc982ac4181db4e0d9dd88eb392f9c1bb997062e8",
+      "paper/tables/results.csv": "0c51031fa1a6ee151a0554d2ec31dd2b157b5e65e71d4895ec6b9efb863cbbbd",
+      "paper/tables/results.json": "325fae00a73af9b72d1a7b518d4a7bc295d9e84384933c86c9270af3a7c08d74",
+      "paper/tables/ablations.md": "b2b94e72453efd09debbc10883fea5f32f10d39561a487781fb1fac8f4428545",
+      "paper/tables/ablations.csv": "75049f97d66cf786206d534545300ec9ee6596d9a907a0db1787a6b73013b660",
+      "paper/tables/ablations.json": "9b7d52ee586cee1ac0147c2ef95ae498b28cf96636200fc7d57764a067d43c7e",
+      "paper/tables/adaptive.md": "f5386fa0544efa94958b4d8cb98d241055754ebf0b72b48305fe8e75d5f7a4aa",
+      "paper/tables/adaptive.csv": "012cfbfc02728d4a0da8f70640e4b822d00ddbcaf6b6c6c1aa3b1346f11d8a06",
+      "paper/tables/adaptive.json": "c9fa2ca73af76d2864faeac784bf2664be937597fe201f3ab950e670c32f9437",
+      "paper/tables/results.metadata.json": "344bf25c38cdeb978c1af6f97cd079b8f7d51dfba16fbfadc494b27a93099e8c",
+      "figures/security-utility.svg": "68534186afc6ea68d196ea0d2060fd9d3e3e3e92d88ee3ae0b578ef027701428",
+      "figures/error-taxonomy.svg": "cbb1376b50d2710f6a32cc5613ca1542c40aad262cd1c239ca845ad8f70e6ebd",
+      "figures/latency.svg": "97c1265fa5b46793f9bfbc2b569f34dab4be96f4a90a3bd39aa6cacbd0e318f0",
+      "figures/architecture.svg": "0d816a184cf7def14c6c10082c1e281c3ffaff0f0651edbff090b0631be54002"
+    }
+  },
+  "humanGates": {
+    "privateIdentityAudit": "REQUIRED_SEPARATELY",
+    "notionPreviewAndWordCount": "REQUIRED_SEPARATELY",
+    "finalAuthorReview": "PENDING",
+    "independentHumanReviewClaim": false,
+    "finalSubmissionTimestamp": "PRIVATE_EXTERNAL_RECORD"
+  }
+}

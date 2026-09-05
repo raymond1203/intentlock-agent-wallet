@@ -1,6 +1,6 @@
-# 0011 — Single-author execution with disclosed AI-assisted review
+# 0011 — One-human review with disclosed AI assistance
 
-- Status: selected by the user on 2026-09-05, implementation in progress
+- Status: selected and implemented on 2026-09-05; final author approval pending
 - Supersedes: the mandatory two-person workflow in ADR 0008/0010 for current work only
 - Dataset: v0.4.0; no scenario, oracle, seed, model, split or quote change
 
@@ -60,3 +60,8 @@ An LLM decision matching the oracle does not by itself establish a correct ratio
 The user explicitly answered “본인 1명 + AI 보조 검토” when asked whether a second independent
 human would participate in final research review. This is a workflow choice, not a completed
 review or a change to the contest's team-registration requirements.
+
+The user subsequently confirmed a **two-member team**, the **MetaMask track**, and submission of
+the research article by **2026-09-06**. `SOLO_AI_ASSISTED` names the review/execution workflow,
+not sole authorship or the registered team size. No human review is attributed to the second
+participant without evidence. Team identifiers remain outside the repository.

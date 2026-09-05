@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img">
+<title>평균 판단 지연 시간</title>
+<metadata>IntentLock run primary-solo-v0.4.0-01</metadata>
+<rect width="900" height="560" fill="#ffffff"/>
+<g font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="12" fill="#243240">
+<text x="28" y="38" font-size="22" font-weight="700">평균 판단 지연 시간</text>
+<text x="28" y="64" font-size="12" fill="#596674">오프라인 재생 · 실패와 판단 유보를 포함한 전체 사례 · 단위: 밀리초</text>
+<line x1="190" y1="101" x2="190" y2="479" stroke="#243240"/>
+<line x1="190" y1="494" x2="740" y2="494" stroke="#243240"/>
+<text x="190" y="516" text-anchor="middle" font-size="11">0.0 ms</text>
+<text x="465" y="516" text-anchor="middle" font-size="11">703.2 ms</text>
+<text x="740" y="516" text-anchor="middle" font-size="11">1406.4 ms</text>
+<g data-system="GUARD_MODE" data-value="0.05449100000004137">
+<text x="28" y="130" font-size="13" font-weight="700">Guard Mode 정책 모형</text>
+<rect x="190" y="110" width="0.021310151435107172" height="28" fill="#2878b5"/>
+
+</g>
+<text x="760" y="130" font-family="monospace">0.05 ms</text>
+<text x="190" y="157" font-size="11" fill="#596674">선택한 사례 n = 400</text>
+<g data-system="INTENTLOCK" data-value="0.4243000000009488">
+<text x="28" y="205" font-size="13" font-weight="700">IntentLock</text>
+<rect x="190" y="185" width="0.16593377353928773" height="28" fill="#2878b5"/>
+
+</g>
+<text x="760" y="205" font-family="monospace">0.42 ms</text>
+<text x="190" y="232" font-size="11" fill="#596674">선택한 사례 n = 400</text>
+<g data-system="LLM_VERIFIER" data-value="1406.3743324999994">
+<text x="28" y="280" font-size="13" font-weight="700">LLM 판정기</text>
+<rect x="190" y="260" width="550" height="28" fill="#2878b5"/>
+
+</g>
+<text x="760" y="280" font-family="monospace">1406.37 ms</text>
+<text x="190" y="307" font-size="11" fill="#596674">선택한 사례 n = 400</text>
+<g data-system="NONE" data-value="0.006483750000002147">
+<text x="28" y="355" font-size="13" font-weight="700">방어 없음</text>
+<rect x="190" y="335" width="0.002535642479809821" height="28" fill="#2878b5"/>
+
+</g>
+<text x="760" y="355" font-family="monospace">0.01 ms</text>
+<text x="190" y="382" font-size="11" fill="#596674">선택한 사례 n = 400</text>
+<g data-system="PER_CALL_POLICY" data-value="0.39766300000017507">
+<text x="28" y="430" font-size="13" font-weight="700">호출별 정책</text>
+<rect x="190" y="410" width="0.15551666789261198" height="28" fill="#2878b5"/>
+
+</g>
+<text x="760" y="430" font-family="monospace">0.40 ms</text>
+<text x="190" y="457" font-size="11" fill="#596674">선택한 사례 n = 400</text>
+<text x="450" y="545" text-anchor="middle" font-size="11" fill="#596674">실행: primary-solo-v0.4.0-01</text>
+</g>
+</svg>
