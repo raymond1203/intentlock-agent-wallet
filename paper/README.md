@@ -64,3 +64,16 @@ pnpm submission:audit --file=paper/final.md --forbidden-terms-file=<private-path
 현재 절차는 `SOLO_AI_ASSISTED`다. 최종 권위는 저자의 명시적 승인, Notion preview·단어 수·댓글
 권한 확인과 private 제출 기록이다. AI 보조 검토를 두 번째 독립 인간으로 세지 않는다. 제출 조립 파일의
 제작 완료와 실제 제출 완료는 분리하며, 최종 저자 승인 대기는 내부 제출 기록에 둔다.
+
+## 유지보수 환경과 동결 연구 환경
+
+최신 `main`의 의존성 업데이트와 정적 검사 호환성 수정은 개발 환경 유지보수다. 회귀 검사 통과는
+논문의 기존 실험을 새 환경에서 다시 실행했다는 뜻이 아니다. 표·그림·원시 결과와 동결 기록은
+변경하지 않으며, 재현할 때는 각 실행 기록에 연결된 커밋의 소스·설정·잠금 파일을 함께 사용한다.
+
+저장된 primary·ablation·adaptive 결과 전체를 분석하는 기준 커밋은
+`919c896a2f46932299ac3643d8448e9fa046818a`다. 해당 커밋의 별도 깨끗한 작업 디렉터리에서
+`pnpm install --frozen-lockfile`로 환경을 구성한다. 최신 `main`에서 기존 동결 해시를 갱신해
+재현 검사를 우회하지 않는다. 제출본의 무결성만 확인하려면 저장소 루트에서
+`node docs/experiments/audits/verify-submission-bundle.mjs`를 실행한다. 이는 새 실험 실행이나
+최종 저자 승인·Notion 제출을 대신하지 않는 읽기 전용 검사다.
