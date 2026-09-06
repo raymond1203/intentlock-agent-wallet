@@ -37,10 +37,13 @@ pnpm paper:assemble --source=paper/final-source.md
 
 `paper/submission-ko.md`가 Notion에 옮길 국문 편집본이다. 원본 분석표와 그림의 해시를 바꾸지 않고
 별도 출판 변환기로 국문화하며, 출처와 산출물 해시는 `artifacts/submission-ko-manifest.json`에 보존한다.
-국문 그림은 `figures/ko/`의 PNG를 사용한다. 상대 경로 이미지는 Notion으로 직접 업로드해야 한다.
+국문 그림은 `figures/ko/`의 PNG를 사용한다. 2026-09-06 사용자 제공 Four Pillars 형식을 반영했고,
+공식 Notion CLI로 새 페이지에 본문·표·PNG를 업로드했다. 상대 경로가 자동 업로드된 것은 아니며
+첨부 파일과 본문 블록을 별도로 생성한 뒤 실제 저장 내용을 대조했다.
 실행 방법은 `docs/experiments/audits/localize-submission.mjs`를 참고한다.
 
-확정 제출 조건은 **2명 / MetaMask / 2026-09-06**이다. 공식 템플릿 일치, Notion 실제 단어 수,
+확정 제출 조건은 **2명 / MetaMask / 2026-09-06**이다. 미제공 EVM 주소·학회 코드는 사용자 요청대로
+공란으로 뒀다. 제공된 템플릿 구조와의 대조는 완료했고, 최종 화면 검수, Notion 실제 단어 수,
 댓글·익명 공유와 최종 제출은 `artifacts/submission-checklist.md`에 따라 팀이 확인한다.
 이 체크리스트에 없는 식별 정보를 공개 저장소에 채우지 않는다.
 

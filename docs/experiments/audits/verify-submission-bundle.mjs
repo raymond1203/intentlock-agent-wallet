@@ -27,6 +27,8 @@ const publication = json('artifacts/submission-ko-manifest.json');
 for (const group of [publication.inputs, publication.outputs])
   for (const [path, expected] of Object.entries(group)) verify(path, expected);
 verify(publication.transformation.script, publication.transformation.scriptSha256);
+for (const [path, expected] of Object.entries(publication.transformation.supportingScripts ?? {}))
+  verify(path, expected);
 assert.equal(publication.contest.registeredTeamSize, 2);
 assert.equal(publication.contest.track, 'MetaMask');
 assert.equal(publication.contest.userConfirmedDeadlineDate, '2026-09-06');
@@ -37,6 +39,36 @@ assert.equal(publication.publication.notionWordCountVerified, false);
 
 const original = read('paper/final.md').toString('utf8');
 const localized = read('paper/submission-ko.md').toString('utf8');
+assert(
+  localized.includes('팀 EVM 주소:\n\n팀 인원수: 2명\n\n참가 트랙: MetaMask\n\n학회 코드 넘버:\n'),
+);
+const takeaways = localized.split('### Key Takeaways\n\n')[1]?.split('\n\n')[0];
+assert.equal((takeaways?.match(/^- /gm) ?? []).length, 3);
+assert(!/^####/m.test(localized));
+assert.equal((localized.match(/^Source: /gm) ?? []).length, 13);
+assert(localized.includes('잘못된 거부율 (비적대적 160건)'));
+assert(localized.includes('서명 전 판단 유보율 (전체 400건)'));
+assert(localized.includes('확인 요청 수 (전체 400건 중 비율)'));
+// Independent immutable baseline: all 33 data rows from the previously merged Korean paper.
+const tableData = [...localized.matchAll(/^\|[^\n]*\n(?:\|[^\n]*(?:\n|$))+/gm)].map((match) =>
+  match[0]
+    .trim()
+    .split(/\r?\n/)
+    .slice(2)
+    .map((row) =>
+      row
+        .split('|')
+        .slice(1, -1)
+        .map((cell) => cell.trim()),
+    ),
+);
+assert.equal(tableData.length, 9);
+assert.equal(tableData.flat().length, 33);
+assert.equal(
+  createHash('sha256').update(JSON.stringify(tableData)).digest('hex'),
+  '9a631183a61af5f3acddc23e27c4854bb0f348af06d32a981dcaceed00f6261e',
+  'Previously audited table data changed',
+);
 const urls = (text) => text.match(/https?:\/\/[^\s)]+/gu) ?? [];
 assert.deepEqual(urls(localized), urls(original), 'Citation URL order changed');
 const references = (text) =>
