@@ -76,9 +76,7 @@ export function ablationConfigDigest(value: unknown): string {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error('ablation manifest must be an object');
   }
-  const { freeze: _freeze, status: _status, ...semantic } = value as Record<string, unknown>;
-  void _freeze;
-  void _status;
+  const { freeze, status, ...semantic } = value as Record<string, unknown>;
   return digestJson(semantic);
 }
 
@@ -110,9 +108,7 @@ async function evaluationConfigDigest(config: FrozenEvalConfig): Promise<string>
 
 /** Hashes protocol semantics without the mutable candidate/freeze envelope. */
 export function protocolConfigDigest(config: FrozenEvalConfig): string {
-  const { freeze: _freeze, status: _status, ...protocol } = config;
-  void _freeze;
-  void _status;
+  const { freeze, status, ...protocol } = config;
   return digestJson(protocol);
 }
 

@@ -153,7 +153,6 @@ export function computeCompilerReviewPacketSha256(
   packet: Omit<CompilerReviewPacket, 'packetSha256'> | CompilerReviewPacket,
 ): string {
   const { packetSha256, ...hashable } = packet as CompilerReviewPacket;
-  void packetSha256;
   return createHash('sha256').update(canonicalize(hashable)).digest('hex');
 }
 
