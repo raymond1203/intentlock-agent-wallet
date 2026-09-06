@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 import { homedir } from 'node:os';
 import { resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { formatForFourPillars } from './fourpillars-publication-format.mjs';
 
 const option = (name, fallback) =>
   process.argv.find((v) => v.startsWith(`--${name}=`))?.slice(name.length + 3) ?? fallback;
@@ -806,7 +807,7 @@ body = body
   .replace(/\bsigner invocations:/g, '서명기 호출:');
 // Submission contains readable identifiers, not Notion code-format blocks or spans.
 body = body.replace(/`([^`]+)`/g, '$1');
-const localized = (body.trimEnd() + '\n\n' + localizedReferences.trimEnd() + '\n').replace(
+let localized = (body.trimEnd() + '\n\n' + localizedReferences.trimEnd() + '\n').replace(
   /\n{4,}/g,
   '\n\n\n',
 );
@@ -841,6 +842,10 @@ for (const id of identifiers)
     localized.includes(id) || localized.includes(id.slice(1, -1)),
     `Identifier removed: ${id}`,
   );
+
+// The preservation gate above precedes layout-only numbering changes and added denominator labels.
+// The exact-anchor formatter never changes a result data cell, citation or scientific paragraph.
+localized = formatForFourPillars(localized);
 
 const svgText = new Map([
   ['Offline security–utility comparison', '오프라인 보안·정상 완료 비교'],
@@ -1019,7 +1024,12 @@ const manifest = {
   transformation: {
     script: relative(root, scriptPath).replaceAll('\\', '/'),
     scriptSha256: sha256(await readFile(scriptPath)),
-    version: '0.2',
+    version: '0.3',
+    supportingScripts: {
+      'docs/experiments/audits/fourpillars-publication-format.mjs': sha256(
+        await readFile(new URL('./fourpillars-publication-format.mjs', import.meta.url)),
+      ),
+    },
     lexicalTranslationCounts: translations,
     firstOccurrenceDefinitions: [...seen],
     widePrimaryTableSplit: '5+4+4 columns; every original data cell retained',
@@ -1032,6 +1042,17 @@ const manifest = {
     paragraphEdits: appliedParagraphEdits,
     sourceUrlsPreservedInOrder: true,
     numericTokenMultisetRetained: true,
+    numericTokenPreservationScope:
+      'Canonical-to-localized content before presentation-only numbering changes and added metadata/denominator labels',
+    publicationTemplate: {
+      basis: 'User-supplied Four Pillars template and example article inspected 2026-09-06',
+      metadata:
+        'Four fields; confirmed team size and track only; EVM address and society code blank',
+      keyTakeaways: 'Three bullets under heading level 3',
+      headingHierarchy: 'Numbered level 2 / numbered level 3 / bold numbered third-level labels',
+      sourceCaptions: { figures: 4, tables: 9 },
+      denominatorClarification: 'Issue 35 teammate AI review: non-adversarial 160 versus all 400',
+    },
     chartGeometryAndNumericTokensUnchanged: true,
   },
   contest: {

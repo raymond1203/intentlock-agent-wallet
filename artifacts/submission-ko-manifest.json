@@ -4,8 +4,11 @@
   "canonicalInput": "paper/final.md",
   "transformation": {
     "script": "docs/experiments/audits/localize-submission.mjs",
-    "scriptSha256": "7b6b86ec4c1192b6409241276e669481de3f09cdcfb0993846cf750f59778928",
-    "version": "0.2",
+    "scriptSha256": "ebf87744dd1233ccbd3378f04e787e3c4b8a8f4e2276a5687dc84ec86d1b5457",
+    "version": "0.3",
+    "supportingScripts": {
+      "docs/experiments/audits/fourpillars-publication-format.mjs": "05582fac1577b662e6ed546bf74267fd7291f674814b5e7e113b5f293c43e6a2"
+    },
     "lexicalTranslationCounts": {
       "trace": 14,
       "offline": 5,
@@ -347,6 +350,18 @@
     ],
     "sourceUrlsPreservedInOrder": true,
     "numericTokenMultisetRetained": true,
+    "numericTokenPreservationScope": "Canonical-to-localized content before presentation-only numbering changes and added metadata/denominator labels",
+    "publicationTemplate": {
+      "basis": "User-supplied Four Pillars template and example article inspected 2026-09-06",
+      "metadata": "Four fields; confirmed team size and track only; EVM address and society code blank",
+      "keyTakeaways": "Three bullets under heading level 3",
+      "headingHierarchy": "Numbered level 2 / numbered level 3 / bold numbered third-level labels",
+      "sourceCaptions": {
+        "figures": 4,
+        "tables": 9
+      },
+      "denominatorClarification": "Issue 35 teammate AI review: non-adversarial 160 versus all 400"
+    },
     "chartGeometryAndNumericTokensUnchanged": true
   },
   "contest": {
@@ -365,7 +380,7 @@
   "publication": {
     "format": "Markdown with Korean SVG and PNG derivatives",
     "language": "ko",
-    "localWhitespaceWordCount": 6300,
+    "localWhitespaceWordCount": 6621,
     "wordLimit": 13000,
     "notionWordCountVerified": false,
     "canonicalFiguresUnmodified": true
@@ -449,6 +464,6 @@
     "figures/ko/error-taxonomy.png": "d1d18408668f521400ac6ece8be8286962a73f2afa1365aad8c7bf7e03d4d5c3",
     "figures/ko/latency.svg": "36d8ecf8c6bf7989250ae7998f1e77919b35c38d5225fea40b6627429fd767c7",
     "figures/ko/latency.png": "30988da40a2ff6f23ebab00165f756f9550457ebdae35c7b311f486ce8c0c84f",
-    "paper/submission-ko.md": "3e420b781086dfc93037a097199c4e98f080ef725a751bfcc6ea35010952c07f"
+    "paper/submission-ko.md": "4cce67ecdaa158519f0d004687fe6c923c6ff19a880bd4720a181d57d8ed0f1b"
   }
 }
