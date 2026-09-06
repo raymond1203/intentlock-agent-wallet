@@ -152,8 +152,7 @@ function canonicalize(value: unknown): string {
 export function computeCompilerReviewPacketSha256(
   packet: Omit<CompilerReviewPacket, 'packetSha256'> | CompilerReviewPacket,
 ): string {
-  const { packetSha256, ...hashable } = packet as CompilerReviewPacket;
-  void packetSha256;
+  const { packetSha256: _packetSha256, ...hashable } = packet as CompilerReviewPacket;
   return createHash('sha256').update(canonicalize(hashable)).digest('hex');
 }
 

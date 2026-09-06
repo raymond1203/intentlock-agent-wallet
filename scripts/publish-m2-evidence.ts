@@ -130,8 +130,7 @@ function compactAttempt(a: Published) {
     })),
     pre: a.pre,
     post: a.post,
-    quotes: a.quotes.map(({ path, ...quote }) => {
-      void path;
+    quotes: a.quotes.map(({ path: _path, ...quote }) => {
       return quote;
     }),
     oracle: compactOracle(a.oracle),

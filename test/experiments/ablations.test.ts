@@ -237,8 +237,7 @@ describe('preregistered ablation evaluation', () => {
       primaryExecutionCommit: 'b'.repeat(40),
       executionCommit: 'c'.repeat(40),
     });
-    const { primaryExecutionCommit: omitted, ...missingPrimaryFreezeCommit } = value;
-    void omitted;
+    const { primaryExecutionCommit: _omitted, ...missingPrimaryFreezeCommit } = value;
     expect(AblationRunManifestSchema.safeParse(missingPrimaryFreezeCommit).success).toBe(false);
   });
 

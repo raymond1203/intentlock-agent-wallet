@@ -546,8 +546,7 @@ function compactRawAttempt(
     })),
     pre: raw.pre,
     post: raw.post,
-    quotes: raw.quotes.map(({ path, ...quote }) => {
-      void path;
+    quotes: raw.quotes.map(({ path: _path, ...quote }) => {
       return quote;
     }),
     oracle: compactOracle(independentlyEvaluated.oracle),
