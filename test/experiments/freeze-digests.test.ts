@@ -17,7 +17,7 @@ describe('evaluation freeze digests', () => {
   );
 
   it('binds protocol semantics but excludes the mutable freeze envelope', () => {
-    const { reviewProtocol: _reviewProtocol, ...legacy } = config;
+    const { reviewProtocol, ...legacy } = config;
     expect(protocolConfigDigest(legacy)).not.toBe(protocolConfigDigest(config));
     expect(
       protocolConfigDigest({
