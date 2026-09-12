@@ -8,6 +8,8 @@
 
 MetaMask Agent Wallet의 공개 정책을 실무 사례로 사용합니다. Guard Mode 비교군은 공개 문서에 근거한 연구용 정책 모형이며 운영 MetaMask 서비스나 공식 SDK 통합의 성능 점수가 아닙니다.
 
+누적 한도 자체를 새로운 기법으로 주장하지 않습니다. [사례별 차이 분석](docs/experiments/guard-differential-analysis.md)은 추가 규칙, 실행 이력, 모형의 단순화가 점수 차이에 각각 어떻게 섞여 있는지 설명합니다.
+
 ## Quick start
 
 Prerequisites:

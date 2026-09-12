@@ -12,6 +12,12 @@
 `node docs/experiments/audits/final-review-edition.mjs`로 수행한다.
 이 명령들은 새 실험이나 Notion 쓰기를 수행하지 않는다.
 
+9월 12일의 추가 보완에서는 6.1.4절에 같은 사례의 정책 차이를 분해한 사후 설명 분석을
+넣었다. [분석 기록](../docs/experiments/guard-differential-analysis.md)과
+`../artifacts/guard-differential-audit.json`을 함께 확인한다. 현재 검토판은 표 10개·자료 행
+38개·그림 6개·참고문헌 14개이며, 기존 표 9개와 실험 점수는 그대로다. 이 추가 분석을
+새로운 실험이나 제품 간 성능 검증으로 해석하지 않는다.
+
 ### 개인 런타임 없는 그림 재생성
 
 `pnpm install --frozen-lockfile` 후 `pnpm run publication:rebuild`를 사용한다.
