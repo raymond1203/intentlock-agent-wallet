@@ -47,7 +47,9 @@
     "evaluation:adaptive": "pnpm run build && node dist/scripts/run-adaptive-evaluation.js",
     "evaluation:analyze": "pnpm run build && node dist/scripts/analyze-results.js",
     "paper:assemble": "pnpm run build && node dist/scripts/assemble-paper.js",
-    "submission:audit": "pnpm run build && node dist/scripts/audit-submission.js"
+    "submission:audit": "pnpm run build && node dist/scripts/audit-submission.js",
+    "publication:verify": "node docs/experiments/audits/verify-submission-bundle.mjs && node docs/experiments/audits/verify-editorial-edition.mjs && node docs/experiments/audits/verify-visual-v2.mjs && node docs/experiments/audits/final-review-edition.mjs --check",
+    "publication:rebuild": "node docs/experiments/audits/rebuild-publication-portable.mjs"
   },
   "dependencies": {
     "viem": "2.56.3",
@@ -60,6 +62,7 @@
     "@vitest/coverage-v8": "4.1.10",
     "eslint": "10.9.1",
     "prettier": "3.9.6",
+    "sharp": "0.35.4",
     "typescript": "6.0.3",
     "typescript-eslint": "8.69.0",
     "vitest": "4.1.10"

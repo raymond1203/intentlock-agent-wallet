@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img">
+<title>IntentLock — 에이전트에게 맡긴 돈, 어디까지 허용할 것인가</title>
+<desc>실험 데이터가 아닌 개념 표지. 여러 실행 경로가 공통 권한 경계를 통과하는 문제를 표현한다. Four Pillars의 공식 발행물 표식은 사용하지 않는다.</desc>
+<defs>
+<linearGradient id="cover-light" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#273234"/><stop offset=".65" stop-color="#121516"/><stop offset="1" stop-color="#0D1011"/></linearGradient>
+<pattern id="cover-grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#FFFFFF" stroke-opacity=".035"/></pattern>
+</defs>
+<rect width="1600" height="900" fill="url(#cover-light)"/><rect width="1600" height="900" fill="url(#cover-grid)"/>
+<g font-family="Malgun Gothic, Noto Sans KR, sans-serif" fill="#F0F2F2">
+<text x="90" y="95" font-size="20" letter-spacing="5" fill="#9CAAAA">INTENTLOCK / SECURITY RESEARCH</text>
+<text x="90" y="265" font-size="30" fill="#91CFC5">다중 도구 실행의 의도 이탈</text>
+<text x="90" y="365" font-size="62" font-weight="700">에이전트에게 맡긴 돈,</text>
+<text x="90" y="448" font-size="62" font-weight="700">어디까지 허용할 것인가</text>
+<text x="93" y="520" font-size="25" fill="#B9C3C3">호출의 허용에서 누적 경제 효과의 검증으로</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1020 370H1100V280H1230V365H1430" stroke="#879DCC" stroke-width="5"/>
+<path d="M1020 440H1150V535H1250V440H1330" stroke="#48B8A8" stroke-width="6"/>
+<path d="M1020 510H1090V640H1230V575H1430" stroke="#B098C4" stroke-width="5"/>
+<path d="M1350 240V680" stroke="#9BCFC8" stroke-width="2" stroke-dasharray="9 12"/>
+<rect x="1003" y="353" width="34" height="34" rx="6" stroke="#879DCC" stroke-width="3"/>
+<rect x="1003" y="423" width="34" height="34" rx="6" stroke="#48B8A8" stroke-width="3"/>
+<rect x="1003" y="493" width="34" height="34" rx="6" stroke="#B098C4" stroke-width="3"/>
+<circle cx="1430" cy="365" r="10" fill="#879DCC" stroke="none"/>
+<circle cx="1430" cy="575" r="10" fill="#B098C4" stroke="none"/>
+<path d="M1322 430L1342 450M1342 430L1322 450" stroke="#48B8A8" stroke-width="4"/>
+</g>
+<text x="1350" y="725" text-anchor="middle" fill="#A8C8C3" font-size="20">승인된 실행 범위</text>
+<path d="M90 785H1510" stroke="#435052"/>
+<text x="90" y="835" font-size="18" fill="#AAB6B6">Source: 본 연구의 문제 설정 · 설명용 개념도</text>
+<text x="1510" y="835" text-anchor="end" font-size="20" fill="#D0D9D8">INTENTLOCK</text>
+</g></svg>

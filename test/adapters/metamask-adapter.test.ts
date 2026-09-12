@@ -220,4 +220,35 @@ describe('MetaMask adapter caller-input snapshot', () => {
     expect(executor.sendTransaction).toHaveBeenCalledOnce();
     expect(input).toEqual(original);
   });
+
+  it('retains a pending reservation when a transport failure leaves execution uncertain', async () => {
+    const input = request();
+    const ledger = new InMemoryIntentLedger();
+    const executor = {
+      sendTransaction: vi.fn().mockRejectedValue(new Error('response lost after submission')),
+    };
+    const adapter = new IntentLockMetaMaskAdapter(executor, ledger);
+    await expect(adapter.execute(input)).rejects.toThrow('response lost after submission');
+    const retry = await adapter.execute(input);
+    expect(retry.status).toBe('BLOCKED');
+    expect(retry.preDecision).toMatchObject({
+      kind: 'DENY',
+      code: 'LEDGER_RESERVATION_REJECTED',
+      reason: 'idempotent execution already has a PENDING reservation',
+    });
+    expect(executor.sendTransaction).toHaveBeenCalledOnce();
+  });
+
+  it.each(['FAILED', 'UNAVAILABLE'] as const)(
+    'never invokes the executor when simulation is %s',
+    async (simulationStatus) => {
+      const input = request();
+      input.simulationStatus = simulationStatus;
+      const executor = { sendTransaction: vi.fn() };
+      const result = await new IntentLockMetaMaskAdapter(executor).execute(input);
+      expect(result.status).toBe('BLOCKED');
+      expect(result.signerInvoked).toBe(false);
+      expect(executor.sendTransaction).not.toHaveBeenCalled();
+    },
+  );
 });

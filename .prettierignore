@@ -8,4 +8,17 @@ paper/final.md
 paper/submission-ko.md
 figures/ko/
 artifacts/submission-ko-manifest.json
+# Generator-owned editorial derivatives; regenerate together with their hash manifest.
+paper/editorial-ko.md
+paper/editorial-preview.html
+figures/editorial/
+artifacts/editorial-ko-manifest.json
+# Visual-first derivatives, generated with integrity manifests.
+figures/visual-v2/
+paper/visual-v2-ko.md
+paper/visual-v2-preview.html
+artifacts/visual-v2-manifest.json
 package-lock.json
+paper/final-review-ko.md
+paper/final-review-preview.html
+artifacts/final-review-manifest.json

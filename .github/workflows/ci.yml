@@ -49,6 +49,9 @@ jobs:
           pnpm run benchmark:check
           pnpm run m2:validate --check
 
+      - name: Verify publication editions without rendering or remote calls
+        run: pnpm run publication:verify
+
   foundry:
     name: Foundry / Validate
     runs-on: ubuntu-latest

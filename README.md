@@ -4,7 +4,9 @@
 
 ## Research thesis
 
-각 도구 호출이 개별적으로 허용되더라도, 승인·스왑·브리지·재시도의 조합은 사용자가 허용하지 않은 누적 자산 이동이나 권한 노출을 만들 수 있습니다. IntentLock은 자연어 의도를 타입이 있는 계약으로 고정하고, 시뮬레이션된 EVM 상태 변화와 누적 예산을 상태 기반 모니터로 검증합니다.
+각 도구 호출이 개별적으로 허용되더라도, 승인·스왑·브리지·재시도의 조합은 사용자가 허용하지 않은 누적 자산 이동이나 권한 노출을 만들 수 있습니다. IntentLock은 **이미 확인된 의도 계약**에 누적 경제 효과와 최종 상태를 대조합니다. 자연어에서 계약을 정확히 추출하는 능력이나 실제 사용자의 동의는 주 실험에서 검증하지 않았습니다.
+
+MetaMask Agent Wallet의 공개 정책을 실무 사례로 사용합니다. Guard Mode 비교군은 공개 문서에 근거한 연구용 정책 모형이며 운영 MetaMask 서비스나 공식 SDK 통합의 성능 점수가 아닙니다.
 
 ## Quick start
 
@@ -15,13 +17,13 @@ Prerequisites:
 - Foundry/Anvil 1.7.1
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 pnpm install --frozen-lockfile
 pnpm run check
 pnpm run contracts:build
 ```
 
-Windows PowerShell에서는 `Copy-Item .env.example .env`를 사용하면 됩니다.
+Windows PowerShell에서는 `Copy-Item .env.example .env.local`을 사용하면 됩니다. 기존 설정 파일이 있으면 덮어쓰지 마세요. 일반 단위 검사에는 키가 필요 없으며, 유료 모델 호출과 포크 실험은 별도 명령입니다.
 
 pnpm은 `packageManager` 필드와 `pnpm-lock.yaml`로 버전을 고정합니다. npm으로 lockfile을 만들지 마세요.
 
@@ -39,8 +41,10 @@ pnpm은 `packageManager` 필드와 `pnpm-lock.yaml`로 버전을 고정합니다
 
 ## Working agreement
 
-작업은 Issue로 정의하고 PR로 검토합니다. 고정 담당자 표시는 두지 않되, 연구 주장과 재현 근거는 병합 전에 다른 팀원이 독립 검토합니다. 자세한 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+작업은 Issue로 정의하고 PR로 검토합니다. 현재 검수 방식은 ADR 0011의 담당자 1명 + AI 보조 검토입니다. 이를 두 번째 독립 인간 검수나 최종 저자 승인으로 표시하지 않습니다. 자세한 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 
 ## Status
 
-현재 단계는 연구용 초기 골격입니다. 보안 보장을 주장하는 프로덕션 지갑 구현이 아닙니다.
+동결된 M2 실행 증거와 M3 비교 분석, M4 제출 준비본이 있습니다. 고정 포크 기본 사례 80개와 작성된 400개 기록의 오프라인 정책 비교는 별도 증거입니다. 연구용 프로토타입이며 프로덕션 지갑의 보안 보장을 주장하지 않습니다.
+
+현재 제출 검토 대상과 과거 동결본의 구분, 안전한 그림 재생성은 [출판 안내](paper/editorial-README.md)를 참고하세요. 실제 제출·공란 입력·익명 공유·저자 승인은 #35에서 별도로 관리합니다.

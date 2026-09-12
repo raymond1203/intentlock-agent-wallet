@@ -1,0 +1,26 @@
+{
+  "reviewerType": "AI_ASSISTED",
+  "reviewMethod": "Viewed all six generated PNGs; re-viewed all three data charts after their final color and label edits.",
+  "checks": {
+    "koreanGlyphs": "PASS",
+    "clippingAndOverlap": "PASS",
+    "visualRelationshipsInsteadOfParagraphs": "PASS",
+    "proposedRejectedSpendNotExecuted": "PASS",
+    "flowAndLedgerDirections": "PASS",
+    "pairedRatesUseSameAxis": "PASS",
+    "heatmapUsesCommonCountScale": "PASS",
+    "latencyZoomLabelledSeparately": "PASS",
+    "publisherBrandingAbsent": "PASS"
+  },
+  "inspectedPngHashes": {
+    "figures/visual-v2/cover.png": "329a204655fa693089f07043aa0fe5570cade4ff72a1ff5a836a9b05e92785e2",
+    "figures/visual-v2/cumulative-budget.png": "a5c6aeaca58a7a94a014e6f2f3423572e4f1a8970992646b27c7e260b75b119b",
+    "figures/visual-v2/architecture.png": "e655b9e07e74fa6a16b9a9fdde36b404fea985f6a0a39bcf75e7a90cd74093c3",
+    "figures/visual-v2/security-utility.png": "d649b72a78f566841487328d9f7d7b9591b7f5a93944a14a989c9cc15dffff18",
+    "figures/visual-v2/error-taxonomy.png": "8de97f7cf4a141e41048a1835de7d5f7a63de2f4256998fe8e9ffb202afdfca0",
+    "figures/visual-v2/latency.png": "6271fdb2b3e6ff2c301738e1c526d226d6279ab689771ded544ef3a9ba9ee0c2"
+  },
+  "humanAuthorApproval": "PENDING",
+  "browserPreviewVerified": false,
+  "notionUpdated": false
+}

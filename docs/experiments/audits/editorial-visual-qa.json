@@ -1,0 +1,24 @@
+{
+  "reviewerType": "AI_ASSISTED",
+  "reviewDate": "2026-09-06",
+  "scope": "Actual rendered PNG inspection in image viewer; not human author approval or Notion preview",
+  "checked": [
+    "Korean glyphs, title and source captions render without clipping",
+    "No overlapping plot labels, marks, explanatory cards or footer text",
+    "Dark explanatory cards and light paired scientific plot follow the user-provided visual direction",
+    "No Four Pillars logo, watermark, publisher endorsement or private team identifiers",
+    "400 and 160 denominators, point estimates, confidence intervals and exact counts remain visible",
+    "Latency full and zoom scales are explicitly different and zero-based",
+    "Illustrative budget numbers are labelled as examples, not empirical observations",
+    "Optional compiler, measured replay and adapter implementation scopes remain separate",
+    "Security-utility headline explicitly names the per-call policy comparison"
+  ],
+  "inspectedPngHashes": {
+    "figures/editorial/architecture.png": "e116f3c9bb101b73e6ed48324fb65b152e55e29238fe7eb802499f8fdfb2ae92",
+    "figures/editorial/cover.png": "af2921dc06e3caf807cd1d632df74cea8af90903a82a1fb5fce69e7e46f7e101",
+    "figures/editorial/cumulative-budget.png": "ffb997587328c284d8c003f84505aaf991114f92f2091d0d09a1d091a21aef9f",
+    "figures/editorial/error-taxonomy.png": "50dd07a620a7f429fa681273fa919f238205ddf727ec6b5d5b72f796c6c214ab",
+    "figures/editorial/latency.png": "ced576dc12011664926f12e8264a82414ef088de88b84054734ee5f6a193b56d",
+    "figures/editorial/security-utility.png": "a0819be92035472640568df9e12976db6cf5105909d03d586b94810552df1e09"
+  }
+}
