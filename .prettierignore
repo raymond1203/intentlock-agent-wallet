@@ -2,7 +2,7 @@ coverage/
 dist/
 benchmark/evidence/raw/
 experiments/results/
-# Generator-owned, hash-bound publication artifacts: regenerate, never reformat in place.
+# Hash-bound analysis artifacts and the reviewed Notion mirror: update with their manifests.
 paper/tables/
 paper/final.md
 paper/submission-ko.md

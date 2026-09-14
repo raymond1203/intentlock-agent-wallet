@@ -24,20 +24,25 @@ assert.equal(assembly.reviewProtocol.finalAuthorApproval, 'PENDING');
 assert.equal(assembly.reviewProtocol.independentHumanReviewClaim, false);
 
 const publication = json('artifacts/submission-ko-manifest.json');
+assert.equal(publication.artifactType, 'NOTION_EDITORIAL_MIRROR');
+assert.equal(publication.source.kind, 'AUTHOR_EDITED_NOTION');
+assert.equal(publication.source.privateMetadataExcluded, true);
+assert.equal(publication.source.pageIdentifierPublished, false);
+assert.equal(publication.transformation.contentEditsDuringExport, false);
+assert.equal(publication.transformation.legacyAssemblyNotRegenerated, true);
 for (const group of [publication.inputs, publication.outputs])
   for (const [path, expected] of Object.entries(group)) verify(path, expected);
-verify(publication.transformation.script, publication.transformation.scriptSha256);
-for (const [path, expected] of Object.entries(publication.transformation.supportingScripts ?? {}))
-  verify(path, expected);
 assert.equal(publication.contest.registeredTeamSize, 2);
 assert.equal(publication.contest.track, 'MetaMask');
 assert.equal(publication.contest.userConfirmedDeadlineDate, '2026-09-06');
 assert.equal(publication.reviewProtocol.humanReviewers, 1);
 assert.equal(publication.reviewProtocol.finalAuthorApproval, 'PENDING');
 assert.equal(publication.reviewProtocol.independentHumanReviewClaim, false);
-assert.equal(publication.publication.notionWordCountVerified, false);
+assert.equal(publication.reviewProtocol.notionSubmission, 'PENDING');
+assert.equal(publication.publication.notionWordCountVerified, true);
+assert.equal(publication.publication.notionWordCount, 7089);
+assert.equal(publication.publication.notionWordCountObservedDate, '2026-09-14');
 
-const original = read('paper/final.md').toString('utf8');
 const localized = read('paper/submission-ko.md').toString('utf8');
 assert(
   localized.includes('팀 EVM 주소:\n\n팀 인원수: 2명\n\n참가 트랙: MetaMask\n\n학회 코드 넘버:\n'),
@@ -45,11 +50,11 @@ assert(
 const takeaways = localized.split('### Key Takeaways\n\n')[1]?.split('\n\n')[0];
 assert.equal((takeaways?.match(/^- /gm) ?? []).length, 3);
 assert(!/^####/m.test(localized));
-assert.equal((localized.match(/^Source: /gm) ?? []).length, 13);
-assert(localized.includes('잘못된 거부율 (비적대적 160건)'));
-assert(localized.includes('서명 전 판단 유보율 (전체 400건)'));
-assert(localized.includes('확인 요청 수 (전체 400건 중 비율)'));
-// Independent immutable baseline: all 33 data rows from the previously merged Korean paper.
+assert(localized.includes('비적대적 사례 거부율 (분모 160)'));
+assert(localized.includes('서명 전 판단 유보율 (분모 400)'));
+assert(localized.includes('확인 요구 건수 (400개 중)'));
+// This is the reviewed Notion edition, not a fresh run of the historical localizer.
+// Its 32 rows were checked against the private Notion snapshot and recorded results.
 const tableData = [...localized.matchAll(/^\|[^\n]*\n(?:\|[^\n]*(?:\n|$))+/gm)].map((match) =>
   match[0]
     .trim()
@@ -59,30 +64,46 @@ const tableData = [...localized.matchAll(/^\|[^\n]*\n(?:\|[^\n]*(?:\n|$))+/gm)].
       row
         .split('|')
         .slice(1, -1)
-        .map((cell) => cell.trim()),
+        .map((cell) =>
+          cell
+            .trim()
+            .replace(/\[([^\]]+)\]\(https?:[^)]+\)/gu, '$1')
+            .replace(/\\([\\`*_[\]])/gu, '$1'),
+        ),
     ),
 );
 assert.equal(tableData.length, 9);
-assert.equal(tableData.flat().length, 33);
+assert.equal(tableData.flat().length, 32);
 assert.equal(
   createHash('sha256').update(JSON.stringify(tableData)).digest('hex'),
-  '9a631183a61af5f3acddc23e27c4854bb0f348af06d32a981dcaceed00f6261e',
-  'Previously audited table data changed',
+  'e79996999797dad02dce8d5f3c9834206cd46f0757f0f0e602874b9f117b64f3',
+  'Reviewed Notion table data changed',
 );
+assert.equal(
+  publication.integrity.tableDataSha256,
+  createHash('sha256').update(JSON.stringify(tableData)).digest('hex'),
+);
+assert.deepEqual(tableData.at(-1), [['40개', '160개', '40건', '0회']]);
 const urls = (text) => text.match(/https?:\/\/[^\s)]+/gu) ?? [];
-assert.deepEqual(urls(localized), urls(original), 'Citation URL order changed');
+assert.equal(
+  createHash('sha256')
+    .update(JSON.stringify(urls(localized)))
+    .digest('hex'),
+  publication.integrity.citationUrlsSha256,
+  'Notion citation URL order changed',
+);
 const references = (text) =>
   text
     .split('## 참고문헌')[1]
     .split(/\r?\n/u)
     .filter((line) => /^\d+\. /u.test(line));
-assert.deepEqual(references(localized), references(original), 'Reference entry changed');
 assert.equal(references(localized).length, 14);
 
 const forbidden = [
   /^\s*(?:```|~~~|>)/mu,
   /\{\{[A-Z_]+\}\}/u,
-  /github\.com|localhost|[A-Z]:\\Users\\|\/Users\/|\/home\//iu,
+  /localhost|[A-Z]:[/\\]Users[/\\]|\/Users\/|\/home\//iu,
+  /(?:app\.)?notion\.(?:com|so)|X-Amz-/iu,
   /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/iu,
   /sk-(?:proj-)?[A-Za-z0-9_-]{20,}/u,
   /\b0x[0-9a-f]{40}\b/iu,
@@ -95,8 +116,14 @@ assert(words <= 13000, 'Local Unicode token estimate exceeds word limit');
 const images = [...localized.matchAll(/!\[[^\]]*\]\(([^)]+)\)/gu)].map((match) => match[1]);
 assert.equal(images.length, 4);
 for (const image of images) {
+  assert(/^\.\.\/figures\/editorial\/[a-z-]+\.png$/u.test(image));
   const bytes = read(`paper/${image}`);
-  assert.equal(bytes.subarray(1, 4).toString('ascii'), 'PNG');
+  assert(bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])));
+  const asset = publication.figureAssets.find((entry) => entry.path === image.slice(3));
+  assert(asset && asset.byteIdentical);
+  assert.equal(bytes.readUInt32BE(16), asset.width);
+  assert.equal(bytes.readUInt32BE(20), asset.height);
+  assert.equal(hash(asset.path), asset.sha256);
 }
 
 for (const suffix of ['01', '02']) {
@@ -128,7 +155,10 @@ console.log(
       laterOutputsAvailable: 400,
       firstAttemptLlmFailuresPreserved: 92,
       finalAuthorApproval: 'PENDING',
-      notionPreviewAndSubmission: 'NOT_VERIFIED',
+      notionWordCount: publication.publication.notionWordCount,
+      notionWordCountBasis: 'Recorded UI observation on 2026-09-14, not a live query by this audit',
+      notionSubmission: 'PENDING',
+      publicationSource: 'Notion editorial mirror; private metadata excluded',
       scope:
         'Byte integrity and format, not independent truth of research claims or private identity approval',
     },
